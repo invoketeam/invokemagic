@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<texture width="512" height="512" name="mysmoke.png">
+  <image  x="1" y="1" width="64" height="64" name="flame00"/>
+  <image  x="67" y="1" width="64" height="64" name="flame01"/>
+  <image  x="133" y="1" width="64" height="64" name="flame02"/>
+  <image  x="199" y="1" width="64" height="64" name="flame03"/>
+  <image  x="265" y="1" width="64" height="64" name="flame04"/>
+  <image  x="331" y="1" width="64" height="64" name="flame05"/>
+  <image  x="397" y="1" width="64" height="64" name="flame06"/>
+  <image  x="1" y="67" width="64" height="64" name="flame07"/>
+  <image  x="1" y="133" width="64" height="64" name="flame08"/>
+  <image  x="1" y="199" width="64" height="64" name="flame09"/>
+  <image  x="1" y="265" width="64" height="64" name="flame10"/>
+  <image  x="1" y="331" width="64" height="64" name="flame11"/>
+  <image  x="1" y="397" width="64" height="64" name="flame12"/>
+  <image  x="67" y="67" width="64" height="64" name="flame13"/>
+  <image  x="133" y="67" width="64" height="64" name="flame14"/>
+  <image  x="199" y="67" width="64" height="64" name="flame15"/>
+  <image  x="265" y="67" width="64" height="64" name="flame16"/>
+  <image  x="331" y="67" width="64" height="64" name="flame17"/>
+  <image  x="397" y="67" width="64" height="64" name="flame18"/>
+  <image  x="67" y="133" width="64" height="64" name="smoke00"/>
+  <image  x="67" y="199" width="64" height="64" name="smoke01"/>
+  <image  x="67" y="265" width="64" height="64" name="smoke02"/>
+  <image  x="67" y="331" width="64" height="64" name="smoke03"/>
+  <image  x="67" y="397" width="64" height="64" name="smoke04"/>
+  <image  x="133" y="133" width="64" height="64" name="smoke05"/>
+  <image  x="199" y="133" width="64" height="64" name="smoke06"/>
+  <image  x="265" y="133" width="64" height="64" name="smoke07"/>
+  <image  x="331" y="133" width="64" height="64" name="smoke08"/>
+  <image  x="397" y="133" width="64" height="64" name="smoke09"/>
+  <image  x="133" y="199" width="64" height="64" name="smoke10"/>
+  <image  x="133" y="265" width="64" height="64" name="smoke11"/>
+  <image  x="133" y="331" width="64" height="64" name="smoke12"/>
+</texture>

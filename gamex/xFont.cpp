@@ -1,0 +1,221 @@
+
+#pragma warning (disable : 4786) //std map vc6
+#pragma warning (disable : 4996) //_vsnsprintf is unsafe or deprecated or something
+
+#include "xFont.h"
+#include "xGLCommon.h"
+
+
+
+xFont::xFont()
+ { 
+   chwidth = 16.0f;
+   chheight = 16.0f; 
+   fontsize = 1.0f;
+
+   ascent = 0.0f;
+   descent = 0.0f;
+   linegap = 0.0f;    
+
+ }//ctor
+
+
+xFont::~xFont() { clear(); }
+
+
+void 
+xFont::clear()
+    {
+      //  tex.clear();
+
+        int i;
+        for (i = 0; i < MAX_XCHAR; i++)
+        {
+            vecChar[i].valid = 0;
+        }
+
+    }//clear
+
+void 
+ xFont::loadCharDef(std::string fname)
+    {
+      
+
+        float imgWidth;        float imgHeight;   
+        int c;
+        float x;        float y;        float w;        float h;
+        float ox;       float oy;
+        xChar * a;
+        float addx;
+
+
+         pugi::xml_document xm;
+         pugi::xml_node root;
+         pugi::xml_node k;
+
+
+         clear();
+
+         if  (!(xm.load_file(fname.c_str(), 0) ))	{ printf("xFont:Error -- couldn't find chardef file %s \n", fname.c_str());	return; } //exit? quit? throw?
+
+   
+
+         root = xm.child("xfont");
+
+         skin = root.attribute("image").value(); 
+         imgWidth =  root.attribute("w").as_float();
+         imgHeight = root.attribute("h").as_float();
+      
+         ascent = root.attribute("ascent").as_float();
+         descent = root.attribute("descent").as_float();
+         linegap = root.attribute("linegap").as_float();
+
+
+         fontsize = root.attribute("size").as_float();
+
+      
+         chwidth = fontsize  /2;
+         chheight =  fontsize  /2;
+
+
+    
+           for (k = root.child("char"); k; k = k.next_sibling("char"))
+           {
+                c = k.attribute("c").as_int(); //image name is used as number in this case
+               x = k.attribute("x").as_float();
+               y = k.attribute("y").as_float();
+               w = k.attribute("w").as_float();
+               h = k.attribute("h").as_float();
+               ox =  k.attribute("ox").as_float();
+               oy =  k.attribute("oy").as_float();
+
+               addx = k.attribute("addx").as_float();
+
+               if (c <= 0 || c>= MAX_XCHAR) {continue;}
+
+               a = &vecChar[c];
+               
+               a->valid = 1;
+               a->width = w;
+               a->height = h;
+               a->u0 = x / imgWidth;
+               a->v0 = y / imgHeight;
+               a->u1 = (x+w) / imgWidth;
+               a->v1 = (y+h) / imgHeight;
+
+               a->v0 = 1 - a->v0;
+               a->v1 = 1 - a->v1;
+
+                a->addx = addx;
+                a->ox = ox;
+                a->oy = oy;
+
+               // a->addy = addy;
+           }//nextk
+
+    }//loadchardef
+
+
+
+
+//todo -- option to  align to middle
+
+void
+xFont::printStr(float size, float cx, float cy, const char* str, ...)
+{
+  if (size == 0.0f) { return; }
+	static char buffer[1024];
+
+	va_list params;
+	va_start(params, str);
+		_vsnprintf(buffer, sizeof(buffer), str, params);
+	va_end(params);
+
+   size = size / fontsize;
+
+   writeStr(cx, cy, buffer, size);
+  
+
+
+  /*
+	glRasterPos2f(x, y);
+
+	char* c = buffer;
+
+	while(*c)
+	{
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
+		c++;
+	}
+  */
+}//print
+
+
+ //todo kerning (?)
+
+
+//todo -- this is the unoptimised debug version -- 
+//the real one should just dump the contents in an array
+//and thats it
+  void
+  xFont::writeStr(float cx, float cy, std::string str, float scale)
+    {
+        float dx;       float dy;
+        float ax;       float ay;        float aw;        float ah;
+        unsigned char c;
+        int i;    int num;
+        float addy;
+        xChar * a;
+
+
+
+        addy = (ascent - descent + linegap) * scale;
+
+        dx = cx;
+        dy = cy + addy;
+
+        num = str.size();
+
+        glBegin(GL_TRIANGLES);
+           
+        for (i = 0; i < num; i++)
+        {
+           c = str[i];
+           if (c == '\n') { dx = cx; dy += addy; continue;}   //end of line
+           if (c == 32) { dx += (chwidth/2)*scale; continue; } //space
+         
+           a = &vecChar[c];
+           if (a->valid <= 0) { dx += chwidth*scale;  continue; }  //invalid character is replaced with space
+
+
+           ax = dx + (a->ox*scale);           ay = dy + (a->oy*scale); 
+           aw = a->width*scale;           ah = a->height*scale;
+             
+
+           glTexCoord2f(a->u0, a->v1);
+           glVertex2f(ax, ay+ah);
+
+           glTexCoord2f(a->u1, a->v1);
+           glVertex2f(ax+aw, ay+ah);
+
+           glTexCoord2f(a->u0, a->v0);
+           glVertex2f(ax, ay);
+           
+
+           glTexCoord2f(a->u0, a->v0);
+           glVertex2f(ax, ay);
+           
+           glTexCoord2f(a->u1, a->v1);
+           glVertex2f(ax+aw, ay+ah);
+           
+           glTexCoord2f(a->u1, a->v0);
+           glVertex2f(ax+aw, ay);
+           
+           
+           dx += a->addx *scale;
+           
+        }//nexti
+
+        glEnd();
+
+    }//writestr

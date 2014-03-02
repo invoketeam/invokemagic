@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="32" height="32" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="zoneset" tilewidth="32" tileheight="32">
+  <image source="zoneset.png" trans="ff00ff" width="256" height="256"/>
+ </tileset>
+ <tileset firstgid="65" name="texset" tilewidth="32" tileheight="32">
+  <image source="texset.png" trans="ff00ff" width="512" height="512"/>
+ </tileset>
+ <layer name="terra" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJztltsOwiAQRPcVStX6/x9rjTvJxFQLCyzVdJJJn+gZltuKHE9Xw5igTurQNNE+O66eVs/6bcFf1LkZkGNWWzKEDZfoOfek/Kiu5ZdkQA2SZpmc+UJcy9hPGUoUjdxvOUTy/2md9xbXUodWZ792Hf6NP0Ij+YuMrQH4p46v2nXiHgLv50VevdBtZ9zo+yGKfwZms70yMBvvvUcGvpN4v6Df6b0WzGc2+t73GuT2r1Y+G+x7Rz4UlMN7wPMc1PZIvXKc+i09AEjmB5M=
+  </data>
+ </layer>
+ <layer name="tex" width="32" height="32" opacity="0.6">
+  <data encoding="base64" compression="zlib">
+   eJzllkEOwjAMBP21AIJzaV8A/P8N5Iii2t3YayPEYW9RJuvE6ywisvyAroMyGO2An+mvAfzR++1DmWzN/z/xv3n3o05dZ0WXwBnQtfeuVdFWUAMPH9k7i98E84fWwMtn3cMMvwnuH70HL9/zLiN8j3cWf2Qz+Y+up6KXw7+VZ4xcO+Jb9YzmGtJTVXztDCy+5TGbH8nWKB/tryr+bK9H+Hs5U8VnsKvevyUrT/dyldl72WLNH88erPnneWOZ83f2L2etfwO8LT40
+  </data>
+ </layer>
+ <layer name="tex2" width="32" height="32" opacity="0.6">
+  <data encoding="base64" compression="zlib">
+   eJztwQENAAAAwqD3T20PBxQAAADwbhAAAAE=
+  </data>
+ </layer>
+ <layer name="walltex" width="32" height="32" opacity="0.3">
+  <data encoding="base64" compression="zlib">
+   eJztzjENAAAIA7CZW/DvCBuE9OjfJukxc+AAAAAAnyzYVhQS
+  </data>
+ </layer>
+ <objectgroup name="actor" width="32" height="32"/>
+</map>
