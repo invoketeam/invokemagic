@@ -15,6 +15,11 @@ xGame::xGame()
   mx = 0.0f;
   my = 0.0f;
 
+  wmx = 0.0f;
+  wmy = 0.0f;
+  wmz = 0.0f;
+
+
   memset(bKeyDown, 0, 512);
 
   mDownLeft = false;
@@ -22,8 +27,8 @@ xGame::xGame()
 
 
   memset(bKeyPress, 0, 512);
-  mClickLeft = false;
-  mClickRight = false;
+  mClickLeft = 0;
+  mClickRight = 0;
 
 
   gameTime = 0;
@@ -41,7 +46,7 @@ xGame::~xGame()
 bool 
 xGame::isKeyPress(int k)
 {
-  if (k < 0) { return false; }  if (k > 511) { return false; }
+  if (k < 0) { return false; }  if (k >= XGAME_MAXKEY) { return false; }
   return (bKeyPress[k] == gameTime);
 }//iskeypress
 
@@ -51,7 +56,7 @@ bool
 xGame::isKeyDown(int k)
 {
 
-  if (k < 0) { return false; }  if (k > 511) { return false; }
+  if (k < 0) { return false; }  if (k >= XGAME_MAXKEY) { return false; }
   return bKeyDown[k];
 }//iskeydown
 
@@ -59,7 +64,7 @@ xGame::isKeyDown(int k)
 void 
 xGame::keyDown(short k)
 {
- if (k < 0) { return ; } if (k > 511) { return ; }
+ if (k < 0) { return ; } if (k >= XGAME_MAXKEY) { return ; }
  
  //hack for handling keypress 
  if (bKeyDown[k] == false) { bKeyPress[k] = gameTime; }
@@ -70,7 +75,7 @@ xGame::keyDown(short k)
 void 
 xGame::keyUp(short k)
 { 
- if (k < 0) { return ; } if (k > 511) { return ; }
+ if (k < 0) { return ; } if (k >= XGAME_MAXKEY) { return ; }
  bKeyDown[k] = false;
 }//kup
 
@@ -78,8 +83,8 @@ xGame::keyUp(short k)
 void 
 xGame::mouseDown(int btn)
 {
-  if (btn == 0) { mDownLeft = true; mClickLeft = true; }
-  else if (btn == 1) { mDownRight = true; mClickRight = true; }
+  if (btn == 0) { mDownLeft = true; mClickLeft = gameTime; }
+  else if (btn == 1) { mDownRight = true; mClickRight = gameTime; }
 }//mdown
 
 void 
@@ -97,4 +102,38 @@ void xGame::setMousePos(float ax, float ay)
   my = ay;
 
 }//setmousepos
+
+
+
+void 
+xGame::copyControl(xGame * game)
+{
+  gameTime = game->gameTime; //function only meant to be used in guis
+
+  mDownLeft = game->mDownLeft;
+  mDownRight = game->mDownRight;
+  mClickLeft = game->mClickLeft;
+  mClickRight = game->mClickRight;
+
+  mx = game->mx;
+  my = game->my;
+
+  wmx = game->wmx;
+  wmy = game->wmy;
+  wmz = game->wmz;
+
+
+  memcpy(bKeyDown, game->bKeyDown, XGAME_MAXKEY);
+  memcpy(bKeyPress, game->bKeyPress, XGAME_MAXKEY*4);
+  
+
+}//copycontrol
+
+
+
+
+
+
+
+
 

@@ -4,6 +4,7 @@
 
 #include "../gamex/gamex.h"
 
+#include "../gamex/xGuiGame.h"
 
 
 class invokeGame : public xGame
@@ -28,6 +29,7 @@ public:
   xMdx3 debmesh;
 
 
+  xGuiGame myGui;
 
 
 public:

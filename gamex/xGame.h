@@ -16,6 +16,8 @@ class xPlayer;
 class xSprite;
 class xCam;
 
+#define XGAME_MAXKEY 512
+
 class xGame
 {
 public:
@@ -23,14 +25,15 @@ public:
 
 public:
   float mx, my;     //mouse pos 
+  float wmx, wmy, wmz; //world mouse pos
   bool mDownLeft;
   bool mDownRight;
 
-  bool bKeyDown[512];
+  bool bKeyDown[XGAME_MAXKEY];
 
-  bool mClickLeft; //click needs to be manually reset at end of update
-  bool mClickRight;
-  int bKeyPress[512]; //needs gameTime to be udated every frame for keypress to work
+  int mClickLeft; //stores the gametime of the click
+  int mClickRight;
+  int bKeyPress[XGAME_MAXKEY]; //needs gameTime to be udated every frame for keypress to work
   //these are hacks so key detection doesn't need to be handled async
 
 public:
@@ -50,7 +53,7 @@ public:
 
   virtual void init() {}
 
-  virtual void update() { /*gamelogic here*/ gameTime += 1; mClickLeft=false; mClickRight=false; }
+  virtual void update() { /*gamelogic here*/ gameTime += 1;}
 	virtual void render() {}
 
 
@@ -91,7 +94,7 @@ public:
 
 public:
   virtual void gotCmd(std::string &cmd, int arg0, int arg1) {}
-
+  void copyControl(xGame * game);
 
 
 public:

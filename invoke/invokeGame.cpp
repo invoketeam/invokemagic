@@ -86,7 +86,11 @@ void
 invokeGame::init(void)
 {
 
+  gameTime = 0;
+
   myRender.init(16384);
+
+  myGui.init();
 
   myRand.setSeed(1); //important for gameplay
 
@@ -256,6 +260,13 @@ invokeGame::update(void)
 
   myWorld.update();
 
+
+  //gui needs mouse to be in [0,0]-[640,480]
+  mx *= 640; my *= 480;
+
+  myGui.childUpdate(this);
+
+  gameTime += 1;
 }//update
 
 
@@ -337,6 +348,8 @@ myCol.render();
   glPopMatrix();
   */
 
+
+  myGui.childRender(this);
 
   // printf("invokegame -- render \n");
 }//render
