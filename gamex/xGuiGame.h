@@ -8,8 +8,10 @@
 class xGuiCursor : public xActor
 {
 public:
+  int target;
 
 public:
+  xGuiCursor(void);
   virtual void update(void);
   virtual bool handCol(xActor * a);
 
@@ -58,7 +60,7 @@ public:
 
  //public function addButton(wname:String, ax:Number, ay:Number, az:Number, str:String, cmd:String, tag:int=1):void
 
-  void addButton(std::string wname, float ax, float ay, float az, std::string str, std::string cmd, int tag);
+  xActor * addButton(std::string wname, float ax, float ay, float az, std::string str, std::string cmd, int tag);
   void removeButton(std::string wname);
   void hideButton(std::string wname);
   void showButton(std::string wname);

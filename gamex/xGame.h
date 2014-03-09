@@ -1,6 +1,7 @@
 #pragma once
 
 
+
 #include <string>
 #include "xMath.h"
 
@@ -17,6 +18,7 @@ class xSprite;
 class xCam;
 
 #define XGAME_MAXKEY 512
+
 
 class xGame
 {
@@ -44,6 +46,8 @@ public:
   //one year is approx 1 892 160 000 frames
   //if a match lasts that long we advise declaring a draw
 
+public:
+  
 
 public:
 	xGame();
@@ -93,8 +97,16 @@ public:
 
 
 public:
+  virtual void addNameZone(xActor * a, std::string wname) { }
+  virtual xActor * getNameZone(std::string wname) { return 0;}
+  virtual void remNameZone(std::string wname) { }
+  virtual void clearNameZone(void) { }
+
+
+
+public:
   virtual void gotCmd(std::string &cmd, int arg0, int arg1) {}
-  void copyControl(xGame * game);
+  virtual void copyControl(xGame * game);
 
 
 public:

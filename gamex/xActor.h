@@ -91,6 +91,12 @@ public:
 
   virtual void gotHit(float dmg, int dtype, float hx, float hy, float hz);
 
+  
+public:
+  virtual bool overlap(xActor * a);
+  virtual bool overlapXY(xActor * a);
+  virtual bool overlapXZ(xActor * a);
+
 
 public:
   virtual void trigger(std::string &str) {}

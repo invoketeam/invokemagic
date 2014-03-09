@@ -105,6 +105,51 @@ xActor::gotHit(float dmg, int dtype, float hx, float hy, float hz)
 
 
 
+
+
+bool 
+xActor::overlap(xActor * a)
+{
+  if (pos.x+xrad <  a->pos.x - a->xrad) { return false; }
+  if (pos.x-xrad > a->pos.x + a->xrad) { return false; }
+  if (pos.y+yrad <  a->pos.y - a->yrad) { return false; }
+  if (pos.y-yrad > a->pos.y + a->yrad) { return false; }
+  if (pos.z+zrad <  a->pos.z - a->zrad) { return false; }
+  if (pos.z-zrad > a->pos.z + a->zrad) { return false; }
+  
+  return true;
+}//overlap
+
+
+
+bool 
+xActor::overlapXY(xActor * a)
+{
+  if (pos.x+xrad <  a->pos.x - a->xrad) { return false; }
+  if (pos.x-xrad > a->pos.x + a->xrad) { return false; }
+  if (pos.y+yrad <  a->pos.y - a->yrad) { return false; }
+  if (pos.y-yrad > a->pos.y + a->yrad) { return false; }
+ 
+  return true;
+}//overxy
+
+
+
+bool 
+xActor::overlapXZ(xActor * a)
+{
+  if (pos.x+xrad <  a->pos.x - a->xrad) { return false; }
+  if (pos.x-xrad > a->pos.x + a->xrad) { return false; }
+  if (pos.z+zrad <  a->pos.z - a->zrad) { return false; }
+  if (pos.z-zrad > a->pos.z + a->zrad) { return false; }
+  
+  return true;
+}//overxz
+
+
+
+
+
 void 
 xActor::checkColXZ(xMultiGrid * m)
   {

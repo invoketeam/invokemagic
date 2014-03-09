@@ -31,69 +31,64 @@ static void drawRect(float ax, float ay, float aw, float ah)
 
 
 
+xGuiCursor::xGuiCursor(void)
+{
+  xrad = 4; yrad = 4;
+  target = -1;
+}//ctor
+
+
+
 void 
 xGuiCursor::update(void)
 {
+  xActor * a;
+
+
   pos.x = game->mx;
   pos.y = game->my;
 
-/*
+  color = game->mDownLeft ? 0 : 0xFF;
 
- cx = game.mx;
-    cy = game.my;
+  if (game->mDownLeft)
+  if (worka == 0) { worka = 1; }
+
+
+  if (game->mDownLeft == false)
+  if (worka == 1) { worka = 2; }
+  if (worka == 2 && target == -1) { worka = 0; }
+  
+  if (worka == 0)
+  { checkColXY(game->mgrid); }
+  
+  a = game->getActor(target);
+  if (a == 0) { target = -1; return;}
+  if (a->dead) { target = -1; return;}
+  if (a->visible == false) {  target = -1; return; }
+  if (a->overlapXY(this) == false) {  target = -1; return; }
+
+
+  a->worka = game->gameTime;
+  if (game->mDownLeft) { a->workc = game->gameTime; }
     
-    color = game.mbutton ? 0 : 0xFF;
-    
-    
-    if (game.mbutton)
-    if (worka == 0) { worka = 1; }   
-    
-    if (game.mbutton == false)
-    if (worka == 1) { worka = 2; }
-    if (worka == 2 && target == -1) { worka = 0; }
-    
-    if (worka == 0)
-    { checkCol(game.mgrid); }
-    
-    //trace("worka ", worka);
-    
-    var a:xActor;
-    a = game.getActor(target);
-    if (a == null) { return; }
-    if (a.dead) { target = -1; return; }
-    if (a.visible == false) { target = -1; return; }
-    if (a.overlap(this) == false) { a.color = 0; target = -1; return; }
-    
-    a.worka = game.gameTime;
-    if (game.mbutton) { a.workc = game.gameTime; }
-    
-    if (worka == 2)
-    {
-      //todo -- need args as well -- and i alread used worka workb workc argh
-     
-      //trace("got command ", a.id, a.wstr2); 
-      game.gotCmd(a.wstr2, 0, 0);
+  if (worka == 2)
+  {
+      game->gotCmd(a->wstr2, 0, 0);
       worka = 0;
-    }//endif
+  }//endif
 
-*/
 }//update
 
 
 bool 
 xGuiCursor::handCol(xActor * a)
 {
-/*
-  if (a.visible == false) { return true; }
-       
-    //todo -- use the one with the highest z
-    target = a.id;
-    a.color = 0x0000FF;
-    
-    return false;
+  if (a->visible == false) { return true;}
 
-*/
+  //todo -- choose the one with the highest z
 
+   target = a->id;
+   a->worka = game->gameTime;
 
  return false; 
 }//handcol
@@ -113,7 +108,8 @@ xGuiCursor::render(void)
 
 xButton::xButton(void) 
 {
-
+  xrad = 32;
+  yrad = 16;
 }//ctor
 
 void 
@@ -125,7 +121,7 @@ xButton::init(void)
 void 
 xButton::update(void)
 {
-
+  putInGridXY(game->mgrid);
 }//update
 
 void 
@@ -137,7 +133,10 @@ xButton::trigger(std::string &str)
 void 
 xButton::render(void)
 {
-  glColor3f(1,0,0);
+
+  if (worka == game->gameTime)
+  {  glColor3f(1,0,0); } else { glColor3f(0,0,0); }
+
   drawRect(pos.x-xrad,pos.y-yrad, xrad+xrad, yrad+yrad);
 }//render
 
@@ -224,29 +223,63 @@ xGuiGame::childRender(xGame * parent)
 
 
 
-void 
+
+
+xActor *  
 xGuiGame::addButton(std::string wname, float ax, float ay, float az, std::string str, std::string cmd, int tag)
 {
+  xActor * a;
+  a = new xButton();
+  a->pos.set(ax,ay,az);
+  a->wstr = str;
+  a->wstr2 = cmd;
+  a->tag = tag;
 
+  addActor(a);
+    
+  addNameZone(a, wname);
+
+
+  return a;
 }//addbutton
+
+
 
 
 void xGuiGame::removeButton(std::string wname)
 {
+  xActor * a;
+  a = getNameZone(wname);
+  if (a == 0) { return; }
 
+  a->dead = true;
+
+  remNameZone(wname);
 }//removebutton
+
 
 
 void xGuiGame::hideButton(std::string wname)
 {
+  xActor * a;
 
+  a = getNameZone(wname);
+  if (a == 0) { return; }
+  a->visible = false;
 }//hidebutton
+
+
 
 
 void xGuiGame::showButton(std::string wname)
 {
+  xActor * a;
 
+  a = getNameZone(wname);
+  if (a == 0) { return; }
+  a->visible = true;
 }//showbutton
+
 
 
 

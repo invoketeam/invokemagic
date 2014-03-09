@@ -34,6 +34,8 @@ xGameExt::clear(void)
 {
   myWorld.clear();
   if (mgrid != 0) { delete mgrid; mgrid = 0;}
+  clearNameZone();
+
 }//clear
 
 
@@ -67,5 +69,52 @@ xGameExt::resetWorld(float w, float h)
    curId = 0;
   
 }//resetworld
+
+
+
+
+
+void 
+xGameExt::addNameZone(xActor * a, std::string wname) 
+{
+  mapZone[wname] = a->id;
+}//addnamezone
+
+
+
+xActor * 
+xGameExt::getNameZone(std::string wname) 
+{
+ int i;
+ xActor * a;
+  
+ i = mapZone[wname];
+ if (i == 0) { return 0; }
+ 
+ a = getActor(i);
+ if (a == 0) { mapZone.erase(wname); return 0; }  
+
+ return a;
+}//getnamezone
+
+
+
+void 
+xGameExt::remNameZone(std::string wname) 
+{
+  mapZone.erase(wname);
+}//remnamezone
+
+
+
+
+void 
+xGameExt::clearNameZone(void) 
+{
+  mapZone.clear();
+}//clearnamezone
+
+
+
 
 
