@@ -30,6 +30,14 @@ xGame::xGame()
 
 }//ctor
 
+
+xGame::~xGame() 
+{
+ clear(); 
+ if (mgrid != 0) { delete mgrid; mgrid = 0;}
+}//dtor
+
+
 bool 
 xGame::isKeyPress(int k)
 {

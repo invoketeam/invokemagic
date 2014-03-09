@@ -91,6 +91,10 @@ public:
 
   virtual void gotHit(float dmg, int dtype, float hx, float hy, float hz);
 
+
+public:
+  virtual void trigger(std::string &str) {}
+
  
   
 };//classend

@@ -44,7 +44,11 @@ public:
 
 public:
 	xGame();
-	virtual ~xGame() {}
+	virtual ~xGame();
+
+  virtual void clear() {}
+
+  virtual void init() {}
 
   virtual void update() { /*gamelogic here*/ gameTime += 1; mClickLeft=false; mClickRight=false; }
 	virtual void render() {}
@@ -86,6 +90,11 @@ public:
 
 
 public:
+  virtual void gotCmd(std::string &cmd, int arg0, int arg1) {}
+
+
+
+public:
 //  virtual void drawRect(float ax, float ay, float aw, float ah) {}
 //  virtual void drawImage(float ax, float ay, float aw, float ah, std::string wname) {}
 
@@ -96,7 +105,6 @@ public:
   //rem -- update xtilemap AND xpathfind (!!!)
   virtual void setZoneType(float wx, float wz, int zt) {}
   virtual void setZoneTypeRect(float wx, float wz, float ww, float wh, int zt) {}
-
 
   virtual float getHeight(float wx, float wz) { return 0.0f; }
  
