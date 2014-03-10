@@ -168,6 +168,14 @@ SOURCE=.\gamex\xCursor.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\gamex\xData.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\gamex\xData.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\gamex\xDrawMesh.cpp
 # End Source File
 # Begin Source File

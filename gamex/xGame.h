@@ -81,15 +81,6 @@ public:
 	virtual void addActor(xActor * a) {}
   virtual xActor * getActor(int id) { return 0; }
 
-
-
-public:
-
-  virtual xMdx3 * getMdx(std::string wname) { return 0; }
-  virtual xTexture * getTex(std::string wname) { return 0; }  
-  virtual unsigned int getSkin(std::string wname) { return 0; }
-  virtual xSprite * getSprite(std::string wname) { return 0; }
-
 public:
 
 	virtual float getRand() { return 0.0f; }
@@ -125,4 +116,31 @@ public:
  
 
 
+
+public:
+
+  virtual xMdx3 * getMdx(std::string wname) { return 0; }
+  virtual xTexture * getTex(std::string wname) { return 0; }  
+  virtual unsigned int getSkin(std::string wname) { return 0; }
+  virtual xSprite * getSprite(std::string wname) { return 0; }
+
+public:
+  virtual xMdx3 * getMdx2(std::string wname) { return 0; }
+  virtual xTexture * getTex2(std::string wname) { return 0; }  
+  virtual unsigned int getSkin2(std::string wname) { return 0; }
+  virtual xSprite * getSprite2(std::string wname) { return 0; }
+
+
+
+
+
 };//xgame
+
+
+
+
+
+
+
+
+
