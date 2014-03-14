@@ -223,10 +223,60 @@ void render(void)
 
 
 
+//todo -- put savecreenshot in own file
+
+#define MINIZ_HEADER_FILE_ONLY
+#define MINIZ_NO_STDIO
+#define MINIZ_NO_TIME
+#include "gamex\miniz.h"
+#include "gamex\xImage.h"
+
+
+static void writePng(xImage * img, std::string fname)
+{
+  if (img->dat == 0) { return; }
+  size_t size;
+  void * buf;
+  FILE * file;
+
+ // img->endianSwap();
+  buf = tdefl_write_image_to_png_file_in_memory(img->dat, img->mw, img->mh, 4, &size);
+  //img->endianSwap();
+
+    file = fopen(fname.c_str(), "wb");
+    fwrite(buf, 1, size, file);
+    fclose(file);
+ 
+  mz_free(buf);
+}//writepng
+
+
+
+static void saveScreenshot_test(std::string fname)
+{
+  xImage shotImage;
+
+  shotImage.init(xwin::xwinGetCanvasWidth(), xwin::xwinGetCanvasHeight() );
+
+  glReadPixels(0,0, shotImage.mw, shotImage.mh, GL_RGBA, GL_UNSIGNED_BYTE, shotImage.dat);
+
+  shotImage.mirVert();
+
+  printf("Writing screenshot [%d][%d][%s]   \n", shotImage.mw, shotImage.mh, fname.c_str() );
+  
+  writePng(&shotImage, fname);
+}//savescreen
+
+
+
+
 
 void keyDown(short k)
 {
 	testGame.keyDown(k);
+
+  if (k == KEY_F8) { saveScreenshot_test("test_01.png");} 
+
 }//kdown
 
 void keyUp(short k)

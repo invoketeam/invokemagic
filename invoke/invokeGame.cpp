@@ -237,7 +237,6 @@ invokeGame::init(void)
 
 
 
-
 void 
 invokeGame::update(void)
 {
