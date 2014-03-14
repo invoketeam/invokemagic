@@ -11,7 +11,7 @@
 
 
 
-xImage::xImage()
+xImage::xImage(void)
   {
     mw = 0;
     mh = 0; 
@@ -23,7 +23,7 @@ xImage::xImage()
 
 
 
-xImage::~xImage()
+xImage::~xImage(void)
  { clear(); }
     
 
@@ -46,7 +46,7 @@ xImage::init(int w, int h)
 
 
 void 
-xImage::mirVert()
+xImage::mirVert(void)
     {
         if (dat == 0) { return; }
         int num = mw * mh;
@@ -184,7 +184,7 @@ xImage::toRgba(unsigned char alpha)
 
 
 void 
-xImage::clear()
+xImage::clear(void)
     {
       if (dat != 0) { delete [] dat; } dat = 0;
       mw = 0; mh = 0; 
@@ -253,13 +253,98 @@ xImage::loadImage(std::string fname)
 
 
 
+//funnily enough this shouldnt change the image
+void 
+xImage::extTemp(void)
+{
+  int num;    int i;    unsigned int c;    int r,g,b,a;
+  num = mw * mh;
+  for (i = 0; i < num; i++)
+  {
+    c = dat[i];      r = (c >> 24) & 0xff;      g = (c >> 16) & 0xff;      b = (c >> 8) & 0xff;      a = c & 0xff;
+
+
+    r = r << 24;      g = g << 16;      b = b << 8;
+    dat[i] = r | g | b | a;
+  }//nexti
+}//temp
+
+
+void 
+xImage::extReplaceAlpha(xImage * src)
+{
+  int num;    int i;    
+  unsigned int c; 
+  unsigned int k;
+  int r,g,b,a;
+  unsigned int * sdat;
+
+  if (src->mw != mw || src->mh != mh) { return; }
+
+  sdat = src->dat;
+  num = mw * mh;
+  for (i = 0; i < num; i++)
+  {
+    c = dat[i];  
+    k = sdat[i];
+
+    r = (c >> 24) & 0xff;      g = (c >> 16) & 0xff;      b = (c >> 8) & 0xff;      
+    a = k & 0xff;
+    r = r << 24;      g = g << 16;      b = b << 8;
+    dat[i] = r | g | b | a;
+  }//nexti
+}//repalpha
+
+
+
+void 
+xImage::extReduceColor(int f)
+{
+    int num;    int i;    unsigned int c;
+    int r,g,b,a;
+    num = mw * mh;
+    for (i = 0; i < num; i++)
+    {
+      c = dat[i];
+      r = (c >> 24) & 0xff;
+      g = (c >> 16) & 0xff;
+      b = (c >> 8) & 0xff;
+      a = c & 0xff;
+
+      //r = (r / 32) * 32;      g = (g / 32) * 32;      b = (b / 32) * 32;      a = (a / 32) * 32;
+      r = (r / f) * f;      g = (g / f) * f;      b = (b / f) * f;      a = (a / f) * f;
+
+      r = r << 24;
+      g = g << 16;
+      b = b << 8;
+      dat[i] = r | g | b | a;
+    }//nexti
+
+}//extreduce
+
+
+void 
+xImage::extRemoveRGB(void)
+{
+  int num;    int i;    unsigned int c;  // int r,g,b,a;
+  num = mw * mh;
+  for (i = 0; i < num; i++)
+  {
+    c = dat[i];      
+    //r = (c >> 24) & 0xff;      g = (c >> 16) & 0xff;      b = (c >> 8) & 0xff; 
+   // a = c & 0xff;
+    //r = r << 24;      g = g << 16;      b = b << 8;
+    dat[i] = c & 0xff;
+  }//nexti
+}//removergb
+
+
+
   //switch RGBA to ABGR (or ABGR back to RGBA)  
 void 
-xImage::endianSwap()
+xImage::endianSwap(void)
   {
-    int num;
-    int i;
-    unsigned int c;
+    int num;    int i;    unsigned int c;
     num = mw * mh;
     for (i = 0; i < num; i++)
     {
@@ -280,6 +365,17 @@ xImage::setPixel(int x, int y, unsigned int c)
     if (x>=mw) { return; } if (y >=mh){ return; }
     dat[x+(y*mw)] = c;
   }//setpixel
+
+
+unsigned int 
+xImage::getPixel32(int x, int y, unsigned int c)
+  {
+    if (dat == 0) { return 0; }
+    if (x < 0) { return 0; } if (y < 0) { return 0; }
+    if (x>=mw) { return 0; } if (y >=mh){ return 0; }
+    return dat[x+(y*mw)];
+  }//setpixel
+
 
 
 void 
@@ -328,7 +424,7 @@ xImage::drawRect(int x, int y, int w, int h, unsigned int c)
 
 
 void 
-xImage::xorFill()
+xImage::xorFill(void)
   {
     if (dat == 0) { return; }
     int num, i, k, yt;
@@ -654,6 +750,53 @@ xImage::drawImage(xImage * src, int dx, int dy)
 
 
 
+
+void 
+xImage::resize(xImage * src, int w, int h)
+{
+  if (w == 0) { }
+
+  clear();
+
+  init(w, h);
+
+  //orig 128
+  //targ 64
+  //128/64  2
+
+
+  float ix;
+  float iy;
+  int i;
+  int k;
+  int yt;
+  int syt;
+  unsigned int * sdat;
+  int sy;
+  int sx;
+  
+  ix = (float) src->mw / (float) w;
+  iy = (float) src->mh / (float) h;
+
+  //printf("ix iy %0.2f %0.2f \n", ix ,iy );
+
+  sdat = src->dat;
+
+  for (i = 0; i < h; i++)
+  {
+    yt = i * w; //yt in new image
+    sy = (i*iy);
+    //printf("sy %d \n ", sy);
+    syt = sy * src->mw;  //yt in old image
+    for (k = 0; k < w; k++)
+    {
+      sx = k*ix;
+      dat[yt + k] = sdat[syt+sx];
+    }//nextk
+  }//nexti
+
+
+}//resize
 
 
 
