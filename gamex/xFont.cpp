@@ -176,7 +176,7 @@ xFont::printStr(float size, float cx, float cy, const char* str, ...)
 
         num = str.size();
 
-        glBegin(GL_TRIANGLES);
+       
            
         for (i = 0; i < num; i++)
         {
@@ -191,31 +191,177 @@ xFont::printStr(float size, float cx, float cy, const char* str, ...)
            ax = dx + (a->ox*scale);           ay = dy + (a->oy*scale); 
            aw = a->width*scale;           ah = a->height*scale;
              
+            glBegin(GL_TRIANGLES); //for immediate mode its better to have lot of glbegins
+             glTexCoord2f(a->u0, a->v1);
+             glVertex2f(ax, ay+ah);
 
-           glTexCoord2f(a->u0, a->v1);
-           glVertex2f(ax, ay+ah);
+             glTexCoord2f(a->u1, a->v1);
+             glVertex2f(ax+aw, ay+ah);
 
-           glTexCoord2f(a->u1, a->v1);
-           glVertex2f(ax+aw, ay+ah);
+             glTexCoord2f(a->u0, a->v0);
+             glVertex2f(ax, ay);
+             
 
-           glTexCoord2f(a->u0, a->v0);
-           glVertex2f(ax, ay);
-           
-
-           glTexCoord2f(a->u0, a->v0);
-           glVertex2f(ax, ay);
-           
-           glTexCoord2f(a->u1, a->v1);
-           glVertex2f(ax+aw, ay+ah);
-           
-           glTexCoord2f(a->u1, a->v0);
-           glVertex2f(ax+aw, ay);
-           
+             glTexCoord2f(a->u0, a->v0);
+             glVertex2f(ax, ay);
+             
+             glTexCoord2f(a->u1, a->v1);
+             glVertex2f(ax+aw, ay+ah);
+             
+             glTexCoord2f(a->u1, a->v0);
+             glVertex2f(ax+aw, ay);
+           glEnd();
            
            dx += a->addx *scale;
            
         }//nexti
 
-        glEnd();
+   
 
     }//writestr
+    
+    
+
+
+
+float 
+xFont::getXcoordFromCharPos(std::string &str, int pos, float scale)
+{
+  float dx; 
+  unsigned char c;
+  int i; int num;
+  xChar * a;
+  
+
+  num = str.size();
+
+  if (num > pos) { num = pos; }
+  if (num <= 0) { return 0; }
+
+
+  for (i = 0; i < num; i++)
+  {
+     c = str[i];
+     if (c == '\n') { return -1; }   //end of line -- treated as not found
+     if (c == 32) { dx += (chwidth/2)*scale; continue; } //space
+   
+     a = &vecChar[c];
+     if (a->valid <= 0) { dx += chwidth*scale;  continue; }  //invalid character is replaced with space
+
+     dx += a->addx *scale;
+  }//nexti
+  if (i >= str.size()) { dx -= a->addx; dx += (chwidth / 2); }
+  return dx;
+}//getxfromcharpos
+
+
+
+//todo -- getting it in 2D would need to test aabb for all chars.. i guess?
+
+int
+xFont::getCharPos(std::string &str, float xcoord, float scale, unsigned char * ch, float * endx)
+{
+  float dx;
+  unsigned char c;
+  int i; int num;
+  xChar * a;
+  
+
+  num = str.size();
+
+  for (i = 0; i < num; i++)
+  {
+     c = str[i];
+     if (c == '\n') { return -1; }   //end of line -- treated as not found
+     if (c == 32) { dx += (chwidth/2)*scale; continue; } //space
+   
+     a = &vecChar[c];
+     if (a->valid <= 0) { dx += chwidth*scale;  continue; }  //invalid character is replaced with space
+
+     dx += a->addx *scale;
+
+          if (dx > xcoord)
+          {
+            if (ch != 0) { (*ch) = c;}
+            if (endx != 0) { (*endx) = dx - a->addx * scale; }
+            return i; 
+    
+          }//endif
+
+  }//nexti
+
+   if (ch != 0) { (*ch) = 0;}
+   if (endx != 0) { if (i == 0) {*endx = 0; } else { (*endx) = dx - a->addx * scale + (chwidth / 2); } }
+  return -1;
+}//getcharno
+
+
+
+
+    
+float    
+xFont::getWidth(std::string &str, float scale)
+    {
+        float dx;       float dy;
+        unsigned char c;
+        int i;    int num;
+        float addy;
+        float ret;
+        xChar * a;
+
+        addy = (ascent - descent + linegap) * scale;
+
+        dx = 0;
+        dy = 0 + addy;
+
+        num = str.size();
+
+        ret = 0;
+  
+        for (i = 0; i < num; i++)
+        {
+           c = str[i];
+           if (c == '\n') { dx = 0; dy += addy; continue;}   //end of line
+           if (c == 32) { dx += (chwidth/2)*scale; continue; } //space
+         
+           a = &vecChar[c];
+           if (a->valid <= 0) { dx += chwidth*scale;  continue; }  //invalid character is replaced with space
+
+           dx += a->addx *scale;
+           if (ret < dx) { ret = dx; }
+        }//nexti
+
+        return ret;
+    }//getrect
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

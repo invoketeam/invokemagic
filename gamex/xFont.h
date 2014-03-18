@@ -7,7 +7,7 @@
 
 #include "xTexture.h"
 
-#define MAX_XCHAR 512
+#define MAX_XCHAR 256
 
 
 
@@ -63,6 +63,13 @@ public:
 
 
     //todo -- setmesh (set an xMdx3 model data to the string mesh)
+    
+
+public:
+    float getXcoordFromCharPos(std::string &str, int pos, float scale = 1.0f);
+    int getCharPos(std::string &str, float xcoord, float scale=1.0f, unsigned char * ch = 0, float * endx = 0);
+    float getWidth(std::string &str, float scale=1.0f);
+
 
 };//xfont
 
