@@ -4,9 +4,7 @@
 
 #include "xSkel.h"
 
-#include <GL/glut.h>
-
-
+#include "xGLCommon.h"
 
 xBone::xBone() 
   { 
@@ -510,17 +508,16 @@ xSkel::debRender(void)
       glEnd();
 
 
-
+/*
        for (i = 0; i < numBone; i++)
         {
           a = &vecBone[i];
           glPushMatrix();
             glMultMatrixf(a->transMat.m);
-            glutWireCube(32);
-//            drawCube2(a->bmin.x, a->bmin.y, a->bmin.z, a->bmax.x, a->bmax.y, a->bmax.z);
+            drawCube2(a->bmin.x, a->bmin.y, a->bmin.z, a->bmax.x, a->bmax.y, a->bmax.z);
           glPopMatrix();
         }//nexti
-
+*/
 
 
    glPointSize(4);
