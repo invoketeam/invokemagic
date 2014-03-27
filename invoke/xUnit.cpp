@@ -25,8 +25,8 @@ xUnit::init(void)
   //animation can be shared
 
   mesh.loadFile("data/knight_mesh.mdx3");
-  skel.loadSkel("data/knight_skel.xskb");
-  anim.loadAnim("data/knight_walk.banm");
+  skel.loadFile("data/knight_skel.xskb");
+  anim.loadFile("data/knight_walk.banm");
   
   mesh.makeVbo();
 

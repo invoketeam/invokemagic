@@ -45,6 +45,8 @@ public:
 
 public:
   xBone();
+  
+  void makeSkinMat(gamex::cVec3f &p, gamex::cQuat &o);
 
 };//xbone
 
@@ -77,10 +79,12 @@ public:
 
   void copySkel(xSkel * skel);
 
-  void loadSkel(std::string fname);
+  void loadFile(std::string fname);
 
-  void readSkel(FILE * file);
+  void readSkelV1(FILE * file);
+  void readSkelV2(FILE * file);
 
+  void debRender(void);
 
 };//xskel
 
@@ -117,7 +121,7 @@ public:
   //use this for smooth animation
   void applyFrame2(float frame, xSkel * skel);
 
-  void loadAnim(std::string fname);
+  void loadFile(std::string fname);
 
   void readAnim(FILE * file);
 
