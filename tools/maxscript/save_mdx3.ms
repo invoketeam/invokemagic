@@ -3,161 +3,33 @@ undo off
 
 -- mdx3 exporter (work in progress)
 
-
-fn getVertLookUp mdl t_ =
+--i hope we are passing pointers, i  really do
+fn getPpos pos uv uv2 vecVert vecUv vecUv2 =
 (
-	local i
-	local m
-	local numface
-	local numvert
-	local ppos
-	local puv
-	local puv2
-	local mf
-	local mf2
-	local found
-	local f
-	local trans
-	local v
-	local veclook
-	local vecuv
-	local vecuv2
-	local vecvert
-	local vecnorm
-	local vecindex
-	local vectemp
-	local it
+	local i, num
 	
-	veclook = #()
-	vecuv = #()
-	vecuv2 = #()
-	vecvert = #()
-	vecnorm = #()
-	vecindex = #()
-	vectemp = #()
-	
-	it = 0
-	
-at time t_
-(
-	--m = copy mdl
-	m = snapshot mdl
-)
-	m.name = uniquename "export"
-	converttomesh m
-
-	trans = m.transform
-	
-	numface = meshop.getnumfaces m
-	numvert = meshop.getnumverts m
-
-	if  ((meshop.getMapSupport m 1) == false)  then
-		(	meshop.defaultMapFaces m 1	)
-		
-	if  ((meshop.getMapSupport m 2) == false)  then
-		(	meshop.defaultMapFaces m 2	)
-
-
-	for i = 1 to  numface do
-	(
-		f = getface m i
-		mf = meshop.getmapface m 1 i 
-		mf2 = meshop.getmapface m 2 i 
-		
-		for v = 1 to 3 do
-		(
-			pos = in coordsys trans  getvert m f[v]
-			uv = meshop.getmapvert m 1 mf[v]
-			uv2 = meshop.getmapvert m 2 mf2[v]
-			norm =  getNormal m f[v]
-			
-			found = 0		
-		 
-		--	num = vecVert.count
-		
-			ppos = findItem vecVert pos
-			puv = findItem vecUv uv
-			puv2 = finditem vecUv2 uv2
-			
-			--format "pos % \n "  (findItem vecVert pos)
-			--format "uv % \n "  (findItem vecUv uv)
-			
-			--normals are not tested for uniqueness yet
-			-- (but it can be used as option easily, e.g. expert based on smoothing groups)
-			
-			if (ppos != 0 and ppos == puv and ppos == puv2) then
-			(
-				found = 1
-			--	format "index % \n " ppos
-			)
-			
-			
-			if (found == 0) then
-			(
-				append vecVert pos
-				append vecUv uv
-				append vecUv2 uv2
-				append vecNorm norm
-				
-				append vecIndex it
-				it += 1
-			)
-			else
-			(
-				append vecIndex ppos
-			)
-			
-		)--nextv
-	)--nexti
-	
-	
-	for i = 1 to numvert do
-	(
-		pos = in coordsys trans getvert m i
-		append vecTemp pos
-	)--nexti
-
 	num = vecVert.count
+	
 	for i = 1 to num do
 	(
-		append vecLook (finditem vecTemp vecVert[i])
-	)--nexti
+		if (vecVert[i] == pos) then
+		(
+			if (vecUv[i] == uv and vecUv2[i] == uv2) then ( return i )
+		)
+	)
 
-	
-	delete m
-	
-vecLook	
-)--getlookup
-
-
+-1			--return value if not found
+)--getppos
 
 
 fn writeMesh out mdl inworld = 
 (
-	local m
-	local vecVert
-	local vecUv
-	local vecUv2
-	local vecNorm
-	local vecIndex
-	local vecTemp
-	local vecLook
-	local it
-	local found
-	local i
-	local v
-	local pos
-	local norm
-	local uv
-	local uv2
-	local ppos
-	local puv
-	local puv2
-	local num
-	local numface
-	local numvert
+	local vecVert, vecUv, vecUv2, vecNorm, vecIndex, vecTemp, vecLook
+	local m, it, found, i, v
+	local pos, norm, uv, uv2, ppos
+	local num, numface, numvert
 	local trans
-	local vecTarg
+	local vecTarg --no longer used (todo - cleanup)
 	
 	
 --todo  snapshot instead?
@@ -221,27 +93,19 @@ at time 0
 			
 			found = 0		
 		 
-		--	num = vecVert.count
-		
+			
+			--quick check
 			ppos = findItem vecVert pos
-			puv = findItem vecUv uv
-			puv2 = finditem vecUv2 uv2
-			
-			--format "pos % \n "  (findItem vecVert pos)
-			--format "uv % \n "  (findItem vecUv uv)
-			
-			--normals are not tested for uniqueness yet
-			-- (but it can be used as option easily, e.g. expert based on smoothing groups)
-			
-			if (ppos != 0 and ppos == puv and ppos == puv2) then
+			if (ppos != 0) then
 			(
-				found = 1
-			--	format "index % \n " ppos
+				ppos = getPpos pos uv uv2 vecVert vecUv vecUv2
+				if (ppos > 0) then ( found = 1 )
 			)
-			
 			
 			if (found == 0) then
 			(
+				format "nfindex %  % % \n " ppos  puv puv2
+				
 				append vecVert pos
 				append vecUv uv
 				append vecUv2 uv2
@@ -530,22 +394,23 @@ fn exportMdx =
 
 Rollout mdxRoll "MDX3 tool"
 (
-  button saveMdx "Save selected MDX"
-  button saveAllMdx "Save all MDX"
-  
+  button saveMdx "Save selected as .mdx3 "
+ -- button saveAllMdx "Save all MDX" --todo -- replace with save selected as mutlimdx or something
+  progressBar pbProgress "" value:0 
+	
   on saveMdx pressed do
   (
 	  exportMdx()
     --try ( exportMdx() ) 
 	 -- catch (format "*** % ***\n" (getCurrentException()))
   )--savemdx
-    
+    /*
   on saveAllMdx pressed do
   (
     try ( exportAllMdx() ) 
 	  catch (format "*** % ***\n" (getCurrentException()))
   )--savemdx
-  
+  */
 )--mdxroll
 
 if (dontOpen == undefined or  dontOpen != 1  ) then

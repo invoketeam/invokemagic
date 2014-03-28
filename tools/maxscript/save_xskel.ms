@@ -212,6 +212,27 @@ fn writeFrame bonegeo out  =
 )--writeframe
 
 
+
+
+--i hope we are passing pointers, i  really do
+fn getPpos pos uv uv2 vecVert vecUv vecUv2 =
+(
+	local i, num
+	
+	num = vecVert.count
+	
+	for i = 1 to num do
+	(
+		if (vecVert[i] == pos) then
+		(
+			if (vecUv[i] == uv and vecUv2[i] == uv2) then ( return i )
+		)
+	)
+
+-1			--return value if not found
+)--getppos
+
+
 -- i wrote this thing long ago and even forgot it exists
 -- and attempted to write it again
 fn getVertLookUp mdl t_ =
@@ -258,16 +279,16 @@ fn getVertLookUp mdl t_ =
 			norm =  getNormal m f[v]
 			
 			found = 0		
+      
+      --quick check
+        ppos = findItem vecVert pos
+        if (ppos != 0) then
+        (
+          ppos = getPpos pos uv uv2 vecVert vecUv vecUv2
+          if (ppos > 0) then ( found = 1 )
+        )
 
-			ppos = findItem vecVert pos
-			puv = findItem vecUv uv
-			puv2 = finditem vecUv2 uv2
-			
-			--normals are not tested for uniqueness yet
-			-- (but it can be used as option easily, e.g. export based on smoothing groups)
-			
-			if (ppos != 0 and ppos == puv and ppos == puv2) then	(	found = 1		)
-			
+
 			if (found == 0) then
 			(
 				append vecVert pos; append vecUv uv; 	append vecUv2 uv2;	append vecNorm norm
