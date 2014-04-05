@@ -81,11 +81,12 @@ public:
 
   void clear(void)
   {
+    //todo -- vc2010 doesnt seem to like this
     if (vecEnt != 0)
     { 
       int i;
       for (i = 0; i < numEnt; i++)
-      {   delete vecEnt[i];  }
+      {   delete (vecEnt[i]);  }
       delete [] vecEnt;
     }
     vecEnt = 0;
