@@ -189,7 +189,10 @@ public:
     float raw0, raw1, raw4, raw5, raw8, raw9;
     mVert * vecVert;
     xSprite * sr;
+    int wrgba;
+
     vecVert = mesh.vecVert;
+
     
     int numimg;
     numimg = 0;
@@ -222,20 +225,29 @@ public:
 
       if (a->image < 0 || sprAnim == 0)
       {
-        vecVert[n].u   = 0; vecVert[n].v   = 1;
-        vecVert[n+1].u = 1; vecVert[n+1].v = 1;
-        vecVert[n+2].u = 0; vecVert[n+2].v = 0;
-        vecVert[n+3].u = 1; vecVert[n+3].v = 0;
+        wrgba = a->hp > 100 ? 255 : (a->hp*2.55);
+        wrgba = wrgba << 24;
+        wrgba += 0xffFFff;
+
+        vecVert[n].u   = 0; vecVert[n].v   = 1;     vecVert[n].rgba = wrgba;
+        vecVert[n+1].u = 1; vecVert[n+1].v = 1;     vecVert[n+1].rgba =  wrgba;
+        vecVert[n+2].u = 0; vecVert[n+2].v = 0;     vecVert[n+2].rgba =  wrgba;
+        vecVert[n+3].u = 1; vecVert[n+3].v = 0;     vecVert[n+3].rgba =  wrgba;
+
 
       }
       else
       {
         sr = sprAnim->vecSprite[a->image];
 
-        vecVert[n].u   = sr->u0; vecVert[n].v   = sr->v1;
-        vecVert[n+1].u = sr->u1; vecVert[n+1].v = sr->v1;
-        vecVert[n+2].u = sr->u0; vecVert[n+2].v = sr->v0;
-        vecVert[n+3].u = sr->u1; vecVert[n+3].v = sr->v0;
+        wrgba = a->hp > 100 ? 255 : (a->hp*2.55);
+        wrgba = wrgba << 24;
+        wrgba += 0xffFFff;
+
+        vecVert[n].u   = sr->u0; vecVert[n].v   = sr->v1;        vecVert[n].rgba = wrgba;
+        vecVert[n+1].u = sr->u1; vecVert[n+1].v = sr->v1;        vecVert[n+1].rgba =  wrgba;
+        vecVert[n+2].u = sr->u0; vecVert[n+2].v = sr->v0;        vecVert[n+2].rgba =  wrgba;
+        vecVert[n+3].u = sr->u1; vecVert[n+3].v = sr->v0;        vecVert[n+3].rgba =  wrgba;
       }//endif
   
 		  

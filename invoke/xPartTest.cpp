@@ -58,7 +58,7 @@ xPartTest::update(void)
  xPart * a;
   a = myPart.addPart(0,0,0);
   a->size = 36+game->getRand()*128;
-  a->hp = 5000;
+  a->hp = 150;
   a->vel.set(game->getRand()*4-2,game->getRand()*4,game->getRand()*4-2);
   a->pos = pos;
   a->pos.x += game->getRand()*512-256;
@@ -121,6 +121,7 @@ xPartTest::render2(xRender * r)
       e->color = 1;
       e->twoSide = 1;
       e->skin = skin;
+      e->useColor = 1;
 
 
 }//render2
