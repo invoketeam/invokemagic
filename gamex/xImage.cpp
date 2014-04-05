@@ -788,12 +788,12 @@ xImage::resize(xImage * src, int w, int h)
   for (i = 0; i < h; i++)
   {
     yt = i * w; //yt in new image
-    sy = (i*iy);
+    sy = (int)(i * iy);
     //printf("sy %d \n ", sy);
     syt = sy * src->mw;  //yt in old image
     for (k = 0; k < w; k++)
     {
-      sx = k*ix;
+      sx = (int)(k * ix);
       dat[yt + k] = sdat[syt+sx];
     }//nextk
   }//nexti

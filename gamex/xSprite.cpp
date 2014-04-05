@@ -59,8 +59,8 @@ xSpriteMan::addSkin(std::string fname)
     a->wname = wname;
     a->skin = wname;
     a->handle = skin->handle;
-    a->w = skin->mw;
-    a->h = skin->mh;
+    a->w = (float) skin->mw;
+    a->h = (float) skin->mh;
     storeSprite.addData(wname, a);
 
   }//addskin
@@ -106,10 +106,10 @@ xSpriteMan::addSkin(std::string fname)
       a->skin = picname;
       a->handle = handle;
 
-      a->x = img.attribute("x").as_int();
-      a->y = img.attribute("y").as_int();
-      a->w = img.attribute("width").as_int();
-      a->h = img.attribute("height").as_int();
+      a->x = (float) img.attribute("x").as_int();
+      a->y = (float) img.attribute("y").as_int();
+      a->w = (float) img.attribute("width").as_int();
+      a->h = (float) img.attribute("height").as_int();
 
       a->u0 = (float)(a->x) / picw;
       a->v0 = (float)(a->y) / pich;

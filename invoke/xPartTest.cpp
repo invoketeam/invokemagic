@@ -65,7 +65,7 @@ xPartTest::update(void)
   a->pos.z += game->getRand()*512-256;
 
   //a->vel *= 0.02f;
-  a->ang_speed = game->getRand() - 0.5;
+  a->ang_speed = game->getRand() - 0.5f;
   a->ang_speed *= 0.05f;
   a->startFrame = 0;
   a->endFrame = 12; 

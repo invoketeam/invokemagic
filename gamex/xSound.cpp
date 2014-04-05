@@ -428,11 +428,11 @@ public:
 	    alGenSources(1, &handle);
   	  alSourcei(handle, AL_BUFFER, 0);
 
-      unsigned int k;
+      int k;
       int i;
         for (i = 0; i < XMUSNUMBUFFER;)
         {
-          k = (unsigned int) stb_vorbis_get_samples_short_interleaved(oggfile, numChan, &buffer[0], numShort);
+          k = stb_vorbis_get_samples_short_interleaved(oggfile, numChan, &buffer[0], numShort);
 
           k *= numChan;
           que += k;
@@ -489,7 +489,7 @@ public:
     if (alIsSource(handle) == false) { return; } 
 
     int state;
-    unsigned int samples;
+    int samples;
     ALint bytes, bits;
     int k;
 
@@ -513,7 +513,7 @@ public:
 
 				offset += (bytes * 8) / bits;
 
-        samples = (unsigned int) stb_vorbis_get_samples_short_interleaved(oggfile, numChan, &buffer[0], numShort);
+        samples = stb_vorbis_get_samples_short_interleaved(oggfile, numChan, &buffer[0], numShort);
 
 				samples *= numChan;
 				que += samples;

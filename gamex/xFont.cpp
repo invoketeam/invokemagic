@@ -250,7 +250,7 @@ xFont::getXcoordFromCharPos(std::string &str, int pos, float scale)
 
      dx += a->addx *scale;
   }//nexti
-  if (i >= str.size()) { dx -= a->addx; dx += (chwidth / 2); }
+  if (i >= (int) str.size()) { dx -= a->addx; dx += (chwidth / 2); }
   return dx;
 }//getxfromcharpos
 

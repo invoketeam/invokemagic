@@ -35,9 +35,11 @@ public:
 
   gamex::cVec3f sortpos; //sort by this position
 
+  int debid; //debug -- was used to test a bug -- kept as a reminder of it
 public:
   xEnt()
   {
+    debid = 0;
     fmesh = 0;
     vmesh = 0;
     skin = 0;
@@ -49,6 +51,8 @@ public:
     useColor = 0;
     twoSide = 0;
   }//ctor
+
+  ~xEnt(void) { }
 
 };//xentity
 
@@ -62,7 +66,8 @@ typedef xEnt * tdEntPtr;
 class xBucket
 {
 public:
-  tdEntPtr * vecEnt;
+  //tdEntPtr * vecEnt;
+  xEnt ** vecEnt;
   int numEnt;
   int it;
 
@@ -81,17 +86,28 @@ public:
 
   void clear(void)
   {
-    //todo -- vc2010 doesnt seem to like this
+    
+   // printf("clear bucket this %p %d \n", this, vecEnt);
+    //todo -- vc2010 doesnt seem to like this (but only crashes in debug mode when you exit)
+
+    xEnt * a;
     if (vecEnt != 0)
     { 
       int i;
       for (i = 0; i < numEnt; i++)
-      {   delete (vecEnt[i]);  }
+      {   
+        a = vecEnt[i];
+        //printf("debid %d \n", a->debid);
+        delete a; 
+      }
+
       delete [] vecEnt;
     }
+
     vecEnt = 0;
     numEnt = 0;
     it = 0;
+    
   }//clear
 
 
@@ -99,10 +115,12 @@ public:
   void init(int maxEnt = 16384)
   {
     clear();
+
     numEnt = maxEnt;
     vecEnt = new tdEntPtr[numEnt];
+
     int i;
-    for (i = 0; i < numEnt; i++) { vecEnt[i] = new xEnt(); }
+    for (i = 0; i < numEnt; i++) { vecEnt[i] = new xEnt(); vecEnt[i]->debid = i; }
   }//init
 
 
@@ -543,6 +561,7 @@ public:
   {
     int i;
 
+    bSort = false; //debug
     if (bSort) 
     { 
       vecBucket[0].calcSort_Skin();

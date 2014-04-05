@@ -171,7 +171,7 @@ public:
       {
         a->curFrame += a->animSpeed;
         if (a->curFrame >= a->endFrame) { a->curFrame = a->startFrame; }
-        a->image = floor(a->curFrame);
+        a->image = (int) floor(a->curFrame);
       }
     }//nexti
 
@@ -225,7 +225,7 @@ public:
 
       if (a->image < 0 || sprAnim == 0)
       {
-        wrgba = a->hp > 100 ? 255 : (a->hp*2.55);
+        wrgba = a->hp > 100.0f ? 255 : (int)(a->hp*2.55f);
         wrgba = wrgba << 24;
         wrgba += 0xffFFff;
 
@@ -240,7 +240,7 @@ public:
       {
         sr = sprAnim->vecSprite[a->image];
 
-        wrgba = a->hp > 100 ? 255 : (a->hp*2.55);
+        wrgba = a->hp > 100.0f ? 255 : (int)(a->hp*2.55f);
         wrgba = wrgba << 24;
         wrgba += 0xffFFff;
 
