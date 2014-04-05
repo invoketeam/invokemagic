@@ -18,10 +18,13 @@ invokeGame::invokeGame(void)
 
 
   //init camera
-  myCam.moveForward(300);
-  myCam.strafeUp(150);
+  //myCam.moveForward(300);
+  //myCam.strafeUp(150);
 
-  myCam.pos.set(16*64,256, 16*64);
+  myCam.pos.set(16*64, 1024, 16*64);
+
+  myCam.ori.rotPitch(-0.8f);
+
 
   myCam.neard = 1.0f;
   myCam.fard = 5000.0f;
@@ -244,6 +247,7 @@ invokeGame::update(void)
   float ms;
   ms = 64;
 
+/*
   if (isKeyDown(KEY_W)) { myCam.moveForward(-ms); } 
   if (isKeyDown(KEY_S)) { myCam.moveForward(ms); }
 
@@ -252,6 +256,21 @@ invokeGame::update(void)
 
   if (isKeyDown(KEY_R)) { myCam.strafeUp(ms); }
   if (isKeyDown(KEY_F)) { myCam.strafeUp(-ms); }
+*/
+
+  if (isKeyDown(KEY_W)) { myCam.pos.z -= ms;  } 
+  if (isKeyDown(KEY_S)) { myCam.pos.z += ms;  }
+
+  if (isKeyDown(KEY_A)) { myCam.pos.x -= ms; } 
+  if (isKeyDown(KEY_D)) { myCam.pos.x += ms; } 
+
+  if (isKeyDown(KEY_R)) { myCam.pos.y += ms; }
+  if (isKeyDown(KEY_F)) { myCam.pos.y -= ms; }
+
+
+
+//todo -- move a point instead and set the camera position according o that
+
 
   float umx, umy;
 

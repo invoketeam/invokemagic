@@ -261,6 +261,10 @@ SOURCE=.\gamex\xMultiGrid.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\gamex\xPartSys.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\gamex\xPartSys.h
 # End Source File
 # Begin Source File
