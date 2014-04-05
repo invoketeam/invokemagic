@@ -55,7 +55,7 @@ xTexture::loadTex(std::string fname, bool mip,  bool mirv, bool clamp )
   {
     xImage img;
     img.loadImage(fname);
-    if (img.mw == 0 || img.mh == 0) { img.init(32,32); img.fill(0xFF0000);}
+    if (img.mw == 0 || img.mh == 0) { img.init(32,32); img.fillImage(0xFF0000FF);}
     filename = fname;
     if (mirv) { img.mirVert(); }
     makeTex(&img, mip, clamp);
