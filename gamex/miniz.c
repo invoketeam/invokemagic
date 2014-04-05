@@ -1,4 +1,5 @@
 #pragma warning (disable : 4786)
+#pragma warning (disable : 4244) //int64 to uint
 
 //note: this is the implementation, for files that use it define:
 //#define MINIZ_HEADER_FILE_ONLY
