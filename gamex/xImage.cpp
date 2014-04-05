@@ -368,7 +368,7 @@ xImage::setPixel(int x, int y, unsigned int c)
 
 
 unsigned int 
-xImage::getPixel32(int x, int y, unsigned int c)
+xImage::getPixel32(int x, int y)
   {
     if (dat == 0) { return 0; }
     if (x < 0) { return 0; } if (y < 0) { return 0; }
@@ -379,7 +379,7 @@ xImage::getPixel32(int x, int y, unsigned int c)
 
 
 void 
-xImage::fill(unsigned int c)
+xImage::fillImage(unsigned int c)
   { 
     if (dat == 0) { return; }
     int num; int i;
@@ -419,6 +419,9 @@ xImage::drawRect(int x, int y, int w, int h, unsigned int c)
 
      if ((x+w) < mw)
      { sx = (x+w);  for (i = sy; i <ey;i++) { dat[(i*mw)+sx] = c; }  }
+
+     //i somehow miss the corner pixel
+     dat[(ey*mw)+ex] = c;
 
   }//drawrect
 
