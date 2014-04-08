@@ -34,7 +34,7 @@ xGame::xGame()
   mClickRight = 0;
 
 
-  gameTime = 0;
+  gameTime = 1; //rem -- gametime should always reset to 1
 
 }//ctor
 
@@ -65,7 +65,7 @@ xGame::isKeyDown(int k)
 
 
 void 
-xGame::keyDown(short k)
+xGame::setKeyDown(short k)
 {
  if (k < 0) { return ; } if (k >= XGAME_MAXKEY) { return ; }
  
@@ -76,7 +76,7 @@ xGame::keyDown(short k)
 }//kdown
   
 void 
-xGame::keyUp(short k)
+xGame::setKeyUp(short k)
 { 
  if (k < 0) { return ; } if (k >= XGAME_MAXKEY) { return ; }
  bKeyDown[k] = false;
@@ -84,14 +84,14 @@ xGame::keyUp(short k)
 
 
 void 
-xGame::mouseDown(int btn)
+xGame::setMouseDown(int btn)
 {
   if (btn == 0) { mDownLeft = true; mClickLeft = gameTime; }
   else if (btn == 1) { mDownRight = true; mClickRight = gameTime; }
 }//mdown
 
 void 
-xGame::mouseUp(int btn)
+xGame::setMouseUp(int btn)
 {
   if (btn == 0) { mDownLeft = false; }
   else if (btn == 1) { mDownRight = false; }

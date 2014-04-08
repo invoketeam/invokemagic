@@ -66,10 +66,10 @@ public:
   virtual void drawStr(int font, float size, float cx, float cy, float cz, const char* str, ...) {}
 
 public:
-  virtual void keyDown(short k);
-  virtual void keyUp(short k);
-  virtual void mouseDown(int btn); //0 left    1 right
-  virtual void mouseUp(int btn);
+  virtual void setKeyDown(short k);
+  virtual void setKeyUp(short k);
+  virtual void setMouseDown(int btn); //0 left    1 right
+  virtual void setMouseUp(int btn);
 
   //needs to be between 0.0 and 1.0 
   virtual void setMousePos(float ax, float ay);
@@ -121,16 +121,6 @@ public:
   virtual xTexture * getTex(std::string wname) { return 0; }  
   virtual unsigned int getSkin(std::string wname) { return 0; }
   virtual xSprite * getSprite(std::string wname) { return 0; }
-
-/*
-public:
-  virtual xMdx3 * getMdx2(std::string wname) { return 0; }
-  virtual xTexture * getTex2(std::string wname) { return 0; }  
-  virtual unsigned int getSkin2(std::string wname) { return 0; }
-  virtual xSprite * getSprite2(std::string wname) { return 0; }
-
-*/
-
 
 
 };//xgame

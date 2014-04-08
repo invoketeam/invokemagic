@@ -4,7 +4,6 @@
 
 #include "../gamex/xKey.h"
 
-//#include <GL/GLUT.h>
 
 #include "xUnit.h"
 
@@ -275,20 +274,16 @@ invokeGame::update(void)
 //todo -- move a point instead and set the camera position according o that
 
 
-  float umx, umy;
+  //transforming the universal mouse coordinates (0,1) to  (-1,1)
+  float kx, ky;
+  kx =  ((umx*2)-1)*-1;
+  ky =  ((umy*2)-1)*-1;
 
-  umx =  ((mx*2)-1)*-1;
-  umy =  ((my*2)-1)*-1;
-
-//  myCursor.update(&myCam, umx, umy, 0);
-  myCursor.update(&myCam, umx, umy, &myCol);
+  myCursor.update(&myCam, kx, ky, &myCol);
+  //printf("mycursor %0.2f, %0.2f \n", umx, umy);
 
 
   myWorld.update();
-
-
-  //gui needs mouse to be in [0,0]-[640,480]
-  mx *= 640; my *= 480;
 
   myGui.childUpdate(this);
 

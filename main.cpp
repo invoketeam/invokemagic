@@ -18,8 +18,12 @@
 
 
 #include "invoke/invokeGame.h"
+#include "invoke/invokeMenu.h"
 
-invokeGame testGame;
+
+//invokeGame testGame;
+
+invokeMenu testGame;
 
 
 
@@ -274,7 +278,7 @@ static void saveScreenshot_test(std::string fname)
 
 void keyDown(short k)
 {
-	testGame.keyDown(k);
+	testGame.setKeyDown(k);
 
   if (k == KEY_F8) { saveScreenshot_test("test_01.png");} 
 
@@ -282,17 +286,17 @@ void keyDown(short k)
 
 void keyUp(short k)
 {
-  testGame.keyUp(k);
+  testGame.setKeyUp(k);
 }//kup
 
 void mouseDown(int btn, int x, int y)
 {
-  testGame.mouseDown(btn);
+  testGame.setMouseDown(btn);
 }//mdown
 
 void mouseUp(int btn, int x, int y)
 {
-	testGame.mouseUp(btn);
+	testGame.setMouseUp(btn);
 }//mup 
 
 

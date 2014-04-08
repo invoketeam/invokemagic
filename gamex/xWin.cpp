@@ -136,8 +136,6 @@ namespace xwin
 
 	static void keyDown(WPARAM wParam, LPARAM lParam)
 	{
-		//  if (wParam == 0x1B) { exit(0); } //ESC to exit
-
 		if (kdFunc == 0) {return;}
 
 		kdFunc(wParam);
@@ -431,6 +429,8 @@ namespace xwin
 
 		case WM_KEYDOWN:
 		case WM_SYSKEYDOWN: 
+      //TODO -- remember these commands were only used to test screen size switching
+
 			if (wParam == VK_F1)
 			{ 
 
@@ -458,8 +458,8 @@ namespace xwin
 						Sleep(50);
 
 					}
-					else
-						if (wParam == VK_ESCAPE)
+/*
+					else	if (wParam == VK_ESCAPE)
 						{
 							//fix: change back to small screen before exiting
 							setWindow(hWnd);
@@ -468,7 +468,7 @@ namespace xwin
 							xwinExit();
 
 						}//endif
-
+*/
 						//TODO
 						//instead of changing resolution
 						//resize window to desktop screen size on fullscreen mode 

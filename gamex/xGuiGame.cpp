@@ -7,37 +7,13 @@
 
 
 
-/*
-//meant for debug only (so will be probably stay here forever)
-static void drawRect(float ax, float ay, float aw, float ah)
-  {
-   glBegin(GL_TRIANGLE_STRIP);
-    glTexCoord2f(0.0f, 0.0f);
-    glVertex2f(ax, ay); //0
-
-    glTexCoord2f(0.0f, 1.0f);
-    glVertex2f(ax, ay+ah); //1
-
-    glTexCoord2f(1.0f, 0.0f);
-    glVertex2f(ax+aw, ay); //2
-
-    glTexCoord2f(1.0f, 1.0f);
-    glVertex2f(ax+aw, ay+ah);//3
-   glEnd();
-    
-  }//drawrect
-*/
-
-
-
 
 xGuiCursor::xGuiCursor(void)
 {
-  xrad = 4; yrad = 4;
+  xrad = 2; yrad = 2;
   target = -1;
   curSpr = 0;
 }//ctor
-
 
 
 
@@ -124,7 +100,7 @@ void
 xGuiCursor::frameRender(xFlatRender * render)
 {
 
-  if (curSpr != 0)   {  render->addSprite2(curSpr, pos.x, pos.y, pos.z, 16.0f, 16.0f);  }
+  if (curSpr != 0)   {  render->addSprite2(curSpr, pos.x+7.0f, pos.y+7.0f, pos.z, 16.0f, 16.0f);  }
 
 }//framerender
 
@@ -142,6 +118,7 @@ xButton::xButton(void)
   arg0 = 0; arg1 = 0;
   cmd = 0;
   spectype = 100;
+  drawMode = 0;
 }//ctor
 
 
@@ -165,29 +142,32 @@ xButton::trigger(std::string &str)
 
 }//trigger
 
-/*
-void 
-xButton::render(void)
-{
 
-  if (worka == game->gameTime)
-  {  glColor3f(1,0,0); } else { glColor3f(0,0,0); }
-
-  drawRect(pos.x-xrad,pos.y-yrad, xrad+xrad, yrad+yrad);
-}//render
-
-*/
 
 void 
 xButton::frameRender(xFlatRender * render)
 {
 
-  if (workc == game->gameTime)
-  {  if (curSpr != 0)  {  render->addSprite2(curSpr, pos.x+3, pos.y+3, pos.z,xrad+xrad,yrad+yrad);  }  }
-  else if (worka == game->gameTime)
-  {  if (curSpr != 0)  {  render->addSprite2(curSpr, pos.x-1, pos.y-1, pos.z,xrad+xrad,yrad+yrad);  }  }
+  if (drawMode == 1)
+  {
+    //todo -- use wx wy for scale
+    if (workc == game->gameTime)
+    {  if (curSpr != 0)  {  render->addSprite(curSpr, pos.x+3, pos.y+3, pos.z, 1.0f, 1.0f);  }  }
+    else if (worka == game->gameTime)
+    {  if (curSpr != 0)  {  render->addSprite(curSpr, pos.x-1, pos.y-1, pos.z, 1.0f, 1.0f);    }  }
+    else
+    {  if (curSpr != 0)  {  render->addSprite(curSpr, pos.x, pos.y, pos.z, 1.0f, 1.0f);    } }
+  } 
   else
-  {  if (curSpr != 0)  {  render->addSprite2(curSpr, pos.x, pos.y, pos.z,xrad+xrad,yrad+yrad);  } }
+  {
+    if (workc == game->gameTime)
+    {  if (curSpr != 0)  {  render->addSprite2(curSpr, pos.x+3, pos.y+3, pos.z,xrad+xrad,yrad+yrad);  }  }
+    else if (worka == game->gameTime)
+    {  if (curSpr != 0)  {  render->addSprite2(curSpr, pos.x-1, pos.y-1, pos.z,xrad+xrad,yrad+yrad);  }  }
+    else
+    {  if (curSpr != 0)  {  render->addSprite2(curSpr, pos.x, pos.y, pos.z,xrad+xrad,yrad+yrad);  } }
+  }//endif
+ 
  
   game->drawStr(1, 16, pos.x, pos.y-8, pos.z+2, this->wstr.c_str());
 }//framerender
@@ -297,8 +277,6 @@ xGuiGame::drawStr(int font, float size, float cx, float cy, float cz, const char
 
 
 
-//xButton *  
-//xGuiGame::addButton(std::string wname, float ax, float ay, float az, std::string str, std::string cmd, int tag)
 
 xButton * 
 xGuiGame::addButton(std::string wname, std::string disp, int cmd, float ax, float ay, float az, float aw, float ah, xSprite * spr,  int tag)
@@ -307,7 +285,7 @@ xGuiGame::addButton(std::string wname, std::string disp, int cmd, float ax, floa
   a = new xButton();
   a->xrad = aw * 0.5f;
   a->yrad = ah * 0.5f;
-  a->pos.set(ax+a->xrad,ay+a->yrad,az);
+  a->pos.set(ax,ay,az);
   a->wstr = disp;
   //a->wstr2 = cmd; //not using string for commands anymore
   //a->reload = cmd;

@@ -2,14 +2,18 @@
 
 
 #include "../gamex/gamex.h"
-#include "invokeGame.h"
+#include "../gamex/xGameExt.h"
+
 #include "../gamex/xGuiGame.h"
 #include "../gamex/xData.h"
 #include "../gamex/xFont.h"
 #include "../gamex/xFlatRender.h"
 
+#include "invokeGame.h"
 
-class invokeMenu : public xGame
+
+
+class invokeMenu : public xGameExt
 {
 public:
   xFlatRender myFlat;
@@ -20,15 +24,33 @@ public:
 
   xData myData;
 
+
+public:
+  int mState;
+
+  invokeGame testGame
+;
+
 public:
   invokeMenu(void);
   virtual  ~invokeMenu(void);
 
   virtual void init(void);
 
-
   virtual void update(void);
 	virtual void render(void);
+
+  virtual void gotCmd(int cmd, int arg0, int arg1);
+  virtual xSprite * getSprite(std::string wname); 
+
+
+public:
+  virtual void setKeyDown(short k);
+  virtual void setKeyUp(short k);
+  virtual void setMouseDown(int btn);
+  virtual void setMouseUp(int btn);
+  virtual void setMousePos(float ax, float ay);
+
 
 
 };//invokemenu

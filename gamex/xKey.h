@@ -5,12 +5,7 @@
 //if other OS-es will ever get support (which i highly doubt)
 //they will have to be converted for these
 
-//todo -- how to make them show up in the help popup thing(?)
 
-//namespace MK
-
-
-    //todo -- use const instead ?
 
 #define KEY_BACK           0x08
 #define KEY_TAB            0x09
@@ -25,7 +20,6 @@
 #define KEY_CAPITAL        0x14
 
 #define KEY_ESCAPE         0x1B
-const int ESC =  0x1B;
 
 #define KEY_CONVERT        0x1C
 #define KEY_NONCONVERT     0x1D
@@ -37,11 +31,6 @@ const int ESC =  0x1B;
 #define KEY_NEXT           0x22
 #define KEY_END            0x23
 #define KEY_HOME           0x24
-
-const int LEFT = 0x25;
-const int UP = 0x26;
-const int RIGHT = 0x27;
-const int DOWN = 0x28;
 
 #define KEY_LEFT           0x25
 #define KEY_UP             0x26

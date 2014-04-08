@@ -31,6 +31,7 @@ public:
   xSprite * curSpr;
   int cmd;
   int arg0, arg1;
+  int drawMode;
 public:
   xButton(void);
   virtual void init(void);
@@ -69,9 +70,6 @@ public:
 
   virtual void drawStr(int font, float size, float cx, float cy, float cz, const char* str, ...);
 
-
-
-//  virtual xButton * addButton(std::string wname, float ax, float ay, float az, std::string str, std::string cmd, int tag=-1);
 
  //command can be an int too, doesnt really matter 
   virtual xButton * addButton(std::string wname, std::string disp, int cmd, float ax, float ay, float az, float aw=128, float ah=32,xSprite * spr = 0,  int tag = -1); 
