@@ -2,20 +2,23 @@
 
 
 #include "xGameExt.h"
-
-
+#include "xFlatRender.h"
+#include "xSprite.h"
+#include "xFont.h"
 
 class xGuiCursor : public xActor
 {
 public:
   int target;
+  xSprite * curSpr;
 
 public:
   xGuiCursor(void);
   virtual void update(void);
   virtual bool handCol(xActor * a);
 
-  virtual void render(void);
+  //virtual void render(void);
+  virtual void frameRender(xFlatRender * render);
 
 };//xguicursor
 
@@ -25,7 +28,9 @@ public:
 class xButton : public xActor
 {
 public:
-
+  xSprite * curSpr;
+  int cmd;
+  int arg0, arg1;
 public:
   xButton(void);
   virtual void init(void);
@@ -33,8 +38,8 @@ public:
 
   virtual void trigger(std::string &str);
 
-  virtual void render(void);
- 
+ // virtual void render(void);
+  virtual void frameRender(xFlatRender * render);
 
 };//xbutton
 
@@ -45,25 +50,37 @@ class xGuiGame : public xGameExt
 {
 public:
   xGame * parentGame;
-  xGuiCursor cursor;
 
+  xFont * pfont;
+
+  xGuiCursor cursor;
+  xFlatRender myFlat;
+ 
 public:
   xGuiGame(void);
-  ~xGuiGame(void);
+  virtual ~xGuiGame(void);
 
-  void init(void);
- 
+  virtual  void init(void);
+  
+  virtual void gotCmd(int cmd, int arg0, int arg1);
+  
+  virtual void childUpdate(xGame * parent);
+  virtual void childRender(xGame * parent);
 
-  void childUpdate(xGame * parent);
-  void childRender(xGame * parent);
+  virtual void drawStr(int font, float size, float cx, float cy, float cz, const char* str, ...);
 
 
- //public function addButton(wname:String, ax:Number, ay:Number, az:Number, str:String, cmd:String, tag:int=1):void
 
-  xActor * addButton(std::string wname, float ax, float ay, float az, std::string str, std::string cmd, int tag);
-  void removeButton(std::string wname);
-  void hideButton(std::string wname);
-  void showButton(std::string wname);
+//  virtual xButton * addButton(std::string wname, float ax, float ay, float az, std::string str, std::string cmd, int tag=-1);
+
+ //command can be an int too, doesnt really matter 
+  virtual xButton * addButton(std::string wname, std::string disp, int cmd, float ax, float ay, float az, float aw=128, float ah=32,xSprite * spr = 0,  int tag = -1); 
+  
+  virtual void removeButton(std::string wname);
+
+  virtual  void hideButton(std::string wname);
+
+  virtual void showButton(std::string wname);
 
 };//classend
 

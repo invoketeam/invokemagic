@@ -17,14 +17,15 @@ xData::~xData(void)
 void 
 xData::clear(void)
 {
-
+  myMan.clear();
+  storeMesh.clear();
 }//clear
 
 
 
 
 
-void
+xMdx3 *
 xData::addMdx(std::string fname, std::string altName)
 {
   xMdx3 * a;
@@ -35,10 +36,11 @@ xData::addMdx(std::string fname, std::string altName)
   printf("addmdx %s \n" ,fname.c_str());
 
   storeMesh.addData( fname , a);
+  return a;
 }//addanim
 
 
-void
+xTexture * 
 xData::addSkin(std::string fname, std::string altName, bool mip)
 {
   xTexture * a;
@@ -48,11 +50,12 @@ xData::addSkin(std::string fname, std::string altName, bool mip)
   if (altName != "0") { fname = altName;  }
   else { fname = stripName(fname); }
 
-  storeSkin.addData(fname, a);
+  //storeSkin.addData(fname, a);
+  myMan.addSkin(a, fname);
 
-   printf("addSkin %s \n" ,fname.c_str());
+   //printf("addSkin %s \n" ,fname.c_str());
 
-  //todo -- for each texture make a sprite with its own name
+  return a;
 }//addskin
 
 
@@ -62,8 +65,8 @@ unsigned int
 xData::getSkin(std::string wname) 
 {
  xTexture * a; 
- a = storeSkin.getData(wname);
- if (a == 0) { printf("xData::getSkin not found %s \n", wname.c_str());  return 0;}
+ a = myMan.getTex(wname);
+ if (a == 0) { printf("xData::getSkin not found %s \n", wname.c_str());  return 0;}   
  return a->handle;
 }//getskin
 
@@ -72,7 +75,7 @@ xTexture *
 xData::getTex(std::string wname) 
 { 
  xTexture * a; 
- a = storeSkin.getData(wname);
+ a = myMan.getTex(wname);
  if (a == 0) { printf("xData::getTex not found %s \n", wname.c_str());  return 0;}
  return a;
 }  

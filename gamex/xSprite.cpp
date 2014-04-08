@@ -42,6 +42,24 @@ xSpriteMan::clear(void)
 
 
 void 
+xSpriteMan::addSkin(xTexture * skin, std::string wname)
+{
+   xSprite * a;
+ 
+   storeSkin.addData(wname, skin);
+
+   a = new xSprite();
+    a->wname = wname;
+    a->skin = wname;
+    a->handle = skin->handle;
+    a->w = (float) skin->mw;
+    a->h = (float) skin->mh;
+    storeSprite.addData(wname, a);
+
+}//addskin
+
+
+void 
 xSpriteMan::addSkin(std::string fname)
   {
     xTexture * skin;
@@ -123,6 +141,17 @@ xSpriteMan::addSkin(std::string fname)
 
 
 
+xTexture * 
+xSpriteMan::getTex(std::string wname)
+  {
+    xTexture * a;
+    a = storeSkin.getData(wname);
+    if (a == 0) { return 0;}
+    return a;
+  }//gettex
+
+
+
 unsigned int 
 xSpriteMan::getSkin(std::string wname)
   {
@@ -131,6 +160,7 @@ xSpriteMan::getSkin(std::string wname)
     if (a == 0) { return 0;}
     return a->handle;
   }//getskin
+
 
 
 xSprite * 

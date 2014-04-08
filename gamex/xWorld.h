@@ -6,6 +6,7 @@
 
 class xActor;
 class xRender;
+class xFlatRender;
 
 typedef std::vector <xActor *> tdVecActor;
 typedef std::map <int, xActor *> tdMapActor;
@@ -31,6 +32,6 @@ public:
   void update();
 
   void render2(xRender * r);
-
+  void frameRender(xFlatRender * r);
   
 };//xworld

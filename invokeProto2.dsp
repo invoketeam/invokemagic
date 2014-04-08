@@ -185,6 +185,14 @@ SOURCE=.\gamex\xDrawMesh.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\gamex\xFlatRender.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\gamex\xFlatRender.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\gamex\xFont.cpp
 # End Source File
 # Begin Source File

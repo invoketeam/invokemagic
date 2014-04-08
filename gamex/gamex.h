@@ -14,6 +14,7 @@
 #include "xFont.h"
 #include "xFrustum.h"
 #include "xGame.h"
+#include "xGameExt.h"
 #include "xKey.h"
 #include "xMath.h"
 #include "xMdx3.h"

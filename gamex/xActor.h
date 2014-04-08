@@ -8,6 +8,7 @@ class xGame;
 class xCell;
 class xMultiGrid;
 class xRender;
+class xFlatRender;
 
 class xActor
 {
@@ -71,7 +72,7 @@ public:
   virtual void update(void) {}
   virtual void render(void) {}
   virtual void render2(xRender * render) {}
-
+  virtual void frameRender(xFlatRender * render) { }
 
   virtual void putInGrid(xMultiGrid * mgrid); //default (xz)
   virtual void putInGridXY(xMultiGrid * mgrid);

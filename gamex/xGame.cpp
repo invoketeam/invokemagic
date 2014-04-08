@@ -15,6 +15,9 @@ xGame::xGame()
   mx = 0.0f;
   my = 0.0f;
 
+  umx = 0.0f;
+  umy = 0.0f;
+
   wmx = 0.0f;
   wmy = 0.0f;
   wmz = 0.0f;
@@ -98,8 +101,11 @@ xGame::mouseUp(int btn)
 
 void xGame::setMousePos(float ax, float ay)
 {
-  mx = ax;
-  my = ay;
+  umx = ax;
+  umy = ay;
+   
+  mx = umx * 640.0f;
+  my = umy * 480.0f;
 
 }//setmousepos
 

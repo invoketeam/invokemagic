@@ -93,12 +93,15 @@ invokeGame::init(void)
 
   myRender.init(16384);
 
+
   myGui.init();
+
+/*
     myGui.addButton("test", 320+240,240,0, "TEST", "test", 1);
     myGui.addButton("test2", 320+240,240+40,0, "TEST2", "test2", 1);
     myGui.addButton("test3", 320+240,240+80,0, "TEST3", "test3", 1);
     myGui.addButton("test4", 320+240,240+120,0, "TEST4", "test4", 1);
-
+*/
 
   myRand.setSeed(1); //important for gameplay
 

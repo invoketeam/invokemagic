@@ -3,7 +3,7 @@
 
 #include "xWorld.h"
 #include "xActor.h"
-#include "xRender.h"
+//#include "xRender.h"
 
 
 xWorld::xWorld()
@@ -68,6 +68,18 @@ xWorld::render2(xRender * r)
   for (it = vecActor.begin(); it != vecActor.end(); it++)
   {
     (*it)->render2(r);
+  }//nexti
+}//render2
+
+  
+void 
+xWorld::frameRender(xFlatRender * r)
+{
+  tdVecActor ::iterator it;
+  
+  for (it = vecActor.begin(); it != vecActor.end(); it++)
+  {
+    (*it)->frameRender(r);
   }//nexti
 }//render2
 

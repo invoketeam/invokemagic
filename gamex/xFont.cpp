@@ -5,9 +5,22 @@
 #include "xFont.h"
 #include "xGLCommon.h"
 
+#include "xFlatRender.h"
 
 
-xFont::xFont()
+
+
+xChar::xChar(void) 
+  {
+        valid = 0;     addx = 0.0f;
+        u0 = 0.0f;        v0 = 0.0f;
+        u1 = 0.0f;        v1 = 0.0f;
+        width = 0.0f;     height = 0.0f;
+        ox = 0.0f; oy = 0.0f;
+  }//ctor 
+
+
+xFont::xFont(void)
  { 
    chwidth = 16.0f;
    chheight = 16.0f; 
@@ -17,14 +30,15 @@ xFont::xFont()
    descent = 0.0f;
    linegap = 0.0f;    
 
+    handle = 0;
  }//ctor
 
 
-xFont::~xFont() { clear(); }
+xFont::~xFont(void) { clear(); }
 
 
 void 
-xFont::clear()
+xFont::clear(void)
     {
       //  tex.clear();
 
@@ -152,6 +166,80 @@ xFont::printStr(float size, float cx, float cy, const char* str, ...)
 
 
  //todo kerning (?)
+
+
+
+//this is now the legit version, the old one is used for debug
+void
+xFont::writeStrFrame(xFlatRender * render, unsigned int skin, float cx, float cy, float cz, std::string str, float scale)
+  {
+        float dx;       float dy;
+        float ax;       float ay;        float aw;        float ah;
+        unsigned char c;
+        int i;    int num;
+        float addy;
+        xChar * a;
+        xFrame * f;
+
+        addy = (ascent - descent + linegap) * scale;
+
+        dx = cx;
+        dy = cy + addy;
+
+        num = str.size();
+
+       
+           
+        for (i = 0; i < num; i++)
+        {
+           c = str[i];
+           if (c == '\n') { dx = cx; dy += addy; continue;}   //end of line
+           if (c == 32) { dx += (chwidth/2)*scale; continue; } //space
+         
+           a = &vecChar[c];
+           if (a->valid <= 0) { dx += chwidth*scale;  continue; }  //invalid character is replaced with space
+
+
+           ax = dx + (a->ox*scale);           ay = dy + (a->oy*scale); 
+           aw = a->width*scale;           ah = a->height*scale;
+             
+           f = render->addFrame(ax+aw*0.5f, ay+ah*0.5f, cz, aw, ah, skin);
+           f->u0 = a->u0;
+           f->v0 = a->v0;
+           f->u1 = a->u1;
+           f->v1 = a->v1;
+          
+           
+/*
+            glBegin(GL_TRIANGLES); //for immediate mode its better to have lot of glbegins
+             glTexCoord2f(a->u0, a->v1);
+             glVertex2f(ax, ay+ah);
+
+             glTexCoord2f(a->u1, a->v1);
+             glVertex2f(ax+aw, ay+ah);
+
+             glTexCoord2f(a->u0, a->v0);
+             glVertex2f(ax, ay);
+             
+
+             glTexCoord2f(a->u0, a->v0);
+             glVertex2f(ax, ay);
+             
+             glTexCoord2f(a->u1, a->v1);
+             glVertex2f(ax+aw, ay+ah);
+             
+             glTexCoord2f(a->u1, a->v0);
+             glVertex2f(ax+aw, ay);
+           glEnd();
+  */         
+           dx += a->addx *scale;
+           
+        }//nexti
+
+
+  }//writestrframe  
+
+
 
 
 //todo -- this is the unoptimised debug version -- 

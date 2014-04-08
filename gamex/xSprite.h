@@ -39,9 +39,11 @@ public:
   void clear(void);
 
 
+  void addSkin(xTexture * skin, std::string wname);
   void addSkin(std::string fname);
   void addSprite(std::string fname);
 
+  xTexture * getTex(std::string wname);
   unsigned int getSkin(std::string wname);
   xSprite * getSprite(std::string wname);
 

@@ -16,6 +16,13 @@ invokeMenu::~invokeMenu(void)
 
 
 void 
+invokeMenu::init(void)
+{
+
+}//init
+
+
+void 
 invokeMenu::update(void)
 {
 

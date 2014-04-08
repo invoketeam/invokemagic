@@ -30,6 +30,10 @@ public:
   virtual void resetWorld(float w = 640.0f, float h =480.0f);
 
 
+
+  virtual void debugDraw(void);
+
+
 public:
   virtual void addNameZone(xActor * a, std::string wname);
   virtual xActor * getNameZone(std::string wname);

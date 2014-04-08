@@ -16,6 +16,7 @@ class xUnitDef;
 class xPlayer;
 class xSprite;
 class xCam;
+class xFrame;
 
 #define XGAME_MAXKEY 512
 
@@ -26,7 +27,8 @@ public:
 	xMultiGrid * mgrid;
 
 public:
-  float mx, my;     //mouse pos 
+  float umx, umy;   //universal mouse pos ( 0,0 - 1,1)
+  float mx, my;     //mouse pos (0,0 - 640,480)
   float wmx, wmy, wmz; //world mouse pos
   bool mDownLeft;
   bool mDownRight;
@@ -60,7 +62,8 @@ public:
   virtual void update() { /*gamelogic here*/ gameTime += 1;}
 	virtual void render() {}
 
-
+//todo -- figure out a better way to handle fonts and drawing
+  virtual void drawStr(int font, float size, float cx, float cy, float cz, const char* str, ...) {}
 
 public:
   virtual void keyDown(short k);
@@ -96,14 +99,11 @@ public:
 
 
 public:
-  virtual void gotCmd(std::string &cmd, int arg0, int arg1) {}
+  virtual void gotCmd(int cmd, int arg0, int arg1) {}
   virtual void copyControl(xGame * game);
 
 
 public:
-//  virtual void drawRect(float ax, float ay, float aw, float ah) {}
-//  virtual void drawImage(float ax, float ay, float aw, float ah, std::string wname) {}
-
 
   virtual xCam * getCamPtr(void) { return 0;}
 
@@ -113,8 +113,6 @@ public:
   virtual void setZoneTypeRect(float wx, float wz, float ww, float wh, int zt) {}
 
   virtual float getHeight(float wx, float wz) { return 0.0f; }
- 
-
 
 
 public:
@@ -124,13 +122,14 @@ public:
   virtual unsigned int getSkin(std::string wname) { return 0; }
   virtual xSprite * getSprite(std::string wname) { return 0; }
 
+/*
 public:
   virtual xMdx3 * getMdx2(std::string wname) { return 0; }
   virtual xTexture * getTex2(std::string wname) { return 0; }  
   virtual unsigned int getSkin2(std::string wname) { return 0; }
   virtual xSprite * getSprite2(std::string wname) { return 0; }
 
-
+*/
 
 
 

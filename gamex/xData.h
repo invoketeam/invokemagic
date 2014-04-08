@@ -12,9 +12,10 @@
 class xData 
 {
 public:
- xSpriteMan myMan;
+ xSpriteMan myMan;  //also store skins
  xStore <xMdx3> storeMesh;
- xStore <xTexture> storeSkin;
+
+  //todo -- store fonts, store skeletons and animations
 
 public:
   xData(void);
@@ -22,8 +23,8 @@ public:
   void clear(void);
  
 public:
-  void addMdx(std::string fname, std::string altName);
-  void addSkin(std::string fname, std::string altName, bool mip);
+  xMdx3 * addMdx(std::string fname, std::string altName);
+  xTexture * addSkin(std::string fname, std::string altName, bool mip);
   
 public:
   xMdx3 * getMdx(std::string wname);
