@@ -76,16 +76,8 @@ invokeGame::init(void)
   
 
   myData.addSprite("data/mysmoke.xms","data/mysmoke.png");
-  //myMan.addSkin("data/mysmoke.png");
-  //myMan.addSprite("data/mysmoke.xms");
 
 
-
-
-
-
-
- // testSkin.loadTex("data/knight_skin.png");
 
   //testing
   int i;
@@ -305,12 +297,7 @@ myCol.render();
   myRender.render(true);
 
   glColor3f(1,0,0);
-  /*
-  glPointSize(8);
-  glBegin(GL_POINTS);
-	glVertex3f(myCursor.coord.x, myCursor.coord.y, myCursor.coord.z); 
-  glEnd();
-*/
+
   glPushMatrix();
     glTranslatef(myCursor.coord.x, myCursor.coord.y, myCursor.coord.z); 
        debmesh.render();
@@ -321,16 +308,6 @@ myCol.render();
     glTranslatef(myCursor.coord.x, myCursor.coord.y+64, myCursor.coord.z); 
        debmesh.render();
   glPopMatrix();
-
-  /*
-  glColor3f(1,0,0);
-  glPushMatrix();
-    glTranslatef(myCursor.coord.x, myCursor.coord.y, myCursor.coord.z); 
-        glutSolidCube(8);
-        glutWireCube(16);
-
-  glPopMatrix();
-  */
 
 
   myGui.childRender(this);

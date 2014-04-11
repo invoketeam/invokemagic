@@ -14,8 +14,6 @@ class invokeGame : public xGameExt
 public:
   xData myData;
 
-//  xSpriteMan myMan;
-
   xCam myCam;
 
   xRender myRender;
@@ -25,15 +23,9 @@ public:
   xColMesh myCol;
   xDrawMesh myDraw;
 
-
-
-  int curId;
-
   xMdx3 debmesh;
 
-
   xGuiGame myGui;
-
 
 public:
   invokeGame(void);
@@ -59,16 +51,6 @@ public:
 
   virtual xCam * getCamPtr(void);
 
-/*
-public:
-//todo -- seperate class to store game data (?) (or at least temporary game data)
- // xStore <xMdx3> storeMesh; //for now all meshes will be stored here
-//  xStore <xTexture> storeSkin;
-
-private:
- // void addMdx(std::string fname, std::string altName ="0");
- // void addSkin(std::string fname, std::string altName ="0", bool mip = true);
-*/
 
 };//invokemenu
 

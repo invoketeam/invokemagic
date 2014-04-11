@@ -82,8 +82,6 @@ public:
 
 	xTile tileSet[XTILEMAP_MAX_TILE];
 
-  xMdx3 testTile;
-  //xTexture testSkin;
 public:
 	xTileMap(void);
 	~xTileMap(void);

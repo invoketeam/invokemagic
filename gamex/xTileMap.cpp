@@ -29,10 +29,6 @@ xTileMap::xTileMap(void)
 	bVoidWall = true;
 
 
-  //debug
-    testTile.loadFile("xdat/testtile.mdx3");
-  
-
 }//ctor
 
 
