@@ -1,0 +1,8 @@
+*.bat           -crlf
+*.bat.in        -crlf
+*.dsp           -crlf
+*.dsptemplate   -crlf
+*.dsw           -crlf
+*.sln           -crlf
+*.vcproj        -crlf
+*.vcxproj        -crlf
