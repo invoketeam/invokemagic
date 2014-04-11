@@ -12,8 +12,8 @@ public:
 
 	void setSeed(int seed);
 
-	int getRandInt();
+	int getRandInt(void);
 
-	float getRand();
+	float getRand(void);
 
 };//xrand

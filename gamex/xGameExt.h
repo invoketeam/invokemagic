@@ -5,7 +5,7 @@
 #include "xGame.h"
 #include "xActor.h"
 #include "xWorld.h"
-
+#include "xRand.h"
 
 
 class xGameExt : public xGame
@@ -13,21 +13,32 @@ class xGameExt : public xGame
 public:
   int curId;
   xWorld myWorld;
+  xRand myRand;
 
   std::map <std::string, int> mapZone;
 
 public:
   xGameExt();
   virtual ~xGameExt();
+  void clear(void);
+
+
 
   void init(void);
 
-  void clear(void);
+
+  virtual void resetWorld(float w = 640.0f, float h =480.0f);
+
+
 
   virtual void addActor(xActor * a);
   virtual xActor * getActor(int id);
 
-  virtual void resetWorld(float w = 640.0f, float h =480.0f);
+
+
+  virtual float getRand(void);
+  virtual float getRand2(void);
+
 
 
 

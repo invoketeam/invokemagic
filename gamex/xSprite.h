@@ -40,7 +40,7 @@ public:
 
 
   void addSkin(xTexture * skin, std::string wname);
-  void addSkin(std::string fname);
+  void addSkin(std::string fname, bool mip=true, bool ymir=false, bool clamp=false);
   void addSprite(std::string fname);
 
   xTexture * getTex(std::string wname);

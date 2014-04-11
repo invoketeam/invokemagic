@@ -60,7 +60,7 @@ xSpriteMan::addSkin(xTexture * skin, std::string wname)
 
 
 void 
-xSpriteMan::addSkin(std::string fname)
+xSpriteMan::addSkin(std::string fname, bool mip, bool ymir, bool clamp)
   {
     xTexture * skin;
     xSprite * a;
@@ -69,7 +69,7 @@ xSpriteMan::addSkin(std::string fname)
     wname = stripName(fname);
 
     skin = new xTexture();
-    skin->loadTex(fname, true, false, true);
+    skin->loadTex(fname, mip, ymir, clamp);
   
     storeSkin.addData(wname, skin);
 
@@ -133,6 +133,8 @@ xSpriteMan::addSkin(std::string fname)
       a->v0 = (float)(a->y) / pich;
       a->u1 = (float)(a->x + a->w) / picw;
       a->v1 = (float)(a->y + a->h) / pich;
+
+      //printf("addsprite %s %0.2f %0.2f %u \n", a->wname.c_str(), a->x, a->y, a->handle);
 
       storeSprite.addData(a->wname, a);
    }//nextimg

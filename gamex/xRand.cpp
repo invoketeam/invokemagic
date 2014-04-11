@@ -4,7 +4,7 @@
 
 
 
-xRand::xRand() 
+xRand::xRand(void) 
 {
 	high = 1;
 	low = 1 ^ 0x49616E42; 		
@@ -21,7 +21,7 @@ xRand::setSeed(int seed)
 
 
 int 
-xRand::getRandInt()
+xRand::getRandInt(void)
 {
 	high = (high >> 2) + (high << 2);
 	high += low;
@@ -33,7 +33,7 @@ xRand::getRandInt()
 
 
 float 
-xRand::getRand()
+xRand::getRand(void)
 {
 	high = (high >> 2) + (high << 2);
 	high += low;

@@ -42,8 +42,8 @@ public:
   //note: position (ax,ay) is expected to be the center (az is only used for sorting, -32768 lowest you can use (without bugs))
   xFrame * addFrame(float ax, float ay, float az, float aw, float ah, unsigned int skin);
   
-  xFrame * addSprite(xSprite * spr, float ax, float ay, float az, float scalex = 1.0f, float scaley = 1.0f, bool xmir = false, bool ymir = true); 
-  xFrame * addSprite2(xSprite * spr, float ax, float ay, float az, float aw, float ah, bool xmir = false, bool ymir = true); 
+  xFrame * addSprite(xSprite * spr, float ax, float ay, float az, float scalex = 1.0f, float scaley = 1.0f, bool xmir = false, bool ymir = false); 
+  xFrame * addSprite2(xSprite * spr, float ax, float ay, float az, float aw, float ah, bool xmir = false, bool ymir = false); 
     
 
   void resetFrame(void);

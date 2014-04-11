@@ -63,7 +63,7 @@ public:
   int numVert;
 
   xBone * vecBone;
-  xSkVert * vecVert;
+  xSkVert * vecVert; //todo -- boolean to indicate if skin vertices are shared or should be deleted
 
 public:
   xSkel(void);

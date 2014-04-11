@@ -135,13 +135,14 @@ xSkel::copySkel(xSkel * skel)
     //baseMat = skel->baseMat; //autogen, no need for copy
 
     numBone = skel->numBone;
-    numVert = skel->numVert;
-    
     vecBone = new xBone[numBone];
-    vecVert = new xSkVert[numVert];
-    
     //we dont store any pointers in them so we can do this safely
     memcpy(vecBone, skel->vecBone, numBone*sizeof(xBone));
+
+
+    //todo -- option to shallow copy skin vertices
+    numVert = skel->numVert;
+    vecVert = new xSkVert[numVert];
     memcpy(vecVert, skel->vecVert, numVert*sizeof(xSkVert));
 
   }//getcopy

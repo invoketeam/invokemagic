@@ -15,6 +15,8 @@
 
 #define KEY_SHIFT          0x10
 #define KEY_CONTROL        0x11
+#define KEY_CTRL        0x11
+
 #define KEY_MENU           0x12
 #define KEY_PAUSE          0x13
 #define KEY_CAPITAL        0x14

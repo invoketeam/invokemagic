@@ -25,12 +25,12 @@ public:
   gamex::cQuat ori;
   gamex::cVec3f vel;
   
-  float xrad, yrad, zrad;
-  float rad;
-
-  
   float hp;
-  float yaw;
+
+  float xrad, yrad, zrad;
+  float rad;  
+  
+  float ang; //usually used for yaw(3D) or roll(2D) 
 
   int id;
   int team;
@@ -51,7 +51,7 @@ public:
   bool asleep;
   bool visible;
   bool dead;  
-  bool res; //reserved for byte alignment
+  bool res; //reserved for byte alignment (todo -- figure out something to use it for)
 
 
 public:
@@ -69,28 +69,32 @@ public:
   xActor(void);
   virtual ~xActor(void);
 
+  virtual void init(void) {}
+
   virtual void update(void) {}
-  virtual void render(void) {}
-  virtual void render2(xRender * render) {}
   virtual void frameRender(xFlatRender * render) { }
 
-  virtual void putInGrid(xMultiGrid * mgrid); //default (xz)
+  virtual void render(void) {} //debugrender
+  virtual void render2(xRender * render) {} //3D render
+
+  virtual void putInGrid(xMultiGrid * mgrid); //default is X Z
   virtual void putInGridXY(xMultiGrid * mgrid);
   virtual void putInGridXZ(xMultiGrid * mgrid);
 
   virtual void takeOutOfGrid(void);
 
-  void kill();
-  virtual void onKilled(void) {}
-
-  virtual void init(void) {}
 
   virtual void checkColXZ(xMultiGrid * m);
   virtual void checkColXY(xMultiGrid * m);
 
   virtual bool handCol(xActor * a) { return false; }
 
+
   virtual void gotHit(float dmg, int dtype, float hx, float hy, float hz);
+  
+  virtual void kill(); //no need to override for fx, just use onKilled
+  
+  virtual void onKilled(void) {} //called by kill
 
   
 public:
@@ -102,6 +106,6 @@ public:
 public:
   virtual void trigger(std::string &str) {}
 
- 
+
   
 };//classend

@@ -65,14 +65,27 @@ void
 xGameExt::resetWorld(float w, float h)
 {
   clear();
+ 
   mgrid = new xMultiGrid();
   mgrid->init(w,h,7,7,3);  
 
    curId = 0;
-  
+ 
+  myRand.setSeed(1);
 }//resetworld
 
 
+float 
+xGameExt::getRand(void)
+{
+  return myRand.getRand();
+}//getrand
+
+float 
+xGameExt::getRand2(void)
+{
+  return myRand.getRand() - 0.5f;
+}//getrand2
 
 
 

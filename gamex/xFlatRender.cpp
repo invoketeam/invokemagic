@@ -123,7 +123,7 @@ xFlatRender::addFrame(float ax, float ay, float az, float aw, float ah, unsigned
     a->cx = ax;    a->cy = ay;    a->cz = az;
     a->cw = aw;    a->ch = ah;
     a->skin = skin;
-    
+
     a->sortCode = (32768) + (int)az;
 
     //set default values

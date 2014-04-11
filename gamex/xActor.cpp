@@ -18,7 +18,7 @@
   prev = 0;
 
   hp = 100;
-  yaw = 0;
+  ang = 0;
   
   id = -1;
   team = -1;
