@@ -48,7 +48,7 @@ invokeMenu::init(void)
     
 
     myData.addSkin("data/test.png","test",true);
-    myData.addSkin("data/menu_placeholder.jpg","placeholder",true);
+    myData.addSkin("data/menu_placeholder.jpg","placeholder",true,true);
 
 
     myGui.init();

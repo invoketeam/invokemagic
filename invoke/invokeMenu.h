@@ -28,8 +28,7 @@ public:
 public:
   int mState;
 
-  invokeGame testGame
-;
+  invokeGame testGame;
 
 public:
   invokeMenu(void);
