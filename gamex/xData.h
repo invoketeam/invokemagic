@@ -34,7 +34,7 @@ public:
   xTexture * addSkin(std::string fname, std::string altName, bool mip=true, bool ymir=false, bool clamp=false);
 
   //todo -- addsprite (also load texture)
-  void addSprite(std::string fname, std::string texfname) { }
+  void addSprite(std::string fname, std::string texfname);
 
 public:
   xTexture * getTex(std::string wname);  

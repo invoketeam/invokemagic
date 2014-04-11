@@ -59,6 +59,16 @@ xData::addSkin(std::string fname, std::string altName, bool mip, bool ymir, bool
 }//addskin
 
 
+void 
+xData::addSprite(std::string fname, std::string texfname)
+{
+  addSkin(texfname, stripName(texfname), true, false, true);
+
+  myMan.addSprite(fname);
+
+}//addsprite
+
+
 
 
 unsigned int 

@@ -45,44 +45,6 @@ invokeGame::~invokeGame(void)
 
 
 
-//todo -- these methods about storing data should be in their own class in the future
-
-//stores auto handle duplicates (but don't warn about them yet (todo)
-void
-invokeGame::addMdx(std::string fname, std::string altName)
-{
-  xMdx3 * a;
-  a = new xMdx3();
-  a->loadFile(fname);
-  if (altName != "0") { fname = altName;  }
-  else { fname = stripName(fname); }
-  printf("addmdx %s \n" ,fname.c_str());
-
-  storeMesh.addData( fname , a);
-}//addanim
-
-
-void
-invokeGame::addSkin(std::string fname, std::string altName, bool mip)
-{
-  xTexture * a;
-  a = new xTexture();
-  a->loadTex(fname, mip);
-  a->setTexEnv_Replace();
-  if (altName != "0") { fname = altName;  }
-  else { fname = stripName(fname); }
-
-  storeSkin.addData(fname, a);
-
-   printf("addSkin %s \n" ,fname.c_str());
-
-  //todo -- for each texture make a sprite with its own name
-}//addskin
-
-
-
-
-
 
 void
 invokeGame::init(void)
@@ -106,15 +68,16 @@ invokeGame::init(void)
 
 
 //load resources first (only do this once per game)
-  addMdx("data/tree.mdx3");
-  addSkin("data/treeskin.png");
+  myData.addMdx("data/tree.mdx3", "tree");
+  myData.addSkin("data/treeskin.png", "treeskin",true,true);
 
  
-  addSkin("data/knight_skin.png");
+  myData.addSkin("data/knight_skin.png", "knight_skin",true,true);
   
 
-  myMan.addSkin("data/mysmoke.png");
-  myMan.addSprite("data/mysmoke.xms");
+  myData.addSprite("data/mysmoke.xms","data/mysmoke.png");
+  //myMan.addSkin("data/mysmoke.png");
+  //myMan.addSprite("data/mysmoke.xms");
 
 
 
@@ -407,21 +370,20 @@ invokeGame::getCamPtr(void)
 xMdx3 *
 invokeGame::getMdx(std::string wname)
 {
-  return storeMesh.getData(wname);
+  return myData.getMdx(wname);
 }//getmdx
 
 xTexture *
 invokeGame::getTex(std::string wname) 
-{ return 0; }  
+{ 
+  return myData.getTex(wname);
+}//gettex  
 
 
 unsigned int 
 invokeGame::getSkin(std::string wname) 
 {
- xTexture * a; 
- a = storeSkin.getData(wname);
- if (a == 0) { printf("not found %s \n", wname.c_str());  return 0;}
- return a->handle;
+ return myData.getSkin(wname);
 }//getskin
 
 
@@ -429,7 +391,7 @@ invokeGame::getSkin(std::string wname)
 xSprite * 
 invokeGame::getSprite(std::string wname) 
 {
- return myMan.getSprite(wname);
+ return myData.getSprite(wname);
 }//getsprite
 
 

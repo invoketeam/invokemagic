@@ -6,12 +6,15 @@
 
 #include "../gamex/xGuiGame.h"
 #include "../gamex/xGameExt.h"
+#include "../gamex/xData.h"
 
 
 class invokeGame : public xGameExt
 {
 public:
-  xSpriteMan myMan;
+  xData myData;
+
+//  xSpriteMan myMan;
 
   xCam myCam;
 
@@ -56,15 +59,16 @@ public:
 
   virtual xCam * getCamPtr(void);
 
-
+/*
 public:
 //todo -- seperate class to store game data (?) (or at least temporary game data)
-  xStore <xMdx3> storeMesh; //for now all meshes will be stored here
-  xStore <xTexture> storeSkin;
+ // xStore <xMdx3> storeMesh; //for now all meshes will be stored here
+//  xStore <xTexture> storeSkin;
 
 private:
-  void addMdx(std::string fname, std::string altName ="0");
-  void addSkin(std::string fname, std::string altName ="0", bool mip = true);
+ // void addMdx(std::string fname, std::string altName ="0");
+ // void addSkin(std::string fname, std::string altName ="0", bool mip = true);
+*/
 
 };//invokemenu
 
