@@ -5,15 +5,16 @@
 #include "../gamex/gamex.h"
 
 #include "../gamex/xGuiGame.h"
+#include "../gamex/xGameExt.h"
 
 
-class invokeGame : public xGame
+class invokeGame : public xGameExt
 {
 public:
   xSpriteMan myMan;
 
   xCam myCam;
-  xWorld myWorld;
+
   xRender myRender;
   xCursor myCursor;
 
@@ -22,7 +23,6 @@ public:
   xDrawMesh myDraw;
 
 
-  xRand myRand;
 
   int curId;
 
@@ -43,20 +43,19 @@ public:
 	virtual void render(void);
 
 
-  virtual void addActor(xActor * a);
-  virtual xActor * getActor(int id);
-
-  virtual float getRand();
-	virtual float getRand2();
 
   virtual xMdx3 * getMdx(std::string wname);
   virtual xTexture * getTex(std::string wname); 
   virtual unsigned int getSkin(std::string wname);
   virtual xSprite * getSprite(std::string wname);
 
+
+
   virtual float getHeight(float wx, float wz);
 
+
   virtual xCam * getCamPtr(void);
+
 
 public:
 //todo -- seperate class to store game data (?) (or at least temporary game data)

@@ -390,28 +390,6 @@ invokeGame::getHeight(float wx, float wz)
 
 
 
-void
-invokeGame::addActor(xActor * a) 
-{
-  //if a doesnt exist -> crash
-
-  a->game = this; //important
-  curId += 1;
-  a->id = curId;
-  myWorld.addActor(a);
-  a->init();
-}//addactor
-
-
-xActor * 
-invokeGame::getActor(int id) 
-{ 
-
-  return myWorld.getActor(id);
-}//getactor
-
-
-
 xCam * 
 invokeGame::getCamPtr(void)
 {
@@ -455,18 +433,3 @@ invokeGame::getSprite(std::string wname)
 }//getsprite
 
 
-
-
-
-float 
-invokeGame::getRand()
- {
-  return myRand.getRand();
- }//getrand
-
-	
-float
- invokeGame::getRand2()
- {
-   return (myRand.getRand() - 0.5f);
- }//getrand2
