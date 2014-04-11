@@ -36,6 +36,7 @@ xGame::xGame()
 
   gameTime = 1; //rem -- gametime should always reset to 1
 
+  gameState = -1;
 }//ctor
 
 

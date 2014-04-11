@@ -49,7 +49,7 @@ public:
   //if a match lasts that long we advise declaring a draw
 
 public:
-  
+  int gameState;  
 
 public:
 	xGame();

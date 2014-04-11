@@ -18,8 +18,7 @@ xGameExt::xGameExt()
 
 xGameExt::~xGameExt()
 {
- if (mgrid != 0) { delete mgrid; mgrid = 0;}
-
+  clear();
 }//dtor
 
 

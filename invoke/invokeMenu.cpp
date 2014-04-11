@@ -208,7 +208,8 @@ invokeMenu::gotCmd(int cmd, int arg0, int arg1)
       break;
       
       case CMD_EXIT: 
-        exit(0); //might be not a good idea (crashes on debug) -- needs some testing (low priority)
+        gameState = -999;    
+        //exit(0); //might be not a good idea (crashes on debug) -- needs some testing (low priority)
       break;
 
     }//swend

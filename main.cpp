@@ -339,7 +339,9 @@ int main(int argc, char**argv)
   init();
 
 
-	while (1)
+  bool bRunGame; bRunGame = true;
+
+	while (bRunGame)
 	{
 
 		//startTime = GetTickCount();
@@ -352,7 +354,7 @@ int main(int argc, char**argv)
 
 			update();
 
-
+      
 
       //skip rendering of every other frame when rendering is slow
 
@@ -393,6 +395,8 @@ int main(int argc, char**argv)
 
   
     measureFps();
+
+    if (testGame.gameState == -999) { bRunGame = false; break; }
 
 	}//wend
 
