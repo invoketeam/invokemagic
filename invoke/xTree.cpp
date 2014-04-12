@@ -6,7 +6,7 @@
 xTree::xTree(void) 
 {
   skin = 0;
-
+  color = 0x008F00FF;
 }//ctor
 
 

@@ -68,10 +68,11 @@ xTexture::initEmpty(int size)
   {
     xImage temp;
     temp.init(size, size);
-    temp.xorFill();
+    //temp.xorFill();
     
     filename = "dynamic";
    
+    //empty textures dont use mipmaps (todo -- set clamping from parameter)
     makeTex(&temp, false, false);
 
   }//initempty
@@ -89,7 +90,8 @@ xTexture::updateTex(xImage * img)
 
   if (handle == 0) { return;}
 
-     #define GL_UNSIGNED_INT_8_8_8_8           0x8035
+  //i only ever use it here
+  #define GL_UNSIGNED_INT_8_8_8_8           0x8035
 
     glBindTexture(GL_TEXTURE_2D, handle);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0,0, img->mw, img->mh, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, img->dat); 
@@ -103,11 +105,11 @@ void
 xTexture::setTexEnv_Modulate(void)
 {
  glBindTexture(GL_TEXTURE_2D, handle);
- glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE); 
- glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
- glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE);
- glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
- glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE); 
+   glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
+   glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE);
+   glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+   glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
 }//modulate
 
 
@@ -195,34 +197,13 @@ xTexture::makeTex(xImage  * img, bool mip, bool clamp)
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clamp ? GL_CLAMP : GL_REPEAT );
 
         if (mip)
-        {
-          buildMipMap(img->mw, img->mh,  img->dat);
-        }
+        { buildMipMap(img->mw, img->mh,  img->dat);  }
         else
-        {
-          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img->mw, img->mh, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, img->dat);
-        }
+        { glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img->mw, img->mh, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, img->dat);  }
 
    //default
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); 
 
-/*        
-        if (img.bit == 3)
-        {
-          xBuildMipMap_Tex2D_3Bit(img.width, img.height, img.dat);
-       //  gluBuild2DMipmaps( GL_TEXTURE_2D, 3, img.width, img.height,
-        //                GL_RGB, GL_UNSIGNED_BYTE, img.data );
-        }
-        else if (img.bit == 4)
-        {
-        // gluBuild2DMipmaps( GL_TEXTURE_2D, 4, img.width, img.height,
-        //                GL_RGBA, GL_UNSIGNED_BYTE, img.data );
-          xBuildMipMap_Tex2D_4Bit(img.width, img.height, img.dat);
-        }
-        else { clear(); return; }
-  */      
-      //  glPixelStorei(…); /* multiple calls to glPixelStorei describing the layout of the data to come */
-      //  glTexImage2D(GL_TEXTURE_2D, miplevel, internal_format, width, height, border, format, type, data);
 
     }//maketex
     

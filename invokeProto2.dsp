@@ -415,6 +415,14 @@ SOURCE=.\invoke\xInvActor.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\invoke\xMiniMap.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\invoke\xMiniMap.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\invoke\xPartTest.cpp
 # End Source File
 # Begin Source File

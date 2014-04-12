@@ -8,7 +8,7 @@ xUnit::xUnit(void)
   yaw = 0.0f;
   curFrame = 0.0f;
   skin = 0;
-
+  color = 0xFFffFFff;
 }//ctor
 
 
@@ -37,6 +37,8 @@ xUnit::init(void)
   vel.z = game->getRand2() * 3.0f;
 
   yaw = game->getRand() * 6.28f;
+
+  spectype = 100;
 
 }//init
 

@@ -8,25 +8,28 @@
 #include "../gamex/xGameExt.h"
 #include "../gamex/xData.h"
 
+#include "xMiniMap.h"
 
 class invokeGame : public xGameExt
 {
 public:
   xData myData;
+  xGuiGame myGui;
 
+  
   xCam myCam;
-
   xRender myRender;
   xCursor myCursor;
-
+  
+  
   xTileMap myMap;
   xColMesh myCol;
   xDrawMesh myDraw;
 
   xMdx3 debmesh;
 
-  xGuiGame myGui;
-
+  xMiniMap myMini;
+  
 public:
   invokeGame(void);
   virtual ~invokeGame(void);

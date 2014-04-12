@@ -77,6 +77,7 @@ invokeGame::init(void)
 
   myData.addSprite("data/mysmoke.xms","data/mysmoke.png");
 
+  
 
 
   //testing
@@ -88,9 +89,6 @@ invokeGame::init(void)
     a->pos.set(getRand()*1024,0, getRand()*1024);
       addActor(a);
   }//nexti
-
-
-
 
 
 
@@ -191,6 +189,15 @@ invokeGame::init(void)
   a->pos.set(512,64,512);
     addActor(a);
 
+    
+    
+    
+    
+  //minimap
+  //todo -- set texture/image size based on map size
+    myMini.init();
+  
+    myMini.updateImage(&myWorld);
 
 }//init
 
@@ -303,16 +310,44 @@ myCol.render();
        debmesh.render();
   glPopMatrix();
 
-    glDisable(GL_DEPTH_TEST);
+  glDisable(GL_DEPTH_TEST);
   glPushMatrix();
     glTranslatef(myCursor.coord.x, myCursor.coord.y+64, myCursor.coord.z); 
        debmesh.render();
   glPopMatrix();
 
+ 
+ 
+ 
 
-  myGui.childRender(this);
+ // myGui.childRender(this);
 
-  // printf("invokegame -- render \n");
+ //2D drawing - gui and minimap etc
+  
+   glMatrixMode(GL_PROJECTION);  	glLoadIdentity();       glOrtho(0,640,480,0,-3000,3000); 
+	 glMatrixMode(GL_MODELVIEW);	  glLoadIdentity();
+
+   //as a flatrenderer doesnt store anything about the things its supposed to render
+   //we might as well have a global/singleton one (?)
+   xFlatRender * flat;
+   flat = &(myGui.myFlat);
+
+
+   flat->resetFrame();
+
+   myGui.myWorld.frameRender(flat);
+   myGui.cursor.frameRender(flat);    
+      
+
+  //render minimap
+  //todo -- set update factor from some variable
+    if ((gameTime % 30) == 0)  { myMini.updateImage(&myWorld); }
+
+    //rem -- coordinates are the middle of the rectangle
+    xFrame * f;
+     f = flat->addFrame(64, 64, 300, 128,128, myMini.skin.handle);
+     flat->render(true);
+
 }//render
 
 
