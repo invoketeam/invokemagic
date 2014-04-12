@@ -58,10 +58,17 @@ xGuiCursor::update(void)
     xButton * b;
      // b = dynamic_cast<xButton*>(a);
       b = (xButton *) a; //todo -- not safe but cannot think of a better solution for now
-      if (b != 0)
-      { game->gotCmd(b->cmd, b->arg0, b->arg1); }
+
+      //if (b != 0) { game->gotCmd(b->cmd, b->arg0, b->arg1); }
+
+      //for now give back the cursor position relative to the button pos
+      //(based on the top left corner of the button)
+      if (b != 0) { game->gotCmd(b->cmd, pos.x-b->pos.x + b->xrad, pos.y-b->pos.y + b->yrad); }
+
+
       //todo -- allow non buttons to have command?
       // game->gotCmd(a->reload, 0, 0);
+
       worka = 0;
   }//endif
 
@@ -71,6 +78,7 @@ xGuiCursor::update(void)
 bool 
 xGuiCursor::handCol(xActor * a)
 {
+
   if (a->visible == false) { return true;}
 
   //todo -- choose the one with the highest z
@@ -86,15 +94,7 @@ xGuiCursor::handCol(xActor * a)
  return false; 
 }//handcol
 
-/*
-void 
-xGuiCursor::render(void)
-{
-  glColor3f(1,1,1);
-  drawRect(pos.x-xrad,pos.y-yrad, xrad+xrad, yrad+yrad);
 
-}//render
-*/
 
 void 
 xGuiCursor::frameRender(xFlatRender * render)
@@ -147,6 +147,7 @@ xButton::trigger(std::string &str)
 void 
 xButton::frameRender(xFlatRender * render)
 {
+  if (drawMode == -1) { return; } //invisible button (because   bool visible  is used for enabled/disabled as well)
 
   if (drawMode == 1)
   {
@@ -343,8 +344,6 @@ void xGuiGame::showButton(std::string wname)
   if (a == 0) { return; }
   a->visible = true;
 }//showbutton
-
-
 
 
 

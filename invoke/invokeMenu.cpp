@@ -89,13 +89,19 @@ invokeMenu::init(void)
 void 
 invokeMenu::update(void)
 {
-  myWorld.update();
-    myGui.childUpdate(this);
 
+//todo -- setstate method -- disable buttons based on layers
+  if (mState != STATE_GAME)
+  {
+    myWorld.update();
+    myGui.childUpdate(this);
+  }
 
 
   if (mState == STATE_MAINMENU)
   {
+
+
     if (isKeyPress(KEY_ESCAPE)) { mState = STATE_GAME; } //debug
   }
   else if (mState == STATE_GAME)

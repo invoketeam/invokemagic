@@ -50,21 +50,25 @@ void
 invokeGame::init(void)
 {
 
-  gameTime = 0;
+//todo -- load tilemap before world reset (so we know the maps size)
+  resetWorld(64*128,64*128);
+
+  //gameTime = 0;
 
   myRender.init(16384);
 
 
-  myGui.init();
+    myFont.loadCharDef("data/atari16.xfnt");
+    myFontSkin.loadTex("data/atari16.png",true,true,true);
+    myFontSkin.setTexEnv_Modulate();
+    myFont.handle = myFontSkin.handle;
 
-/*
-    myGui.addButton("test", 320+240,240,0, "TEST", "test", 1);
-    myGui.addButton("test2", 320+240,240+40,0, "TEST2", "test2", 1);
-    myGui.addButton("test3", 320+240,240+80,0, "TEST3", "test3", 1);
-    myGui.addButton("test4", 320+240,240+120,0, "TEST4", "test4", 1);
-*/
+    myGui.init();
+    myGui.pfont = &myFont;
 
-  myRand.setSeed(1); //important for gameplay
+
+
+ // myRand.setSeed(1); //important for gameplay
 
 
 //load resources first (only do this once per game)
@@ -74,11 +78,45 @@ invokeGame::init(void)
  
   myData.addSkin("data/knight_skin.png", "knight_skin",true,true);
   
-
   myData.addSprite("data/mysmoke.xms","data/mysmoke.png");
-
+  
+  myData.addSprite("data/button.xms","data/button.png");
   
 
+  xButton * b;
+  b = myGui.addButton("btn1", "", 200, 610-36-36-36,380, 16, 32,32, getSprite("btn_move"), 1);
+
+  b = myGui.addButton("btn2", "", 201, 610-36-36, 380, 16, 32,32, getSprite("btn_stop"), 1);
+
+  b = myGui.addButton("btn3", "", 202, 610-36, 380, 16, 32,32, getSprite("btn_attack"), 0);
+
+  //rest of buttons are just for alignment for now
+  b = myGui.addButton("btn4", "", 1, 610, 380, 16, 32,32, getSprite("button64x64"), 0);
+
+
+  b = myGui.addButton("btn5", "", 1, 610-36*3, 380+36, 16, 32,32, getSprite("button64x64"), 0);
+  b = myGui.addButton("btn6", "", 1, 610-36*2, 380+36, 16, 32,32, getSprite("button64x64"), 0);
+  b = myGui.addButton("btn7", "", 1, 610-36, 380+36, 16, 32,32, getSprite("button64x64"), 0);
+  b = myGui.addButton("btn8", "", 1, 610, 380+36, 16, 32,32, getSprite("button64x64"), 0);
+
+
+
+  b = myGui.addButton("btn9", "", 1, 610-36*3, 380+36+36, 16, 32,32, getSprite("button64x64"), 0);
+  b = myGui.addButton("btn10", "", 1, 610-36*2, 380+36+36, 16, 32,32, getSprite("button64x64"), 0);
+  b = myGui.addButton("btn11", "", 1, 610-36, 380+36+36, 16, 32,32, getSprite("button64x64"), 0);
+  b = myGui.addButton("btn12", "", 1, 610, 380+36+36, 16, 32,32, getSprite("button64x64"), 0);
+
+
+  //testing -- a button for the minimap (probably not the best way to go about this)
+
+
+
+ b = myGui.addButton("btn_mini", "minimap", 500, 64+4, 480-64-8, 16, 128,128, getSprite("button64x64"), 1);
+ b->drawMode = -1; //make button hidden but usable
+
+
+
+//Create a tilemap and some units for testing
 
   //testing
   int i;
@@ -249,6 +287,8 @@ invokeGame::update(void)
 
   myGui.childUpdate(this);
 
+
+
   gameTime += 1;
 }//update
 
@@ -318,6 +358,9 @@ myCol.render();
 
  
  
+
+   glDisable(GL_TEXTURE_2D); debugDraw();
+
  
 
  // myGui.childRender(this);
@@ -345,8 +388,11 @@ myCol.render();
 
     //rem -- coordinates are the middle of the rectangle
     xFrame * f;
-     f = flat->addFrame(64, 64, 300, 128,128, myMini.skin.handle);
+     f = flat->addFrame(64+4, 480-64-8, 300, 128,128, myMini.skin.handle);
      flat->render(true);
+   
+
+   glDisable(GL_TEXTURE_2D); myGui.debugDraw(); 
 
 }//render
 
@@ -405,5 +451,32 @@ invokeGame::getSprite(std::string wname)
 {
  return myData.getSprite(wname);
 }//getsprite
+
+
+
+
+
+void 
+invokeGame::gotCmd(int cmd, int arg0, int arg1)
+{
+
+ printf("invokegame gotcmd %d   %d %d \n", cmd, arg0, arg1);
+
+
+ //for now the minimap movement is hacked together like this (should be refined in the future)
+ if (cmd == 500)
+ {
+    myCam.pos.x = arg0 * 64;
+    myCam.pos.z = arg1 * 64;
+ }//endif
+
+
+
+}//gotcmd
+
+
+
+
+
 
 

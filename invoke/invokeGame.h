@@ -29,7 +29,10 @@ public:
   xMdx3 debmesh;
 
   xMiniMap myMini;
-  
+
+  xFont myFont;
+  xTexture myFontSkin;
+
 public:
   invokeGame(void);
   virtual ~invokeGame(void);
@@ -54,6 +57,8 @@ public:
 
   virtual xCam * getCamPtr(void);
 
+public:
+  virtual void gotCmd(int cmd, int arg0, int arg1);
 
 };//invokemenu
 

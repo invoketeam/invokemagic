@@ -68,7 +68,7 @@ xActor::putInGrid(xMultiGrid * mgrid)
 void 
 xActor::putInGridXY(xMultiGrid * mgrid) 
 {
-  mgrid->putInXZ(this);
+  mgrid->putInXY(this);
 }//putin
 
 void 
@@ -107,13 +107,16 @@ xActor::gotHit(float dmg, int dtype, float hx, float hy, float hz)
 
 
 
+//3D overlap test
 bool 
 xActor::overlap(xActor * a)
 {
   if (pos.x+xrad <  a->pos.x - a->xrad) { return false; }
   if (pos.x-xrad > a->pos.x + a->xrad) { return false; }
+
   if (pos.y+yrad <  a->pos.y - a->yrad) { return false; }
   if (pos.y-yrad > a->pos.y + a->yrad) { return false; }
+
   if (pos.z+zrad <  a->pos.z - a->zrad) { return false; }
   if (pos.z-zrad > a->pos.z + a->zrad) { return false; }
   
@@ -155,10 +158,10 @@ xActor::checkColXZ(xMultiGrid * m)
   {
 	xCell * c;
 	xActor * a;
-	float x0, y0, x1, y1, z0, z1;
+	float x0, x1, z0, z1;
 
-	x0 = pos.x - xrad;	y0 = pos.y - yrad;	z0 = pos.z - zrad;
-	x1 = pos.x + xrad;	y1 = pos.y + yrad;	z1 = pos.z + zrad;
+	x0 = pos.x - xrad;		z0 = pos.z - zrad;
+	x1 = pos.x + xrad;		z1 = pos.z + zrad;
 
 	c = m->doQuery(x0, z0, xrad+xrad, zrad+zrad);
 			
@@ -172,9 +175,7 @@ xActor::checkColXZ(xMultiGrid * m)
 					
 			//check if the two aabb overlaps
 				if (a->pos.x + a->xrad < x0) { continue; } 
-				if (a->pos.y + a->yrad < y0) { continue; }
 				if (a->pos.x - a->xrad > x1) { continue; }
-				if (a->pos.y - a->yrad > y1) { continue; }
 				if (a->pos.z + a->zrad < z0) { continue; }
 				if (a->pos.z - a->zrad > z1) { continue; }
 
@@ -192,10 +193,10 @@ xActor::checkColXY(xMultiGrid * m)
   {
 	xCell * c;
 	xActor * a;
-	float x0, y0, x1, y1, z0, z1;
+	float x0, x1, y0, y1; 
 
-	x0 = pos.x - xrad;	y0 = pos.y - yrad;	z0 = pos.z - zrad;
-	x1 = pos.x + xrad;	y1 = pos.y + yrad;	z1 = pos.z + zrad;
+	x0 = pos.x - xrad;	y0 = pos.y - yrad;
+	x1 = pos.x + xrad;	y1 = pos.y + yrad;
 
 	c = m->doQuery(x0, y0, xrad+xrad, yrad+yrad);
 			
@@ -206,14 +207,12 @@ xActor::checkColXY(xMultiGrid * m)
 		{
 			if (a == this) { continue;  }
 			if (a->dead) { continue; }
-					
+
 			//check if the two aabb overlaps
 				if (a->pos.x + a->xrad < x0) { continue; } 
-				if (a->pos.y + a->yrad < y0) { continue; }
 				if (a->pos.x - a->xrad > x1) { continue; }
+				if (a->pos.y + a->yrad < y0) { continue; }
 				if (a->pos.y - a->yrad > y1) { continue; }
-				if (a->pos.z + a->zrad < z0) { continue; }
-				if (a->pos.z - a->zrad > z1) { continue; }
 
 					if (!handCol(a)) { return; } //if it returns false then no more checks are needed
 					

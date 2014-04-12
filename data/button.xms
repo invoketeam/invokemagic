@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<texture width="256" height="256" name="button.png">
+  <image  x="1" y="1" width="64" height="64" name="btn_attack"/>
+  <image  x="67" y="1" width="64" height="64" name="btn_move"/>
+  <image  x="133" y="1" width="64" height="64" name="btn_stop"/>
+  <image  x="1" y="67" width="128" height="48" name="button128x48"/>
+  <image  x="199" y="1" width="32" height="32" name="button32x32"/>
+  <image  x="131" y="67" width="64" height="24" name="button64x24"/>
+  <image  x="1" y="117" width="64" height="64" name="button64x64"/>
+</texture>
