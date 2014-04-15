@@ -476,7 +476,8 @@ xRender::setCam(gamex::cVec3f &pos, gamex::cQuat &ori)
     camMat.m[13] = pos.y;
     camMat.m[14] = pos.z;
 */
-    gamex::setModelView2(camMat, pos, ori); 
+    camMat.setView(&pos, &ori);
+    //gamex::setModelView2(camMat, pos, ori); 
 
   }//setcam
 

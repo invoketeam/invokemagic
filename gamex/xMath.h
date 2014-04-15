@@ -125,319 +125,7 @@ public:
 };//classend (vec3f)
 
 
-/* MATRIX 4x4 */
 
-class cMat
-{
-public:
-	float m[16];
-
-public:
-
-	cMat(void) 
-		{
-			memset(m, 0, 64); //16*4 -- 16 * 4byte
-			m[0] = m[5] = m[10] = m[15] = 1.0f; 
-		}//ctor
-
-
-	//~cMat(void) {}//dtor
-
-
-	inline void reset(void)
-	{
-		//reset to identity matrix
-
-		memset(m, 0, 64); //16*4 -- 16 * 4byte
-		m[0] = m[5] = m[10] = m[15] = 1.0f; 
-	}//ident
-
-  
-  inline void copyMat(cMat * o)
-  {
-    memcpy(m, o->m, 64);  
-  }//copymat
-
-  inline void copyMat(cMat &o)
-  {
-    memcpy(m, o.m, 64);  
-  }//copymat
-
-
-
-	inline void quickInvert(void)
-	{
-		//quickly inverts matrix--
-		//transpose rotation part -- negate translate part
-		//src_transpose: http://www.mathwords.com/t/transpose_of_a_matrix.htm
-		//note -- only correct if there is no scaling
-
-
-
-		//transpose rotation part
-		
-			// 0 5 10 stays the same (check notes at the end)
-
-			//note -- xor swap not works on floats
-		
-			//t = m[1];	//m[1] = m[4];	//m[4] = t;
-
-			float t; //temp
-
-			/*
-			#define MSWAP(x, y) (t = m[x];  m[x] = m[y];  m[y] = t; )
-				MSWAP(1,4)
-				MSWAP(2,8)
-				MSWAP(6,9)
-			#undef MSWAP 
-*/
-
-			t = m[1]; m[1] = m[4];	m[4] = t;
-			t = m[2]; m[2] = m[8];	m[8] = t;
-			t = m[6]; m[6] = m[9];	m[9] = t;
-
-
-		//negate translation part
-
-			m[12] = -m[12];
-			m[13] = -m[13];
-			m[14] = -m[14];
-	
-	
-	}//quickinvert
-
-
-
-
-	inline static void multMatrix(cMat &ma, cMat &mb, cMat &mr )
-	{
-		//int i;
-    float * a;
-    float * b;
-    float * r;
-
-    a = ma.m;
-    b = mb.m;
-    r = mr.m;
-
-    /*
-		for (i = 0; i < 16; i +=4)
-		{
-			r.m[i] = a.m[0]*b.m[i]  +  a.m[4]* b.m[i+1]+a.m[8]*b.m[i+2] +  a.m[12]*b.m[i+3];
-			r.m[i+1] = a.m[1]*b.m[i] + a.m[5]*b.m[i+1] + a.m[9]*b.m[i+2] + a.m[13]*b.m[i+3];
-			r.m[i+2] = a.m[2]*b.m[i] + a.m[6]*b.m[i+1] + a.m[10]*b.m[i+2] + a.m[14]*b.m[i+3];
-			r.m[i+3] = a.m[3]*b.m[i] + a.m[7]*b.m[i+1] + a.m[11]*b.m[i+2] + a.m[15]*b.m[i+3];
-		}//nexti
-  */ 
-        r[0] = a[0] * b[0] + a[4] * b[1] + a[8] * b[2] + a[12] * b[3];
-				r[1] = a[1] * b[0] + a[5] * b[1] + a[9] * b[2] + a[13] * b[3];
-				r[2] = a[2] * b[0] + a[6] * b[1] + a[10] * b[2] + a[14] * b[3];
-				r[3] = a[3] * b[0] + a[7] * b[1] + a[11] * b[2] + a[15] * b[3];
-        
-        r[4] = a[0] * b[4] + a[4] * b[5] + a[8] * b[6] + a[12] * b[7];
-				r[5] = a[1] * b[4] + a[5] * b[5] + a[9] * b[6] + a[13] * b[7];
-				r[6] = a[2] * b[4] + a[6] * b[5] + a[10] * b[6] + a[14] * b[7];
-				r[7] = a[3] * b[4] + a[7] * b[5] + a[11] * b[6] + a[15] * b[7];
-        
-        r[8] = a[0] * b[8] + a[4] * b[9] + a[8] * b[10] + a[12] * b[11];
-				r[9] = a[1] * b[8] + a[5] * b[9] + a[9] * b[10] + a[13] * b[11];
-				r[10] = a[2] * b[8] + a[6] * b[9] + a[10] * b[10] + a[14] * b[11];
-				r[11] = a[3] * b[8] + a[7] * b[9] + a[11] * b[10] + a[15] * b[11];
-        
-        r[12] = a[0] * b[12] + a[4] * b[13] + a[8] * b[14] + a[12] * b[15];
-				r[13] = a[1] * b[12] + a[5] * b[13] + a[9] * b[14] + a[13] * b[15];
-				r[14] = a[2] * b[12] + a[6] * b[13] + a[10] * b[14] + a[14] * b[15];
-				r[15] = a[3] * b[12] + a[7] * b[13] + a[11] * b[14] + a[15] * b[15];
-		
-	}//multmat
-
-
-
-	//methods from Lighthouse3D's VSML
-	//matrix functions that do the same as the opengl ones
-	//namely gluPerspective
-	//http://www.opengl.org/sdk/docs/man/xhtml/gluPerspective.xml
-	//http://www.lighthouse3d.com/very-simple-libs/vsl-downloads/
-
-	inline void setPerspective(float fov, float aspect, float nearp, float farp)
-	{
-	
-		reset();
-		
-
-//		float f = 1.0f / tan (fov * (M_PI / 360.0f));
-//#define M_PI       3.14159265358979323846f
-
-//		float f = 1.0f / tan (fov * (3.1415f / 360.0f) ); // (0.0174527f)); // 0.0174527f = pi/180
-		float f = 1.0f / tanf( (fov*(3.1415f/180.f))*0.5f );
-
-			m[0] = f / aspect;
-	/*		m[1 * 4 + 1] = f;
-			m[2 * 4 + 2] = (farp + nearp) / (nearp - farp);
-			m[3 * 4 + 2] = (2.0f * farp * nearp) / (nearp - farp);
-			m[2 * 4 + 3] = -1.0f;
-			m[3 * 4 + 3] = 0.0f;
-*/
-			m[5] = f;
-			m[10] = (farp + nearp) / (nearp - farp);
-			m[14] = (2.0f * farp * nearp) / (nearp - farp);
-			m[11] = -1.0f;
-			m[15] = 0.0f;
-	
-	}//setperspective
-
-        
-        inline void setRotMatrix
-        (
-	float fx, float fy, float fz,
-	float sx, float sy, float sz,
-	float ux, float uy, float uz
-	)
-        {
-        		//identify m
-			memset(m, 0, 64); //16*4 -- 16 * 4byte
-			m[0] = m[5] = m[10] = m[15] = 1.0f; 
-
-			m[0] = sx;
-			m[4] = sy;
-			m[8] = sz;
-			
-			m[1] = ux;
-			m[5] = uy;
-			m[9] = uz;
-
-			m[2] = fx;
-			m[6] = fy;
-			m[10] = fz;
-        }//setrot
-        
-
-        
-        
-        /*
-	//make a modelview matrix
-	//based on same data you would use for a lookatmatrix
-	inline void setModelView(
-	float posx, float posy, float posz,
-	float lookx, float looky, float lookz,
-	float upx, float upy, float upz
-	)
-	{
-		gamex::cVec3f up(upx, upy, upz);
-		gamex::cVec3f forw; //forward
-		gamex::cVec3f side;
-
-		forw.x = lookx - posx;
-		forw.y = looky - posy;
-		forw.z = lookz - posz;
-
-		forw.normPrec();
-
-		side = gamex::cVec3f::cross(forw, up);
-		side.normPrec();
-    
-		up = gamex::cVec3f::cross(side, forw);
-		up.normPrec();
-    side = -side;
-
-
-		//identify m
-			memset(m, 0, 64); //16*4 -- 16 * 4byte
-			m[0] = m[5] = m[10] = m[15] = 1.0f; 
-
-			m[0] = side.x;
-			m[4] = side.y;
-			m[8] = side.z;
-			
-			m[1] = up.x;
-			m[5] = up.y;
-			m[9] = up.z;
-
-      //forw = -forw;
-
-			m[2] = forw.x;
-			m[6] = forw.y;
-			m[10] = forw.z;
-
-
-		// glMultMatrixf(m);
-		//    glTranslatef(-posx, -posy, -posz);
-
-		//do the work of  glTranslatef(-posx, -posy, -posz);
-			m[12] = (side.x *-posx) + (side.y * -posy) + (side.z * -posz);
-			m[13] = (up.x *-posx) + (up.y * -posy) + (up.z * -posz);
-			m[14] = (forw.x *-posx) + (forw.y * -posy) + (forw.z * -posz);
-			
-	}//setmodelview
-
-*/
-
-
-	//safe to use on self i guess //todo: test
-
-	//returns 0 if unsuccesful
-	int getInverted(gamex::cMat &inv)
-	{
-
-	//source
-	//http://www.codng.com/2011/02/gluunproject-for-iphoneios.html
-
-		float temp[16];
-		float det;
-		int i;
-
-		temp[0] =   m[5]*m[10]*m[15] - m[5]*m[11]*m[14] - m[9]*m[6]*m[15]
-				 + m[9]*m[7]*m[14] + m[13]*m[6]*m[11] - m[13]*m[7]*m[10];
-		temp[4] =  -m[4]*m[10]*m[15] + m[4]*m[11]*m[14] + m[8]*m[6]*m[15]
-				 - m[8]*m[7]*m[14] - m[12]*m[6]*m[11] + m[12]*m[7]*m[10];
-		temp[8] =   m[4]*m[9]*m[15] - m[4]*m[11]*m[13] - m[8]*m[5]*m[15]
-				 + m[8]*m[7]*m[13] + m[12]*m[5]*m[11] - m[12]*m[7]*m[9];
-		temp[12] = -m[4]*m[9]*m[14] + m[4]*m[10]*m[13] + m[8]*m[5]*m[14]
-				 - m[8]*m[6]*m[13] - m[12]*m[5]*m[10] + m[12]*m[6]*m[9];
-		temp[1] =  -m[1]*m[10]*m[15] + m[1]*m[11]*m[14] + m[9]*m[2]*m[15]
-				 - m[9]*m[3]*m[14] - m[13]*m[2]*m[11] + m[13]*m[3]*m[10];
-		temp[5] =   m[0]*m[10]*m[15] - m[0]*m[11]*m[14] - m[8]*m[2]*m[15]
-				 + m[8]*m[3]*m[14] + m[12]*m[2]*m[11] - m[12]*m[3]*m[10];
-		temp[9] =  -m[0]*m[9]*m[15] + m[0]*m[11]*m[13] + m[8]*m[1]*m[15]
-				 - m[8]*m[3]*m[13] - m[12]*m[1]*m[11] + m[12]*m[3]*m[9];
-		temp[13] =  m[0]*m[9]*m[14] - m[0]*m[10]*m[13] - m[8]*m[1]*m[14]
-				 + m[8]*m[2]*m[13] + m[12]*m[1]*m[10] - m[12]*m[2]*m[9];
-		temp[2] =   m[1]*m[6]*m[15] - m[1]*m[7]*m[14] - m[5]*m[2]*m[15]
-				 + m[5]*m[3]*m[14] + m[13]*m[2]*m[7] - m[13]*m[3]*m[6];
-		temp[6] =  -m[0]*m[6]*m[15] + m[0]*m[7]*m[14] + m[4]*m[2]*m[15]
-				 - m[4]*m[3]*m[14] - m[12]*m[2]*m[7] + m[12]*m[3]*m[6];
-		temp[10] =  m[0]*m[5]*m[15] - m[0]*m[7]*m[13] - m[4]*m[1]*m[15]
-				 + m[4]*m[3]*m[13] + m[12]*m[1]*m[7] - m[12]*m[3]*m[5];
-		temp[14] = -m[0]*m[5]*m[14] + m[0]*m[6]*m[13] + m[4]*m[1]*m[14]
-				 - m[4]*m[2]*m[13] - m[12]*m[1]*m[6] + m[12]*m[2]*m[5];
-		temp[3] =  -m[1]*m[6]*m[11] + m[1]*m[7]*m[10] + m[5]*m[2]*m[11]
-				 - m[5]*m[3]*m[10] - m[9]*m[2]*m[7] + m[9]*m[3]*m[6];
-		temp[7] =   m[0]*m[6]*m[11] - m[0]*m[7]*m[10] - m[4]*m[2]*m[11]
-				 + m[4]*m[3]*m[10] + m[8]*m[2]*m[7] - m[8]*m[3]*m[6];
-		temp[11] = -m[0]*m[5]*m[11] + m[0]*m[7]*m[9] + m[4]*m[1]*m[11]
-				 - m[4]*m[3]*m[9] - m[8]*m[1]*m[7] + m[8]*m[3]*m[5];
-		temp[15] =  m[0]*m[5]*m[10] - m[0]*m[6]*m[9] - m[4]*m[1]*m[10]
-				 + m[4]*m[2]*m[9] + m[8]*m[1]*m[6] - m[8]*m[2]*m[5];
-
-		det = m[0]*temp[0] + m[1]*temp[4] + m[2]*temp[8] + m[3]*temp[12];
-  
-		if (det == 0)   return 0;
-
-		det = 1.0f / det;
- 
-		for (i = 0; i < 16; i++)
-		{ 
-			inv.m[i] = temp[i] * det; 
-		}//nexti
-
-		return 1;
-	}//invert
-
-
-
-
-
-}; //classend
 
 
 /* QUATERNION */
@@ -722,7 +410,8 @@ public:
   }//mulvec
   
   
-
+/*
+  //todo -- rewrite this one to use float[16]
 	inline void fromVec(gamex::cVec3f side, gamex::cVec3f up, gamex::cVec3f front)
 	{
 		gamex::cMat mat;
@@ -736,7 +425,7 @@ public:
 		normalise();
 	
 	}//fromvec
-	
+	*/
 
 
 
@@ -951,23 +640,260 @@ public:
 }; //classend
 
 
-	//todo -- make a lookat -- or more like put in here the lookat from gamexPersp
- inline void setModelView2(cMat &mat, cVec3f pos, cQuat ori)
+
+
+
+
+
+
+
+/* MATRIX 4x4 */
+
+class cMat
+{
+public:
+	float m[16];
+
+public:
+
+	cMat(void) 
+		{
+			memset(m, 0, 64); //16*4 -- 16 * 4byte
+			m[0] = m[5] = m[10] = m[15] = 1.0f; 
+		}//ctor
+
+
+	//~cMat(void) {}//dtor
+
+
+	inline void reset(void)
+	{
+		//reset to identity matrix
+
+		memset(m, 0, 64); //16*4 -- 16 * 4byte
+		m[0] = m[5] = m[10] = m[15] = 1.0f; 
+	}//ident
+
+  
+  inline void copyMat(cMat * o)
+  {
+    memcpy(m, o->m, 64);  
+  }//copymat
+
+  inline void copyMat(cMat &o)
+  {
+    memcpy(m, o.m, 64);  
+  }//copymat
+
+
+
+	inline void quickInvert(void)
+	{
+		//quickly inverts matrix--
+		//transpose rotation part -- negate translate part
+		//src_transpose: http://www.mathwords.com/t/transpose_of_a_matrix.htm
+		//note -- only correct if there is no scaling
+
+
+
+		//transpose rotation part
+		
+			// 0 5 10 stays the same (check notes at the end)
+
+			//note -- xor swap not works on floats
+		
+			//t = m[1];	//m[1] = m[4];	//m[4] = t;
+
+			float t; //temp
+
+			/*
+			#define MSWAP(x, y) (t = m[x];  m[x] = m[y];  m[y] = t; )
+				MSWAP(1,4)
+				MSWAP(2,8)
+				MSWAP(6,9)
+			#undef MSWAP 
+*/
+
+			t = m[1]; m[1] = m[4];	m[4] = t;
+			t = m[2]; m[2] = m[8];	m[8] = t;
+			t = m[6]; m[6] = m[9];	m[9] = t;
+
+
+		//negate translation part
+
+			m[12] = -m[12];
+			m[13] = -m[13];
+			m[14] = -m[14];
+	
+	
+	}//quickinvert
+
+
+
+
+	inline static void multMatrix(cMat &ma, cMat &mb, cMat &mr )
+	{
+		//int i;
+    float * a;
+    float * b;
+    float * r;
+
+    a = ma.m;
+    b = mb.m;
+    r = mr.m;
+
+    /*
+		for (i = 0; i < 16; i +=4)
+		{
+			r.m[i] = a.m[0]*b.m[i]  +  a.m[4]* b.m[i+1]+a.m[8]*b.m[i+2] +  a.m[12]*b.m[i+3];
+			r.m[i+1] = a.m[1]*b.m[i] + a.m[5]*b.m[i+1] + a.m[9]*b.m[i+2] + a.m[13]*b.m[i+3];
+			r.m[i+2] = a.m[2]*b.m[i] + a.m[6]*b.m[i+1] + a.m[10]*b.m[i+2] + a.m[14]*b.m[i+3];
+			r.m[i+3] = a.m[3]*b.m[i] + a.m[7]*b.m[i+1] + a.m[11]*b.m[i+2] + a.m[15]*b.m[i+3];
+		}//nexti
+  */ 
+        r[0] = a[0] * b[0] + a[4] * b[1] + a[8] * b[2] + a[12] * b[3];
+				r[1] = a[1] * b[0] + a[5] * b[1] + a[9] * b[2] + a[13] * b[3];
+				r[2] = a[2] * b[0] + a[6] * b[1] + a[10] * b[2] + a[14] * b[3];
+				r[3] = a[3] * b[0] + a[7] * b[1] + a[11] * b[2] + a[15] * b[3];
+        
+        r[4] = a[0] * b[4] + a[4] * b[5] + a[8] * b[6] + a[12] * b[7];
+				r[5] = a[1] * b[4] + a[5] * b[5] + a[9] * b[6] + a[13] * b[7];
+				r[6] = a[2] * b[4] + a[6] * b[5] + a[10] * b[6] + a[14] * b[7];
+				r[7] = a[3] * b[4] + a[7] * b[5] + a[11] * b[6] + a[15] * b[7];
+        
+        r[8] = a[0] * b[8] + a[4] * b[9] + a[8] * b[10] + a[12] * b[11];
+				r[9] = a[1] * b[8] + a[5] * b[9] + a[9] * b[10] + a[13] * b[11];
+				r[10] = a[2] * b[8] + a[6] * b[9] + a[10] * b[10] + a[14] * b[11];
+				r[11] = a[3] * b[8] + a[7] * b[9] + a[11] * b[10] + a[15] * b[11];
+        
+        r[12] = a[0] * b[12] + a[4] * b[13] + a[8] * b[14] + a[12] * b[15];
+				r[13] = a[1] * b[12] + a[5] * b[13] + a[9] * b[14] + a[13] * b[15];
+				r[14] = a[2] * b[12] + a[6] * b[13] + a[10] * b[14] + a[14] * b[15];
+				r[15] = a[3] * b[12] + a[7] * b[13] + a[11] * b[14] + a[15] * b[15];
+		
+	}//multmat
+
+
+
+	//methods from Lighthouse3D's VSML
+	//matrix functions that do the same as the opengl ones
+	//namely gluPerspective
+	//http://www.opengl.org/sdk/docs/man/xhtml/gluPerspective.xml
+	//http://www.lighthouse3d.com/very-simple-libs/vsl-downloads/
+
+	inline void setPerspective(float fov, float aspect, float nearp, float farp)
+	{
+	
+		reset();
+
+		float f = 1.0f / tanf( (fov*(3.1415f/180.f))*0.5f );
+
+			m[0] = f / aspect;
+			m[5] = f;
+			m[10] = (farp + nearp) / (nearp - farp);
+			m[14] = (2.0f * farp * nearp) / (nearp - farp);
+			m[11] = -1.0f;
+			m[15] = 0.0f;
+	
+	}//setperspective
+
+
+ inline void setView(cVec3f *pos, cQuat *ori)
  {
 
-   
-    float * m;
+ 
+   // float * m;
  		gamex::cVec3f up;
 		gamex::cVec3f forw; 
 		gamex::cVec3f side;
+  
+   // m = mat.m;
+  
+    ori->setVecFront(forw);
+    ori->setVecSide(side);
+    ori->setVecUp(up);
+  
+    //identity matrix
+			memset(m, 0, 64); //16*4 -- 16 * 4byte
+			m[0] = m[5] = m[10] = m[15] = 1.0f; 
+
+			m[0] = side.x;			  m[4] = side.y;			  m[8] = side.z;
+			
+			m[1] = up.x;			  m[5] = up.y;			  m[9] = up.z;
+
+			m[2] = forw.x;			  m[6] = forw.y;			  m[10] = forw.z;
+
+
+    //do the same as the result of 
+		// glMultMatrixf(m);
+		//    glTranslatef(-posx, -posy, -posz);
+
+		//do the work of  glTranslatef(-posx, -posy, -posz);
+			m[12] = (side.x *-pos->x) + (side.y * -pos->y) + (side.z * -pos->z);
+			m[13] = (up.x *-pos->x) + (up.y * -pos->y) + (up.z * -pos->z);
+			m[14] = (forw.x *-pos->x) + (forw.y * -pos->y) + (forw.z * -pos->z);
+
+ }//setmodelview2
+
+        
+
+//eas never used
+/*
+        inline void setRotMatrix
+        (
+	        float fx, float fy, float fz,
+	        float sx, float sy, float sz,
+	        float ux, float uy, float uz
+	        )
+                {
+        		        //identify m
+			        memset(m, 0, 64); //16*4 -- 16 * 4byte
+			        m[0] = m[5] = m[10] = m[15] = 1.0f; 
+
+			        m[0] = sx;
+			        m[4] = sy;
+			        m[8] = sz;
+			        
+			        m[1] = ux;
+			        m[5] = uy;
+			        m[9] = uz;
+
+			        m[2] = fx;
+			        m[6] = fy;
+			        m[10] = fz;
+                }//setrot
+        */
+
+        
+        
+        /*
+	//make a modelview matrix
+	//based on same data you would use for a lookatmatrix
+	inline void setModelView(
+	float posx, float posy, float posz,
+	float lookx, float looky, float lookz,
+	float upx, float upy, float upz
+	)
+	{
+		gamex::cVec3f up(upx, upy, upz);
+		gamex::cVec3f forw; //forward
+		gamex::cVec3f side;
+
+		forw.x = lookx - posx;
+		forw.y = looky - posy;
+		forw.z = lookz - posz;
+
+		forw.normPrec();
+
+		side = gamex::cVec3f::cross(forw, up);
+		side.normPrec();
     
-    m = mat.m;
-    
-    ori.setVecFront(forw);
-    ori.setVecSide(side);
-    ori.setVecUp(up);
-    
-    //identify m
+		up = gamex::cVec3f::cross(side, forw);
+		up.normPrec();
+    side = -side;
+
+
+		//identify m
 			memset(m, 0, 64); //16*4 -- 16 * 4byte
 			m[0] = m[5] = m[10] = m[15] = 1.0f; 
 
@@ -979,6 +905,8 @@ public:
 			m[5] = up.y;
 			m[9] = up.z;
 
+      //forw = -forw;
+
 			m[2] = forw.x;
 			m[6] = forw.y;
 			m[10] = forw.z;
@@ -988,14 +916,91 @@ public:
 		//    glTranslatef(-posx, -posy, -posz);
 
 		//do the work of  glTranslatef(-posx, -posy, -posz);
-			m[12] = (side.x *-pos.x) + (side.y * -pos.y) + (side.z * -pos.z);
-			m[13] = (up.x *-pos.x) + (up.y * -pos.y) + (up.z * -pos.z);
-			m[14] = (forw.x *-pos.x) + (forw.y * -pos.y) + (forw.z * -pos.z);
+			m[12] = (side.x *-posx) + (side.y * -posy) + (side.z * -posz);
+			m[13] = (up.x *-posx) + (up.y * -posy) + (up.z * -posz);
+			m[14] = (forw.x *-posx) + (forw.y * -posy) + (forw.z * -posz);
+			
+	}//setmodelview
 
- }//setmodelview2
+*/
+
+
+	//safe to use on self i guess //todo: test
+
+	//returns 0 if unsuccesful
+	int getInverted(gamex::cMat &inv)
+	{
+
+	//source
+	//http://www.codng.com/2011/02/gluunproject-for-iphoneios.html
+
+		float temp[16];
+		float det;
+		int i;
+
+		temp[0] =   m[5]*m[10]*m[15] - m[5]*m[11]*m[14] - m[9]*m[6]*m[15]
+				 + m[9]*m[7]*m[14] + m[13]*m[6]*m[11] - m[13]*m[7]*m[10];
+		temp[4] =  -m[4]*m[10]*m[15] + m[4]*m[11]*m[14] + m[8]*m[6]*m[15]
+				 - m[8]*m[7]*m[14] - m[12]*m[6]*m[11] + m[12]*m[7]*m[10];
+		temp[8] =   m[4]*m[9]*m[15] - m[4]*m[11]*m[13] - m[8]*m[5]*m[15]
+				 + m[8]*m[7]*m[13] + m[12]*m[5]*m[11] - m[12]*m[7]*m[9];
+		temp[12] = -m[4]*m[9]*m[14] + m[4]*m[10]*m[13] + m[8]*m[5]*m[14]
+				 - m[8]*m[6]*m[13] - m[12]*m[5]*m[10] + m[12]*m[6]*m[9];
+		temp[1] =  -m[1]*m[10]*m[15] + m[1]*m[11]*m[14] + m[9]*m[2]*m[15]
+				 - m[9]*m[3]*m[14] - m[13]*m[2]*m[11] + m[13]*m[3]*m[10];
+		temp[5] =   m[0]*m[10]*m[15] - m[0]*m[11]*m[14] - m[8]*m[2]*m[15]
+				 + m[8]*m[3]*m[14] + m[12]*m[2]*m[11] - m[12]*m[3]*m[10];
+		temp[9] =  -m[0]*m[9]*m[15] + m[0]*m[11]*m[13] + m[8]*m[1]*m[15]
+				 - m[8]*m[3]*m[13] - m[12]*m[1]*m[11] + m[12]*m[3]*m[9];
+		temp[13] =  m[0]*m[9]*m[14] - m[0]*m[10]*m[13] - m[8]*m[1]*m[14]
+				 + m[8]*m[2]*m[13] + m[12]*m[1]*m[10] - m[12]*m[2]*m[9];
+		temp[2] =   m[1]*m[6]*m[15] - m[1]*m[7]*m[14] - m[5]*m[2]*m[15]
+				 + m[5]*m[3]*m[14] + m[13]*m[2]*m[7] - m[13]*m[3]*m[6];
+		temp[6] =  -m[0]*m[6]*m[15] + m[0]*m[7]*m[14] + m[4]*m[2]*m[15]
+				 - m[4]*m[3]*m[14] - m[12]*m[2]*m[7] + m[12]*m[3]*m[6];
+		temp[10] =  m[0]*m[5]*m[15] - m[0]*m[7]*m[13] - m[4]*m[1]*m[15]
+				 + m[4]*m[3]*m[13] + m[12]*m[1]*m[7] - m[12]*m[3]*m[5];
+		temp[14] = -m[0]*m[5]*m[14] + m[0]*m[6]*m[13] + m[4]*m[1]*m[14]
+				 - m[4]*m[2]*m[13] - m[12]*m[1]*m[6] + m[12]*m[2]*m[5];
+		temp[3] =  -m[1]*m[6]*m[11] + m[1]*m[7]*m[10] + m[5]*m[2]*m[11]
+				 - m[5]*m[3]*m[10] - m[9]*m[2]*m[7] + m[9]*m[3]*m[6];
+		temp[7] =   m[0]*m[6]*m[11] - m[0]*m[7]*m[10] - m[4]*m[2]*m[11]
+				 + m[4]*m[3]*m[10] + m[8]*m[2]*m[7] - m[8]*m[3]*m[6];
+		temp[11] = -m[0]*m[5]*m[11] + m[0]*m[7]*m[9] + m[4]*m[1]*m[11]
+				 - m[4]*m[3]*m[9] - m[8]*m[1]*m[7] + m[8]*m[3]*m[5];
+		temp[15] =  m[0]*m[5]*m[10] - m[0]*m[6]*m[9] - m[4]*m[1]*m[10]
+				 + m[4]*m[2]*m[9] + m[8]*m[1]*m[6] - m[8]*m[2]*m[5];
+
+		det = m[0]*temp[0] + m[1]*temp[4] + m[2]*temp[8] + m[3]*temp[12];
+  
+		if (det == 0)   return 0;
+
+		det = 1.0f / det;
+ 
+		for (i = 0; i < 16; i++)
+		{ 
+			inv.m[i] = temp[i] * det; 
+		}//nexti
+
+		return 1;
+	}//invert
 
 
 
+}; //matrix
+
+
+
+
+
+
+
+
+
+
+
+
+/*
   class xRand
   {
   public:	  int high;	  int low;
@@ -1013,7 +1018,7 @@ public:
   }//getrand 
 
 };//xrand
-
+*/
 
 };//gamex
 

@@ -3,10 +3,10 @@
 
 #include <math.h>
 #include "xGLCommon.h"
-//#include <GL/glut.h>      
 
 
 #include "xTileMap.h"
+#include "xRand.h"
 
 
 xTileMap::xTileMap(void)
@@ -435,7 +435,7 @@ xTileMap::setSkinFromLayer(int * vec, int mw, int mh)
 void 
 xTileMap::debApplyHeightMap(void)
 {
-  gamex::xRand rnd;
+  xRand rnd;
   float * temp;
   int tw, th;
   int num;
@@ -485,7 +485,7 @@ xTileMap::getNumTri(int sx, int sy, int sw, int sh)
   xTile * st;  xRect * w;  xRect * w2;
   int nface, nvert;  
   int ex, ey;
-  gamex::xRand rnd;
+  xRand rnd;
  
   nface = 0;
   nvert = 0;
@@ -543,7 +543,7 @@ xTileMap::makeMesh(xMdx3 * mesh, int sx, int sy, int sw, int sh)
   int nface, nvert;  int f, v;
   short * vecIndex;  mVert * vecVert;
   int ex, ey;
-  gamex::xRand rnd;
+  xRand rnd;
 
   nface = 0;
   nvert = 0;

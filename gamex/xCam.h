@@ -51,7 +51,9 @@ public:
 
 //		ori.setVecUp(up);
     
-    gamex::setModelView2(mat, pos, ori);
+   // gamex::setModelView2(mat, pos, ori);
+    mat.setView(&pos, &ori);
+
 /*
 		mat.setModelView(
 			pos.x, pos.y, pos.z,
@@ -84,7 +86,9 @@ public:
 			at.x, at.y, at.z,
 			up.x, up.y, up.z);*/
 
-     gamex::setModelView2(mat, pos, ori);
+    // gamex::setModelView2(mat, pos, ori);
+
+      mat.setView(&pos, &ori);
 	}//getcammat
 
 	//warning

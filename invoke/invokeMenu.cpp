@@ -25,6 +25,8 @@ invokeMenu::invokeMenu(void)
   
   mState = 0;
 
+  mState = STATE_GAME; //debug
+
 }//ctor
 
  

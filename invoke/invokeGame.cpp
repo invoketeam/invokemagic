@@ -394,7 +394,146 @@ myCol.render();
 
    glDisable(GL_TEXTURE_2D); myGui.debugDraw(); 
 
+   upCursor();
+
 }//render
+
+
+
+
+static void drawRect(float cx, float cy, float cw, float ch)
+{
+  glBegin(GL_LINES);
+    glVertex2f(cx,cy);       glVertex2f(cx+cw,cy);
+    glVertex2f(cx,cy+ch);    glVertex2f(cx+cw,cy+ch);
+    glVertex2f(cx,cy);       glVertex2f(cx,cy+ch);
+    glVertex2f(cx+cw,cy);    glVertex2f(cx+cw,cy+ch);
+  glEnd();
+}//drawcube
+
+
+
+
+
+
+
+
+
+
+
+
+static int get2DCoord(float * view, float * proj, gamex::cVec3f * pos, float * retx, float * rety)
+{
+	float ta[4];
+	float tb[4];
+
+	ta[0] = pos->x;
+	ta[1] = pos->y;
+	ta[2] = pos->z;
+	ta[3] = 1.0f;
+
+	tb[0] = ta[0] * view[0] + ta[1] * view[4] + ta[2] * view[8] + ta[3] * view[12];
+	tb[1] = ta[0] * view[1] + ta[1] * view[5] + ta[2] * view[9] + ta[3] * view[13];
+	tb[2] = ta[0] * view[2] + ta[1] * view[6] + ta[2] * view[10] + ta[3] * view[14];
+	tb[3] = ta[0] * view[3] + ta[1] * view[7] + ta[2] * view[11] + ta[3] * view[15];
+
+	ta[0] = tb[0] * proj[0] + tb[1] * proj[4] + tb[2] * proj[8] + tb[3] * proj[12];
+	ta[1] = tb[0] * proj[1] + tb[1] * proj[5] + tb[2] * proj[9] + tb[3] * proj[13];
+	ta[2] = tb[0] * proj[2] + tb[1] * proj[6] + tb[2] * proj[10] + tb[3] * proj[14];
+	ta[3] = tb[0] * proj[3] + tb[1] * proj[7] + tb[2] * proj[11] + tb[3] * proj[15];
+
+	if (ta[3] == 0.0f) return(0);
+	ta[0] /= ta[3];
+	ta[1] /= ta[3];
+	//    ta[2] /= ta[3];
+	/* Map x, y and z to range 0-1 */
+	ta[0] = ta[0] * 0.5 + 0.5;
+	ta[1] = ta[1] * 0.5 + 0.5;
+	//    ta[2] = in[2] * 0.5 + 0.5;
+
+	ta[0] = ((ta[0]) *2) -1;
+	ta[1] = ((ta[1]) *2) -1;
+
+	*retx = ta[0];
+	*rety = ta[1];
+
+
+	return (1);
+}//get2d
+
+
+
+
+
+
+void 
+invokeGame::upCursor(void)
+{
+  //selecting units
+  //for now in a brute-force way (going through all and projecting them on screen)
+
+  static int se = 0; // selection started
+  static float selx = 0;
+  static float sely = 0;
+
+  if (mDownLeft)
+  {  
+    if (se == 0)
+    {
+      se = 1;
+      selx = mx;
+      sely = my;
+    }
+    else
+    {
+      glColor3f(0,1,0);
+      drawRect(selx,sely, mx-selx, my-sely);
+    }
+  }else { se = 0; }
+
+
+  gamex::cMat proj;
+  gamex::cMat view;
+
+  proj.setPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
+  view.setView(&myCam.pos, &myCam.ori);
+
+  float sx, sy;
+  sx = 0;
+  sy = 0;
+
+  get2DCoord(view.m, proj.m, &(myCursor.coord), &sx, &sy);
+
+  //todo -- this will need some work
+  drawRect(sx*320+320, 480-(sy*240+240), 4,4);
+
+
+
+/*
+   mat = projview;
+            
+    vx = cx;            vy = cy;            vz = cz;
+            
+    sx = vx * mat[0] + vy * mat[4] + vz * mat[8] + mat[12];
+    sy = vx * mat[1] + vy * mat[5] + vz * mat[9] + mat[13];
+    w = vx * mat[3] + vy * mat[7] + vz * mat[11] + mat[15];
+     sx /= w;
+     sy /= w;
+
+  var rendw:Number; var rendh:Number;
+     rendw = 320;
+     rendh = 240;
+     
+       sx *= rendw;            sy *= -rendh;
+       sx += rendw;			sy += rendh;
+
+
+      mx = (1/w) * 240 * size;
+
+*/
+
+}//upcursor
+
 
 
 

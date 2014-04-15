@@ -43,14 +43,13 @@ public:
   virtual void update(void);
 	virtual void render(void);
 
+public:
+  virtual void upCursor(void);
 
 
-  virtual xMdx3 * getMdx(std::string wname);
-  virtual xTexture * getTex(std::string wname); 
-  virtual unsigned int getSkin(std::string wname);
-  virtual xSprite * getSprite(std::string wname);
 
 
+public:
 
   virtual float getHeight(float wx, float wz);
 
@@ -59,6 +58,15 @@ public:
 
 public:
   virtual void gotCmd(int cmd, int arg0, int arg1);
+
+
+public:
+  virtual xMdx3 * getMdx(std::string wname);
+  virtual xTexture * getTex(std::string wname); 
+  virtual unsigned int getSkin(std::string wname);
+  virtual xSprite * getSprite(std::string wname);
+
+
 
 };//invokemenu
 
