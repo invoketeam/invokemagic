@@ -147,6 +147,10 @@ SOURCE=.\gamex\xActor.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\gamex\xCam.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\gamex\xCam.h
 # End Source File
 # Begin Source File

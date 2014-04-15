@@ -97,7 +97,12 @@ void
 xPartTest::render2(xRender * r)
 {
   gamex::cMat mat;
-  game->getCamPtr()->getCamMat(mat);
+  xCam * cam;
+  cam = game->getCamPtr();
+
+  mat.setView(&(cam->pos), &(cam->ori));
+
+//  game->getCamPtr()->getCamMat(mat);
  
    myPart.updateMesh(mat.m);
 //    myPart.render();

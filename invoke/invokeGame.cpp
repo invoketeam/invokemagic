@@ -298,15 +298,19 @@ invokeGame::render(void)
 {
   //assuming zbuffer is cleared at this point
 
+  gamex::cMat view;
+
   glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
     gluPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
 
 	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-    myCam.camLookAt();
+	//glLoadIdentity();
 
-     // glutWireCube(32);
+  view.setView(&myCam.pos, &myCam.ori);
+  glLoadMatrixf(view.m);
+
+
 
  // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   //todo -- render tilemap with xRender
