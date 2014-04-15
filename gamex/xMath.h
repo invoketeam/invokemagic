@@ -4,7 +4,7 @@
 #include <cstring>
 
 //vector, quaternion and matrix math
-//update -- random number gen
+
 
 namespace gamex
 {
@@ -20,9 +20,6 @@ public:
 	 cVec3f(void):x(0.0f),y(0.0f),z(0.0f) {} //ctor1
 	 cVec3f(float x_, float y_, float z_):x(x_),y(y_),z(z_) {} //ctor2
 	 cVec3f(float f_):x(f_), y(f_), z(f_) {}//ctor3
-         //gcc doesnt get ctor4, fuck gcc
-         //	 cVec3f(cVec3f &v):x(v.x), y(v.y), z(v.z) {}//ctor4 //update
-	 ~cVec3f() {}; //dtor
 
 	inline float getMagSquared(void) 	{		return ((x*x) + (y*y) + (z*z));	}
 	inline float getMag(void) {	return (1.0f / invSquareRoot( (x*x) + (y*y) + (z*z) ));	} //  sqrtf((x*x) + (y*y) + (z*z)); }
@@ -120,7 +117,7 @@ public:
 		 unsigned int *i = (unsigned int*) &x;
 		 *i = 0x5F375A86 - (*i>>1);
 		 return x * (1.5f - xHalf*x*x);
- }//invsq
+  }//invsq
 
 };//classend (vec3f)
 
@@ -140,9 +137,6 @@ public:
 
 	cQuat(float x_, float y_, float z_, float w_):
 	x(x_), y(y_), z(z_), w(w_) {} //ctor2
-	
-	//~cQuat() {}//dtor
-
 
 
 	inline cQuat operator - (void) { return cQuat(-x,-y,-z, w); }
@@ -159,7 +153,6 @@ public:
 
 		//source
 		//http://glprogramming.com/codedump/godecho/quaternion.html
-
 
 		tx =	(w*b.x + x*b.w + y*b.z - z*b.y),
 		ty =	(w*b.y + y*b.w + z*b.x - x*b.z),
@@ -186,17 +179,6 @@ public:
 		x *= mag; y *= mag; z *= mag; w *= mag; 
 			
 	}//normalise
-
-/*
-	inline cVec3f mulVec(cVec3f v)
-	{
-		v.normalise();
-		
-		cQuat vr(v.x, v.y, v.z, 0);
-	
-	
-	}//mulv
-*/
 
 
 
@@ -262,6 +244,7 @@ public:
 	//using the axis angle conversion
 	//to turn degrees into quaternion
 	//and use that to turn the quat
+
 	inline void rotPitch(float ang)
 	{
 		cQuat q;
@@ -311,35 +294,14 @@ public:
 
 	}//rotroll
 
-	/*
-	//is it me or is it less calc to use a matrix instead?
-	//http://www.flipcode.com/documents/matrfaq.html#Q57
-//	http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToAngle/index.htm
-	inline void setAxisAngle(cVec3f &ax, float &ang)
-	{
-		//quaternion_normalise( qr );
 
-		//todo -- normalise
-
-		ang = acosf( w ) * 2;
-
-    float sin_angle  = sqrtf( 1.0 - ang * ang );
-
-
-    if ( fabsf( sin_angle ) < 0.001f) sa = 1.0f;
-
-		ax.x = qr -> qx / sa;
-    ax.y -> vy = qr -> qy / sa;
-    ax.y -> vz = qr -> qz / sa;
-	}//setaxisa
-*/	
 
 	//m should be the array in cMat (aka a float m[16])
 	//note -- this only sets a rotation matrix -- no translate or scale
 	inline void setMatrix(float * m)
 	{
 	
-		//code source:
+		//source:
 		// http://www.flipcode.com/documents/matrfaq.html#Q54
 
 			
@@ -373,17 +335,6 @@ public:
 	}//setmatrix
 
 
-	/*
-	//source: http://gpwiki.org/index.php/OpenGL:Tutorials:Using_Quaternions_to_represent_rotation
-	inline void fromAxis(float vx, float vy, float vz, float angrad)
-	{
-		angrad *= 0.5;
-		float sa; //sin angle
-
-
-	
-	}//fromax
-*/
   
   inline void mulVec3(gamex::cVec3f &v)
   {
@@ -410,29 +361,14 @@ public:
   }//mulvec
   
   
-/*
-  //todo -- rewrite this one to use float[16]
-	inline void fromVec(gamex::cVec3f side, gamex::cVec3f up, gamex::cVec3f front)
-	{
-		gamex::cMat mat;
-
-		mat.m[0] = side.x;		mat.m[4] = side.y;		mat.m[8] = side.z;
-		mat.m[1] = up.x;	  	mat.m[5] = up.y;		  mat.m[9] = up.z;
-		mat.m[2] = front.x;		mat.m[6] = front.y;		mat.m[10] = front.z;
-	
-		fromMatrix(mat.m);
-
-		normalise();
-	
-	}//fromvec
-	*/
-
 
 
 	//needs a m[16] sized matrix -- in opengl order
 	//(just use m from a cMat)
 	//based on http://www.flipcode.com/documents/matrfaq.html#Q55
 	//(note -- changed the order of matrix they used to opengl one)
+
+  //seldom used (probably not needed )
 	inline void fromMatrix(float * m)
 	{
 
@@ -441,8 +377,7 @@ public:
 
 		if (t > 0.0f)
 		{
-			s = 0.5f / sqrtf(t); // (1.0f / cVec3f::invSquareRoot(t));
-			//s = 0.5f / (1.0f / cVec3f::invSquareRoot(t));
+			s = 0.5f / sqrtf(t); 
 			
 			w = 0.25f / s;
 		  x = ( m[6] - m[9] ) * s;
@@ -451,15 +386,10 @@ public:
 
 			return;
 		}//endif
-	
-	//	if (m[0] == m[5] && m[0] == m[10]) return;
 
 		if (m[0] > m[5] && m[0] > m[10])
 		{
-			//m0 is biggest
-
 				s = sqrtf( 1.0f + m[0] - m[5] - m[10] ) * 2.0f; 
-				//s = (1.0f / cVec3f::invSquareRoot( 1.0f + m[0] - m[5] - m[10]) ) * 2.0f; 
 		
 				x = 0.5f / s;
         y = (m[4] + m[1] ) / s;
@@ -469,34 +399,27 @@ public:
 		else
 		{
 			if (m[5] > m[10])
-			{
-				//m5 is biggest
-				
-					s = sqrtf( 1.0f + m[5] - m[0] - m[10] ) * 2.0f; 
-					//s = (1.0f / cVec3f::invSquareRoot( 1.0f + m[5] - m[0] - m[10]) ) * 2.0f; 
-	
-					x = (m[1] + m[4] ) / s;
-					y = 0.5f / s;
-					z = (m[6] + m[9] ) / s;
-					w = (m[2] + m[8] ) / s;
+			{			
+				s = sqrtf( 1.0f + m[5] - m[0] - m[10] ) * 2.0f; 
+
+				x = (m[1] + m[4] ) / s;
+				y = 0.5f / s;
+				z = (m[6] + m[9] ) / s;
+				w = (m[2] + m[8] ) / s;
 
 			}
 			else
 			{
-				//m10 is biggest (or they are all equal?)
+				s = sqrtf( 1.0f + m[10] - m[0] - m[5] ) * 2.0f; 
 
-					s = sqrtf( 1.0f + m[10] - m[0] - m[5] ) * 2.0f; 
-					//s = (1.0f / cVec3f::invSquareRoot( 1.0f + m[10] - m[0] - m[5] ) ) * 2.0f; 
-
-					x = (m[2] + m[8] ) / s;
-					y = (m[6] + m[9] ) / s;
-					z = 0.5f / s;
-					w = (m[1] + m[4] ) / s;
+				x = (m[2] + m[8] ) / s;
+				y = (m[6] + m[9] ) / s;
+				z = 0.5f / s;
+				w = (m[1] + m[4] ) / s;
 			
 			}//endif2
 		}//endif
 
-		//normalise();
 
 	}//frommatrix
 
@@ -517,80 +440,61 @@ public:
       y = blend * q1.y + t * q2.y;
       z = blend * q1.z + t * q2.z;
 
-     // no normalising included
-     // normalise instead as neccesary
-     // animations dont seem to need it
-     // normalise();
+     // not normalising by default 
  }//nlerp
 
 
 
-//from
-	//http://irrlicht.sourceforge.net/docu/quaternion_8h-source.html
-	//q1 from -- q2 to -- t amount
+//source
+//http://irrlicht.sourceforge.net/docu/quaternion_8h-source.html
+
  inline void slerp(cQuat q1, cQuat q2, float t)
  {
-				float scale;
-        float invscale;
-				float theta;
-				float invsintheta;
-        float ang = (q1.x*q2.x)+(q1.y*q2.y)+(q1.z*q2.z)+(q1.w*q2.w);
-					//q1.dotProduct(q2);
+		float scale;    float invscale;		float theta;
+		float invsintheta;    float ang;
 
-         if (ang < 0.0f)
-				 {		 
-             q1.x = -q1.x;
-						 q1.y = -q1.y;
-						 q1.z = -q1.z;
-						 q1.w = -q1.w;
-             ang = -ang;
-         }//endif
- 
-         
+    ang = (q1.x*q2.x)+(q1.y*q2.y)+(q1.z*q2.z)+(q1.w*q2.w);
 
-        if ((ang + 1.0f) > 0.05f)
-        {
-                 if ((1.0f - ang) >= 0.05f) // spherical interpolation
-                 {
-                         theta = acosf(ang);
-                         invsintheta = 1.0f / sinf(theta);
-                         scale = sinf(theta * (1.0f-t)) * invsintheta;
-                         invscale = sinf(theta * t) * invsintheta;
-                 }
-                 else // linear interploation
-                 {
-                         scale = 1.0f - t;
-                         invscale = t;
-                 }//endif
-         }
-         else
-         {
-                 //q2.set(-q1.Y, q1.X, -q1.W, q1.Z);
 
-									q2.x = -q1.y;
-									q2.y = q1.x;
-									q2.z = -q1.w;
-									q2.w = q1.z;
+    if (ang < 0.0f)
+		{		   
+        q1.x = -q1.x;				 q1.y = -q1.y;		
+   		  q1.z = -q1.z;				 q1.w = -q1.w;
+        ang = -ang;
+    }//endif
 
-                 scale = sinf(3.1415f * (0.5f - t));
-                 invscale = sinf(3.1415f * t);
-         }//endif
- 
+    if ((ang + 1.0f) > 0.05f)
+    {
+     if ((1.0f - ang) >= 0.05f) // spherical interpolation
+     {
+       theta = acosf(ang);
+       invsintheta = 1.0f / sinf(theta);
+       scale = sinf(theta * (1.0f-t)) * invsintheta;
+       invscale = sinf(theta * t) * invsintheta;
+     }
+     else // linear interploation
+     {
+       scale = 1.0f - t;
+       invscale = t;
+     }//endif
+     }
+     else
+     {
+           
+			q2.x = -q1.y;		q2.y = q1.x;		q2.z = -q1.w;			q2.w = q1.z;
 
-				 x = q1.x * scale + q2.x * invscale;
-				 y = q1.y * scale + q2.y * invscale;
-				 z = q1.z * scale + q2.z * invscale;
-				 w = q1.w * scale + q2.w * invscale;
+       scale = sinf(3.1415f * (0.5f - t));
+       invscale = sinf(3.1415f * t);
+     }//endif
 
-         //return (*this = (q1*scale) + (q2*invscale));
+
+		 x = q1.x * scale + q2.x * invscale;
+		 y = q1.y * scale + q2.y * invscale;
+		 z = q1.z * scale + q2.z * invscale;
+		 w = q1.w * scale + q2.w * invscale;
+
 	}//slerp
 
-/*
- // calculates the dot product
- inline f32 quaternion::dotProduct(const quaternion& q2) const
- {
-         return (X * q2.X) + (Y * q2.Y) + (Z * q2.Z) + (W * q2.W);
- }*/
 
 
 
@@ -662,10 +566,6 @@ public:
 			m[0] = m[5] = m[10] = m[15] = 1.0f; 
 		}//ctor
 
-
-	//~cMat(void) {}//dtor
-
-
 	inline void reset(void)
 	{
 		//reset to identity matrix
@@ -733,16 +633,13 @@ public:
 
 	inline static void multMatrix(cMat &ma, cMat &mb, cMat &mr )
 	{
-		//int i;
-    float * a;
-    float * b;
-    float * r;
+		
+    float * a;    float * b;    float * r;
 
-    a = ma.m;
-    b = mb.m;
-    r = mr.m;
+    a = ma.m;    b = mb.m;    r = mr.m;
 
     /*
+//int i;
 		for (i = 0; i < 16; i +=4)
 		{
 			r.m[i] = a.m[0]*b.m[i]  +  a.m[4]* b.m[i+1]+a.m[8]*b.m[i+2] +  a.m[12]*b.m[i+3];
@@ -750,7 +647,7 @@ public:
 			r.m[i+2] = a.m[2]*b.m[i] + a.m[6]*b.m[i+1] + a.m[10]*b.m[i+2] + a.m[14]*b.m[i+3];
 			r.m[i+3] = a.m[3]*b.m[i] + a.m[7]*b.m[i+1] + a.m[11]*b.m[i+2] + a.m[15]*b.m[i+3];
 		}//nexti
-  */ 
+     */ 
         r[0] = a[0] * b[0] + a[4] * b[1] + a[8] * b[2] + a[12] * b[3];
 				r[1] = a[1] * b[0] + a[5] * b[1] + a[9] * b[2] + a[13] * b[3];
 				r[2] = a[2] * b[0] + a[6] * b[1] + a[10] * b[2] + a[14] * b[3];
@@ -836,93 +733,8 @@ public:
  }//setmodelview2
 
         
+       
 
-//eas never used
-/*
-        inline void setRotMatrix
-        (
-	        float fx, float fy, float fz,
-	        float sx, float sy, float sz,
-	        float ux, float uy, float uz
-	        )
-                {
-        		        //identify m
-			        memset(m, 0, 64); //16*4 -- 16 * 4byte
-			        m[0] = m[5] = m[10] = m[15] = 1.0f; 
-
-			        m[0] = sx;
-			        m[4] = sy;
-			        m[8] = sz;
-			        
-			        m[1] = ux;
-			        m[5] = uy;
-			        m[9] = uz;
-
-			        m[2] = fx;
-			        m[6] = fy;
-			        m[10] = fz;
-                }//setrot
-        */
-
-        
-        
-        /*
-	//make a modelview matrix
-	//based on same data you would use for a lookatmatrix
-	inline void setModelView(
-	float posx, float posy, float posz,
-	float lookx, float looky, float lookz,
-	float upx, float upy, float upz
-	)
-	{
-		gamex::cVec3f up(upx, upy, upz);
-		gamex::cVec3f forw; //forward
-		gamex::cVec3f side;
-
-		forw.x = lookx - posx;
-		forw.y = looky - posy;
-		forw.z = lookz - posz;
-
-		forw.normPrec();
-
-		side = gamex::cVec3f::cross(forw, up);
-		side.normPrec();
-    
-		up = gamex::cVec3f::cross(side, forw);
-		up.normPrec();
-    side = -side;
-
-
-		//identify m
-			memset(m, 0, 64); //16*4 -- 16 * 4byte
-			m[0] = m[5] = m[10] = m[15] = 1.0f; 
-
-			m[0] = side.x;
-			m[4] = side.y;
-			m[8] = side.z;
-			
-			m[1] = up.x;
-			m[5] = up.y;
-			m[9] = up.z;
-
-      //forw = -forw;
-
-			m[2] = forw.x;
-			m[6] = forw.y;
-			m[10] = forw.z;
-
-
-		// glMultMatrixf(m);
-		//    glTranslatef(-posx, -posy, -posz);
-
-		//do the work of  glTranslatef(-posx, -posy, -posz);
-			m[12] = (side.x *-posx) + (side.y * -posy) + (side.z * -posz);
-			m[13] = (up.x *-posx) + (up.y * -posy) + (up.z * -posz);
-			m[14] = (forw.x *-posx) + (forw.y * -posy) + (forw.z * -posz);
-			
-	}//setmodelview
-
-*/
 
 
 	//safe to use on self i guess //todo: test
@@ -992,35 +804,10 @@ public:
 
 
 
-
-
-
-
-
-
-
-
-/*
-  class xRand
-  {
-  public:	  int high;	  int low;
-  public:
-  xRand() {	high = 1;	low = 1 ^ 0x49616E42; }
-  void setSeed(int seed) {	high = seed;	low = seed ^ 0x49616E42; }
-  int getRandInt(void) {	high = (high >> 2) + (high << 2);	high += low;	low += high;	return (high % 32768);}
-  float getRand(void)
-  {
-    float rand2;
-	  high = (high >> 2) + (high << 2);	high += low;	low += high;
-	  rand2 = ((float)(high % 32768)) / 32768.0f;
-	  if (rand2 < 0.0f ) { rand2 = -rand2; }	if (rand2 > 1.0f ) { rand2 = 1.0f; }
-	  return rand2;
-  }//getrand 
-
-};//xrand
-*/
-
 };//gamex
+
+
+
 
 /*
        | 0  1  2  3  |            | 0  4  8  12 |
