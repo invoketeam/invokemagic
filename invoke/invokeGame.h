@@ -18,6 +18,9 @@ public:
 
   
   xCam myCam;
+  gamex::cVec3f camPos;
+
+
   xRender myRender;
   xCursor myCursor;
   

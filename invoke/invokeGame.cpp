@@ -25,11 +25,13 @@ invokeGame::invokeGame(void)
 
   myCam.pos.set(16*64, 1024, 16*64);
 
+  camPos.set(16*64, 1024, 16*64);
+
   myCam.ori.rotPitch(-0.8f);
 
 
   myCam.neard = 1.0f;
-  myCam.fard = 5000.0f;
+  myCam.fard = 9000.0f;
   myCam.aspect = 640.0f/480.0f;
   myCam.fov = 70.0f;  //important
 
@@ -144,7 +146,9 @@ invokeGame::init(void)
   myMap.initFromLayer(layer->vecGrid, layer->mwidth, layer->mheight);
 
     //rem: a 512x512 map is half million tris
-   //myMap.initEmpty(128, 128);
+  // myMap.initEmpty(128, 128);
+
+   //myMap.initEmpty(32, 32);
     
 
 
@@ -201,7 +205,16 @@ invokeGame::init(void)
 */
 
   myMap.genHeightRect();
-  myMap.debApplyHeightMap();
+  //  myMap.debApplyHeightMap();
+
+//todo -- maybe the extra wall rendering is not needed
+//and instead it should be based on the heightmap?
+
+  xImage hmap;
+  hmap.loadImage("data/test_heightmap.png");
+    myMap.applyHeightMap(&hmap, 4.0f);
+  hmap.clear();
+
 
   //  xMdx3 temp;
       //ok so-- the thing is i chosen to use shorts for storing the number of faces possible in an mdx
@@ -280,32 +293,27 @@ void
 invokeGame::update(void)
 {
 
+
+  //cam speed
   float ms;
-  ms = 64;
-
-/*
-  if (isKeyDown(KEY_W)) { myCam.moveForward(-ms); } 
-  if (isKeyDown(KEY_S)) { myCam.moveForward(ms); }
-
-  if (isKeyDown(KEY_A)) { myCam.strafeRight(-ms); } 
-  if (isKeyDown(KEY_D)) { myCam.strafeRight(ms); } 
-
-  if (isKeyDown(KEY_R)) { myCam.strafeUp(ms); }
-  if (isKeyDown(KEY_F)) { myCam.strafeUp(-ms); }
-*/
-
-  if (isKeyDown(KEY_W)) { myCam.pos.z -= ms;  } 
-  if (isKeyDown(KEY_S)) { myCam.pos.z += ms;  }
-
-  if (isKeyDown(KEY_A)) { myCam.pos.x -= ms; } 
-  if (isKeyDown(KEY_D)) { myCam.pos.x += ms; } 
-
-  if (isKeyDown(KEY_R)) { myCam.pos.y += ms; }
-  if (isKeyDown(KEY_F)) { myCam.pos.y -= ms; }
+  ms = 32.0f;
 
 
 
-//todo -- move a point instead and set the camera position according o that
+  if (isKeyDown(KEY_W) || isKeyDown(KEY_UP)) { camPos.z -= ms;  } 
+  if (isKeyDown(KEY_S) || isKeyDown(KEY_DOWN)) { camPos.z += ms;  }
+
+  if (isKeyDown(KEY_A) || isKeyDown(KEY_LEFT)) { camPos.x -= ms; } 
+  if (isKeyDown(KEY_D) || isKeyDown(KEY_RIGHT)) { camPos.x += ms; } 
+
+  if (isKeyDown(KEY_R)) { camPos.y += ms; }
+  if (isKeyDown(KEY_F)) { camPos.y -= ms; }
+
+
+  //todo -- this needs some smoothing (adjusting?)
+  myCam.pos = camPos;
+  myCam.pos.y += myMap.getHeight(camPos.x, camPos.z);
+
 
 
   //transforming the universal mouse coordinates (0,1) to  (-1,1)
@@ -358,11 +366,12 @@ invokeGame::render(void)
     glLineWidth(1);
     glColor3f(0,0,1);
      myDraw.render(&frust);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glColor3f(0,0,0);
-     myDraw.render(&frust);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glDepthFunc(GL_LESS);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+      glColor3f(0,0,0);
+       myDraw.render(&frust);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+      glDepthFunc(GL_LESS);
+
 /*
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 glColor3f(1,1,1);
@@ -370,6 +379,7 @@ myCol.render();
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 //  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 */
+
   myRender.resetFrame();
   myRender.setCam(myCam.pos, myCam.ori);
   
@@ -643,8 +653,8 @@ invokeGame::gotCmd(int cmd, int arg0, int arg1)
  //for now the minimap movement is hacked together like this (should be refined in the future)
  if (cmd == 500)
  {
-    myCam.pos.x = arg0 * 64;
-    myCam.pos.z = arg1 * 64;
+    camPos.x = arg0 * 64;
+    camPos.z = arg1 * 64;
  }//endif
 
 

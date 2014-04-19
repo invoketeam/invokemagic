@@ -272,6 +272,8 @@ xDrawMesh::initRect(xTileMap * tmap)
     xDrawRect * a;
 
     cellw = 8; cellh = 8;
+    //cellw = 16; cellh = 16;
+
 
     mw = (int) ceil((float)tmap->mwidth / (float) cellw);
     mh = (int) ceil((float)tmap->mheight / (float) cellh);
@@ -279,8 +281,12 @@ xDrawMesh::initRect(xTileMap * tmap)
     numRect = mw * mh;
     vecRect = new xDrawRect[numRect];
 
-    tree.pos.set(0,-1024,0);
-    tree.size.set(tmap->mwidth*tmap->cw, 2048, tmap->mheight*tmap->ch);
+  //todo -- make height adjustable with parameters
+//    tree.pos.set(-64,-10240,-64);
+//    tree.size.set(tmap->mwidth*tmap->cw+128, 20480, tmap->mheight*tmap->ch+128);
+    tree.pos.set(-256,-10240,-256);
+    tree.size.set(tmap->mwidth*tmap->cw+512, 20480, tmap->mheight*tmap->ch+512);
+
     tree.mid = tree.pos + (tree.size * 0.5f);
     tree.rad = (tree.size.getMag()) * 0.5f;
 
@@ -297,13 +303,24 @@ xDrawMesh::initRect(xTileMap * tmap)
       {
          a = &(vecRect[k+yt]);
          tmap->makeMesh(&(a->mesh),k*cellw,i*cellh,cellw,cellh);
-         //a->mesh.moveMesh(0,-8,0); //debug
-         a->mesh.calcMinMax();
+       
+         // a->mesh.moveMesh(0,-8,0); //debug
+
+         //a->mesh.calcMinMax();
 
          a->pos = a->mesh.min + (a->mesh.max - a->mesh.min) * 0.5f;
          a->rad = ((a->mesh.max - a->mesh.min).getMag() *0.5f);
 
-         tree.addMesh(&(a->mesh), maxd);
+
+        //todo -- BUG -  the bottom corners are left off (on any map size) (with any cell size)
+         if (i == 15 && k == 0)  
+         {
+            printf("break here \n");
+            printf(" %0.2f  %d \n",  (a->mesh.min.y), (int) a->mesh.min.y);
+
+         }
+        
+         if (tree.addMesh(&(a->mesh), maxd) == false) { printf("Warning -- mesh out of tree %d %d \n", i, k); }
       }//nextk
     }//nexti
   

@@ -470,9 +470,74 @@ xTileMap::debApplyHeightMap(void)
   }//nexti
 
   delete [] temp;
-}//applyheight
+}//debapplyheight
 
  
+
+void 
+xTileMap::applyHeightMap(xImage * img, float yscale)
+{
+  //if (vecRect == 0) { return; } //nah, crash instead
+
+  xImage * tmp; 
+  float * vec;
+  unsigned int * dat;
+  int num;
+  int i;
+  int k;
+  int yt;  
+  xRect * w;
+
+  tmp = 0;
+  vec = 0;
+
+  //resize image if not exact size (todo -- issue an warning if this happens)
+
+  tmp = new xImage();
+   tmp->init(mwidth, mheight);
+  if (img->mw != mwidth || img->mh != mheight) {    tmp->resize(img, mwidth, mheight); } else { tmp->drawImage(img, 0,0); }
+ 
+  num = mwidth * mheight;
+  vec = new float[num];
+  dat = tmp->dat;
+
+  //todo -- set this from parameter
+  //yscale = 4.0f; //2.0f;
+
+  //convert blue channel to height
+  for (i = 0; i < num; i++) 
+  { 
+    //if (i < 10) { printf("height %0.2f \n ", (float)((dat[i]>>8) & 0xFF));  }
+    vec[i] =  (float)((dat[i]>>8) & 0xFF) * yscale; 
+  }
+
+  for (i = 0; i < mheight; i++)
+	{
+	    yt = i * mwidth;
+
+		  for (k = 0; k < mwidth; k++)
+		  {
+        w = &(vecRect[k+yt]);
+
+        w->vert[0].y += vec[k+yt];
+        w->vert[1].y += vec[k+yt+mwidth];
+        w->vert[2].y += vec[k+yt+1];
+        w->vert[3].y += vec[k+yt+mwidth+1];
+
+      }//nextk
+  }//nexti
+
+
+
+  if (tmp != 0) { delete tmp; }
+  if (vec != 0) { delete [] vec; }
+}//applyheight
+
+
+
+
+
+
 
 
 int

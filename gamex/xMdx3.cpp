@@ -139,8 +139,8 @@ xMdx3::calcMinMax(void)
   int i, num;
   gamex::cVec3f * p;
 
-  min = 999999999999.0f;
-  max = -999999999999.0f;
+  min = 999999999.0f;
+  max = -999999999.0f;
 
 
   num = numVert;
@@ -150,13 +150,19 @@ xMdx3::calcMinMax(void)
 
     if (p->x < min.x) { min.x = p->x; }
     if (p->x > max.x) { max.x = p->x; }
+
     if (p->y < min.y) { min.y = p->y; }
     if (p->y > max.y) { max.y = p->y; }
+
     if (p->z < min.z) { min.z = p->z; }
     if (p->z > max.z) { max.z = p->z; }
 
   }//nexti
-  
+
+  //if (min.y > 0.1f && min.y <-0.1f) { min.y = 0.0f; } 
+  //if (max.y > 0.1f && max.y <-0.1f) { max.y = 0.0f; } 
+ 
+  //printf("minmax %0.2f %0.2f  %0.2f %0.2f  %0.2f %0.2f \n", min.x, max.x, min.y, max.y, min.z, max.z);
 
 
 }//calcminmax

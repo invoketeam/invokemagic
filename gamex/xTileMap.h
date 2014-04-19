@@ -2,7 +2,7 @@
 
 
 #include "xMdx3.h"
-
+#include "xImage.h"
 
 
 
@@ -118,6 +118,8 @@ public:
   void genHeightRect(void);
 
   void debApplyHeightMap(void);
+
+  void applyHeightMap(xImage * img, float yscale=1.0f);
 
 	//void renderDebug();
 //	void renderDebug2();
