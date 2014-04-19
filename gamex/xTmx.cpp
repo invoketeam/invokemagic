@@ -22,7 +22,7 @@ static void base64_decode(std::string &encoded, std::string &ret );
 static int * uncompressLayer(std::string data, int mw, int mh);
 
 
-xTmxLayer::xTmxLayer()
+xTmxLayer::xTmxLayer(void)
 {
   mwidth = 0;
   mheight = 0;
@@ -30,7 +30,7 @@ xTmxLayer::xTmxLayer()
 }//ctor
 
 
-xTmxLayer::~xTmxLayer()
+xTmxLayer::~xTmxLayer(void)
 {
   clear();
 }//dtor
@@ -38,7 +38,7 @@ xTmxLayer::~xTmxLayer()
 
 
 void 
-xTmxLayer::clear()
+xTmxLayer::clear(void)
 {
   if (vecGrid != 0) { delete [] vecGrid; } vecGrid = 0;
   mwidth = 0;
@@ -71,7 +71,7 @@ xTmxLayer::addNum(int n)
 
 
 
-xTmx::xTmx()
+xTmx::xTmx(void)
 {
   mwidth = 0;
   mheight = 0;
@@ -81,7 +81,7 @@ xTmx::xTmx()
 
 
 
-xTmx::~xTmx()
+xTmx::~xTmx(void)
 {
   clear();
 }//dtor
@@ -291,8 +291,7 @@ static int * uncompressLayer(std::string data, int mw, int mh)
   vec = new int[numbyte];
 
   //uncompress the decoded string into vec as our layer
-   success = mz_uncompress((Bytef*)vec, &numbyte, 
-      		(const Bytef*)decoded.c_str(), decoded.size() );
+   success = mz_uncompress( (Bytef*)vec, &numbyte, (const Bytef*) decoded.c_str(), decoded.size() );
 
 	if (success == Z_OK)
   {	printf("xTmx:: uncompression succesful \n"); }

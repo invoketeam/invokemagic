@@ -29,11 +29,13 @@ public:
   int * vecGrid;
 
 public:
-  xTmxLayer();
-  ~xTmxLayer();
+  xTmxLayer(void);
+  ~xTmxLayer(void);
 
+  void clear(void);
+
+  //change all tile values by n
   void addNum(int n);
-  void clear();
 
 };//tmxlayer
 
@@ -63,10 +65,10 @@ public:
   tdMapTmxLayer mapLayer;
 
 public:
-  xTmx();
-  ~xTmx();
+  xTmx(void);
+  ~xTmx(void);
 
-  void clear();
+  void clear(void);
 
   bool loadFile(std::string fname);
 

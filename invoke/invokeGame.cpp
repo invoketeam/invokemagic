@@ -3,6 +3,7 @@
 #include "invokeGame.h"
 
 #include "../gamex/xKey.h"
+#include "../gamex/xTmx.h"
 
 
 #include "xUnit.h"
@@ -10,6 +11,8 @@
 #include "xTree.h"
 
 #include "xPartTest.h"
+
+
 
 
 invokeGame::invokeGame(void) 
@@ -129,13 +132,23 @@ invokeGame::init(void)
   }//nexti
 
 
-
-    //rem: a 512x512 map is half million tris
-    myMap.initEmpty(128, 128);
-    
   xTile * tileSet;
   xTile * ta;
+  xTmxLayer * layer;
 
+
+  xTmx tmxLoader;
+  tmxLoader.loadFile("data/testmap.tmx");
+
+  layer = tmxLoader.getLayer("terra");
+  myMap.initFromLayer(layer->vecGrid, layer->mwidth, layer->mheight);
+
+    //rem: a 512x512 map is half million tris
+   //myMap.initEmpty(128, 128);
+    
+
+
+/*
   tileSet = myMap.tileSet;
 
   ta = &(tileSet[0]);
@@ -153,25 +166,42 @@ invokeGame::init(void)
 
   ta = &(tileSet[4]);
   ta->height = 3;
+*/
+
+  //set tile heights etc (todo -- load from xml?)
+  tileSet = myMap.tileSet;
+  ta = &(tileSet[0]);  ta->height = 0;  
+
+  ta = &(tileSet[8]);  ta->height = 1;  
+  ta = &(tileSet[8+1]);  ta->height = 2;  
+  ta = &(tileSet[8+2]);  ta->height = 3;  
+  ta = &(tileSet[8+3]);  ta->height = 4;  
+  ta = &(tileSet[8+4]);  ta->height = 5;  
+  ta = &(tileSet[8+5]);  ta->height = 6;  
+  ta = &(tileSet[8+6]);  ta->height = 7;  
+  ta = &(tileSet[8+7]);  ta->height = 8;  
+
+  ta = &(tileSet[8+8]);  ta->height = 1;     ta->spec = 303;
+  ta = &(tileSet[8+8+1]);  ta->height = 2;   ta->spec = 303;
+  ta = &(tileSet[8+8+2]);  ta->height = 3;   ta->spec = 303;
+  ta = &(tileSet[8+8+3]);  ta->height = 4;   ta->spec = 303;
+  ta = &(tileSet[8+8+4]);  ta->height = 5;   ta->spec = 303;
+  ta = &(tileSet[8+8+5]);  ta->height = 6;   ta->spec = 303;
+  ta = &(tileSet[8+8+6]);  ta->height = 7;   ta->spec = 303;
+  ta = &(tileSet[8+8+7]);  ta->height = 8;   ta->spec = 303;
+
+
   
-
-
- myMap.setRect(2,2, 10, 10, 4);
-
-
+  /*
+  myMap.setRect(2,2, 10, 10, 4);
   myMap.setRect(1,1, 3, 3, 2);
-
   myMap.setRect(3,1, 3, 4, 3);
-
   myMap.setRect(4,4, 3, 3, 1);
-
-
   myMap.setRect(14,14, 9, 9, 4);
+*/
 
-
-
-    myMap.genHeightRect();
-    myMap.debApplyHeightMap();
+  myMap.genHeightRect();
+  myMap.debApplyHeightMap();
 
   //  xMdx3 temp;
       //ok so-- the thing is i chosen to use shorts for storing the number of faces possible in an mdx
@@ -181,6 +211,10 @@ invokeGame::init(void)
       //myCol.initFromMesh(&temp);
      // temp.clear();
 
+
+  layer = tmxLoader.getLayer("tex");
+  layer->addNum(-65);
+  myMap.setSkinFromLayer(layer->vecGrid, layer->mwidth, layer->mheight);
 
 
 

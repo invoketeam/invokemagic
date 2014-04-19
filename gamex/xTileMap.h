@@ -3,6 +3,15 @@
 
 #include "xMdx3.h"
 
+
+
+
+//todo -- this part needs some major cleanup
+//remove no longer needed stuff
+//rename to xHeightMap 
+
+
+
 class xTile
 {
 public:

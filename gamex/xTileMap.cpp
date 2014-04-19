@@ -181,29 +181,26 @@ xTileMap::initFromLayer(int * vec, int mw, int mh)
 
   clear();
 
-	mwidth = mw;
-	mheight = mh;
-
-	num = mwidth * mheight;
+	  mwidth = mw;
+	  mheight = mh;
+	  num = mwidth * mheight;
 
   
-  vecRect = new xRect[num];
+    vecRect = new xRect[num];
   
-  vecGrid = new int[num];
-  memcpy(vecGrid, vec, num*4); 
+    vecGrid = new int[num];
+      memcpy(vecGrid, vec, num*4); 
 
 
-  //problem -- terrain related zonetype?
-  //-- nah just use zonetype for dynamic objects for now
+    //problem -- terrain related zonetype?
+    //-- nah just use zonetype for dynamic objects for now
+     vecZtype = new int[num];
+       memset(vecZtype, 0, num * 4);
 
-
-  vecZtype = new int[num];
-  //memset(vecZtype, 0, num * 4);
-
-  //note -- zone type is flags -- 0 is not walkable under any circumstance
-  //so we cant use memset as it sets it per byte, it would set it to 0x01010101 instead of 0x00000001
-  int i;
-  for (i =0;i <num;i++) { vecZtype[num] = 1;}
+    //note -- zone type is flags -- 0 is not walkable under any circumstance
+    //so we cant use memset as it sets it per byte, it would set it to 0x01010101 instead of 0x00000001
+    int i;
+      for (i =0;i < num; i++) { vecZtype[i] = 1;}
 
 
 
