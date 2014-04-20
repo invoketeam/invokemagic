@@ -55,12 +55,13 @@ public:
  void calcMinMax(void);
 
  void renderVert(int num);
- void render(void);
- //void render2(gamex::cVec3f * altVert);
+ void render(void); //debug render
+
 
  void initBox(float scale = 1.0f);
   
  void loadFile(std::string fname); 
+ void readFile(FILE * file);
 
  void moveMesh(float mx, float my, float mz);
  void scaleMesh(float sx, float sy, float sz);

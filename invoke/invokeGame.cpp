@@ -27,7 +27,13 @@ invokeGame::invokeGame(void)
 
   camPos.set(16*64, 1024, 16*64);
 
-  myCam.ori.rotPitch(-0.8f);
+//  myCam.ori.rotPitch(-0.8f);
+  myCam.ori.rotPitch(-0.98f);
+
+  //use the war3 angle by default
+
+  //http://www.hiveworkshop.com/forums/general-mapping-tutorials-278/cameras-160369/
+  //printf(" %0.2f \n ", (float)(56*(3.1415/180.0)) );
 
 
   myCam.neard = 1.0f;

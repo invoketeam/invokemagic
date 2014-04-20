@@ -51,6 +51,7 @@ public:
   int d;
   xColRect * child0;  xColRect * child1;  xColRect * child2;  xColRect * child3;
   tdVecTri vecTri; //only ptr, dont delete members
+  xTri * colTri;
 public:
   xColRect(void);
   ~xColRect(void);
@@ -59,7 +60,7 @@ public:
   void genChild(int md=-1);
   bool isTriInside(xTri * a);
   bool addTri(xTri * a, int maxd = 3);
-  float lineTest(gamex::cVec3f &start, gamex::cVec3f &end, float rad=1.0f);
+  float lineTest(gamex::cVec3f * start, gamex::cVec3f * end, float rad=1.0f);
   bool isOverLine(float ax, float az, float bx, float bz, float rad);
 
 };//classend
@@ -70,19 +71,52 @@ class xColMesh
 {
 public:
   tdVecTri vecTri; //real storage -- delete on clear
-  //xTri * vecTri;
- // int numTri;
   xColRect rect; //make sure starting rect is big enough
+  xTri * colTri; //last triangle linetest hit
 public:
   xColMesh(void);
   ~xColMesh(void);
+  
+  void initMesh(xMdx3 * mdx, int maxd = 4);
+  void initRect(float ax, float ay, float aw, float ah);
 
-  void addMesh(xMdx3 * mdx);
+  void addMesh(xMdx3 * mdx, int maxd = 4);
   void addTileMap(xTileMap * tmap);
 
-
   void clear(void);
-  float lineTest(gamex::cVec3f &start, gamex::cVec3f &end, float rad=1.0f);
+  float lineTest(gamex::cVec3f * start, gamex::cVec3f  * end, float rad = 1.0f);
   void render(void);
  
 };//xcolmesh
+
+
+
+
+class xColOb
+{
+public:
+  gamex::cMat transMat;
+  xColMesh * colMesh; //only ptr, can be shared among colob
+  gamex::cVec3f lastNorm;
+  gamex::cVec3f colPos;
+  float t;
+  bool bHit;
+public:
+  xColOb(void);
+
+  void updateMatrix(gamex::cVec3f * pos, gamex::cQuat * ori);
+  float lineTest(gamex::cVec3f * start, gamex::cVec3f * end, float rad);
+   
+};//classend
+
+
+
+
+
+
+
+
+
+
+
+

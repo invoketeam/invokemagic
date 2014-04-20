@@ -9,8 +9,7 @@
 
 xColMesh::xColMesh(void)
   {
-    //vecTri = 0; numTri = 0;
-
+    colTri = 0;
   }//ctor
 
 xColMesh::~xColMesh(void)
@@ -19,22 +18,22 @@ xColMesh::~xColMesh(void)
 void 
 xColMesh::clear(void)
   {
-    //if (vecTri != 0) { delete [] vecTri; } vecTri = 0;
-    //numTri = 0;
-	tdVecTri ::iterator it;
-	for (it = vecTri.begin(); it != vecTri.end(); it++)
-	{ delete (*it); }
-	vecTri.clear();
-	rect.clear();
+    tdVecTri ::iterator it;
+    for (it = vecTri.begin(); it != vecTri.end(); it++)    { delete (*it); }
+    vecTri.clear();
+    rect.clear();
   }//clear
 
 
 
 
 float 
-xColMesh::lineTest(gamex::cVec3f &start, gamex::cVec3f &end, float rad)
+xColMesh::lineTest(gamex::cVec3f * start, gamex::cVec3f  * end, float rad)
   {
-    return rect.lineTest(start, end, rad);
+    float ret;
+      ret = rect.lineTest(start, end, rad);
+      colTri = rect.colTri;
+    return ret;
   }//linetest
   
 /*
@@ -88,7 +87,7 @@ xColMesh::render(void)
   {
     xTri * a;
    
-    glColor3f(0,0,0);
+    //glColor3f(0,0,0);
     
     tdVecTri ::iterator it;
     //num =numTri;
@@ -105,8 +104,8 @@ xColMesh::render(void)
       glEnd();
     }//nextit
     
-    glColor3f(1,1,1);
-    rect.render(64);
+    //glColor3f(1,1,1);
+    //rect.render(64);
 
   }//render
 
@@ -143,38 +142,70 @@ xColRect::render(float yc)
 
 
 void 
-xColMesh::addMesh(xMdx3 * mdx)
+xColMesh::addMesh(xMdx3 * mdx, int maxd)
   {
-    //clear();
+    short * vecIndex;    mVert * vecVert;
+    int num, i, t;
+    xTri * a;
+    bool b;
+    int numLeft;
+    
+    num = mdx->numFace * 3;
 
-    short * vecIndex;
-    mVert * vecVert;
-    int num;
-    int i;
-    int t;
-//    int k;
+    vecIndex = mdx->vecIndex;
+    vecVert = mdx->vecVert;
+
+    numLeft = 0;    
+
+    t = 0;
+    for (i = 0; i < num; i+= 3)
+    {
+      a = new xTri();
+      vecTri.push_back(a);
+        a->setValue(&(vecVert[vecIndex[i]].pos),&(vecVert[vecIndex[i+1]].pos),&(vecVert[vecIndex[i+2]].pos));
+        a->calcNormal();
+
+        b = rect.addTri(a, maxd);
+
+        if (b == false) { numLeft += 1; }
+    }//nexti
+
+    if (numLeft > 0) { printf("xColMesh:: warning  triangles were left out  %d  \n", numLeft); }
+  }//initmesh
+
+
+void
+xColMesh::initRect(float ax, float ay, float aw, float ah)
+  {
+    clear();
+    //rect.clear();
+    rect.rx = ax; rect.ry = ay;
+    rect.rw = aw; rect.rh = ah;
+    
+  }//initrect
+
+ 
+void 
+xColMesh::initMesh(xMdx3 * mdx, int maxd)
+  {
+    short * vecIndex;    mVert * vecVert;
+    int num;    int i;    int t;
     xTri * a;
 
     num = mdx->numFace * 3;
-
-    //numTri = mdx->numFace;
-    //vecTri = new xTri[numTri];
 
     vecIndex = mdx->vecIndex;
     vecVert = mdx->vecVert;
 
 
     //note -- min max need to be calculated beforehand
-    rect.clear();
+    //rect.clear();
+    clear();
+    
     rect.rx = mdx->min.x-16.0f;
     rect.ry = mdx->min.z-16.0f;
     rect.rw = (mdx->max.x - mdx->min.x)+32.0f;
     rect.rh = (mdx->max.z - mdx->min.z)+32.0f;
-
-    //printf("xcolmesh::initfrommesh rect %0.2f %0.2f %0.2f %0.2f \n", rect.rx, rect.ry, rect.rw, rect.rh);
-
-    int maxd;
-    maxd = 4; //calculate for the tilemap, 64x64 tiles
 
     bool b;
     int numLeft;
@@ -184,28 +215,20 @@ xColMesh::addMesh(xMdx3 * mdx)
     t = 0;
     for (i = 0; i < num; i+= 3)
     {
-      //a = &(vecTri[t]); t += 1;
-	  a = new xTri();
-	  vecTri.push_back(a);
-      a->setValue(&(vecVert[vecIndex[i]].pos),&(vecVert[vecIndex[i+1]].pos),&(vecVert[vecIndex[i+2]].pos));
-     // a->setValue(&(vecVert[vecIndex[i]].pos),&(vecVert[vecIndex[i+2]].pos),&(vecVert[vecIndex[i+1]].pos));
-     
-      a->calcNormal(); //important
+      a = new xTri();
+      vecTri.push_back(a);
+        a->setValue(&(vecVert[vecIndex[i]].pos),&(vecVert[vecIndex[i+1]].pos),&(vecVert[vecIndex[i+2]].pos));
+        a->calcNormal(); //important
 
-      //todo -- maxdepth based on triangle size
-      b = rect.addTri(a, maxd); //(todo -- add triangles as new objects instead and dont keep them all in xcolmesh)
+        //todo -- maxdepth based on triangle size
+        b = rect.addTri(a, maxd); //(todo -- add triangles as new objects instead and dont keep them all in xcolmesh)
 
-      if (b == false) { numLeft += 1; }
-
-      //if (b == false) { printf("didnt add triangle %d \n", i); }
-      //printf("t %d  n[%0.2f][%0.2f][%0.2f] \n",t, a->nx,a->ny, a->nz);
+        if (b == false) { numLeft += 1; }
     }//nexti
 
     if (numLeft > 0) { printf("xColMesh:: warning  triangles were left out  %d  \n", numLeft); }
 
-  
-
-  }//initvec
+  }//initmesh
 
 
 
@@ -312,6 +335,7 @@ xColRect::xColRect(void)
   {
     rx = 0; ry = 0; rw = 0; rh = 0; d= 0;
     child0 = 0; child1 = 0; child2 = 0; child3 = 0;
+    colTri = 0;
   }//ctor
 
 xColRect::~xColRect(void)
@@ -336,42 +360,32 @@ static int numTest = 0;
 //
 
 float 
-xColRect::lineTest(gamex::cVec3f &start, gamex::cVec3f &end, float rad)
+xColRect::lineTest(gamex::cVec3f * start, gamex::cVec3f * end, float rad)
   {
     int i,  num;
     float u, t;
     xTri * a;
-
-   //if (d == 0) { numTest = 0;}
-
-   // numTest += 1;
-    //sometimes isoverline fails.. great
-   if (isOverLine(start.x, start.z, end.x, end.z, rad) == false) { return 999.0f; }
-
-  //   render(128); //debug
-
-
+    
+    colTri = 0;
+    
+    if (isOverLine(start->x, start->z, end->x, end->z, rad) == false) { return 999.0f; }
+   
     u = 999.0f;
     num = vecTri.size();
     for (i = 0; i < num; i++)
     {
       a = vecTri[i];
-     // numTest += 1;
-      t = a->lineTest(start.x, start.y, start.z, end.x, end.y, end.z, rad);
+      t = a->lineTest(start->x, start->y, start->z, end->x, end->y, end->z, rad);
       if (t == -999.0f) { continue; }
-      if (t < u) { u = t; }
+      if (t < u) { u = t; colTri = a; }
     }//nexti
   
     if (child0 == 0) { return u; }
     
-    t = child0->lineTest(start, end, rad);    if (t < u) { u = t; }
-    t = child1->lineTest(start, end, rad);    if (t < u) { u = t; }
-    t = child2->lineTest(start, end, rad);    if (t < u) { u = t; }
-    t = child3->lineTest(start, end, rad);    if (t < u) { u = t; }
-
-    //about 100-300 (without rect, with rect test) instead of 2200 test
-    // this is the best one so far -- todo -- octree version 
-   // if (d == 0) { printf("numtest %d \n", numTest); }
+    t = child0->lineTest(start, end, rad);    if (t < u) { u = t; colTri = child0->colTri; }
+    t = child1->lineTest(start, end, rad);    if (t < u) { u = t; colTri = child1->colTri; }
+    t = child2->lineTest(start, end, rad);    if (t < u) { u = t; colTri = child2->colTri; }
+    t = child3->lineTest(start, end, rad);    if (t < u) { u = t; colTri = child3->colTri; }
 
     return u;
   }//linetest
@@ -737,5 +751,87 @@ xTri::getDist(float wx, float wy, float wz, gamex::cVec3f * ret)
 
   return d;
 }//isinside
+
+
+
+
+
+
+
+
+
+
+
+
+xColOb::xColOb(void) { colMesh = 0; }
+
+
+void 
+xColOb::updateMatrix(gamex::cVec3f * pos, gamex::cQuat * ori)
+{
+  ori->setMatrix(transMat.m);
+  transMat.m[12] = pos->x;
+  transMat.m[13] = pos->y;
+  transMat.m[14] = pos->z;  
+}//updatemtx
+  
+float 
+xColOb::lineTest(gamex::cVec3f * start, gamex::cVec3f * end, float rad)
+{
+  static gamex::cVec3f va;
+  static gamex::cVec3f vb;
+  va = *start;
+  vb = *end;
+
+  float * raw;
+  float rx, ry, rz;
+
+  //transform line to object coordinates
+
+  raw = transMat.m;
+  rx = va.x - raw[12];  ry = va.y - raw[13];  rz = va.z - raw[14];
+
+    va.x = raw[0] * rx + raw[1] * ry + raw[2] * rz;
+    va.y = raw[4] * rx + raw[5] * ry + raw[6] * rz;
+    va.z = raw[8] * rx + raw[9] * ry + raw[10] * rz;
+        
+  rx = vb.x - raw[12];  ry = vb.y - raw[13];  rz = vb.z - raw[14];
+
+    vb.x = raw[0] * rx + raw[1] * ry + raw[2] * rz;
+    vb.y = raw[4] * rx + raw[5] * ry + raw[6] * rz;
+    vb.z = raw[8] * rx + raw[9] * ry + raw[10] * rz;
+   
+  bHit = false;
+
+  if (colMesh == 0) { return 999.0f; }
+  
+  t = colMesh->lineTest(&va, &vb, rad);
+
+  if (t >= 0.0f && t <= 1.0f )
+  {
+
+    //transform triangle normal by colob normal
+    rx = colMesh->colTri->nx;    ry = colMesh->colTri->ny;    rz = colMesh->colTri->nz;    
+
+    lastNorm.x = raw[0] * rx + raw[4] * ry + raw[8] * rz;
+    lastNorm.y = raw[1] * rx + raw[5] * ry + raw[9] * rz;
+    lastNorm.z = raw[2] * rx + raw[6] * ry + raw[10] * rz;
+    
+    bHit = true;
+
+    colPos = *start +(*end - *start) * t;
+  }//endif 
+
+  return t;
+}//linetest
+
+
+
+
+
+
+
+
+
 
 

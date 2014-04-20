@@ -12,7 +12,7 @@ public:
 public:
 
 //umx and umy needs to be in  the range of [-1.0, 1.0]
-  void update(xCam * cam, float umx, float umy, xColMesh * terra = 0 )
+  void update(xCam * cam, float umx, float umy, xColMesh * cmesh = 0, float planey = 0.0f )
   {
     gamex::cVec3f ppos;
 	  gamex::cVec3f pnorm;
@@ -33,13 +33,13 @@ public:
 	    p1 += frust.farSide * umx;
 
 
-      if (terra == 0) { t = 999.0f; }
-      else { t = terra->lineTest(p0, p1, 1); }
+      if (cmesh == 0) { t = 999.0f; }
+      else { t = cmesh->lineTest(&p0, &p1, 1); }
 
       if (t == 999.0f)
       {
         //if didnt hit terrain -- use the infinite plane
-        ppos.set(0,0,0);
+        ppos.set(0,planey,0);
       	pnorm.set(0,1,0);
         t = frust.getPlaneInter(p0, p1, ppos, pnorm);
       }//endif
