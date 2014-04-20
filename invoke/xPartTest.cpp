@@ -53,6 +53,9 @@ xPartTest::init(void)
 void 
 xPartTest::update(void)
 {
+ 
+
+ pos.y = game->getHeight(pos.x, pos.z);
 
 
  xPart * a;

@@ -259,9 +259,14 @@ invokeGame::init(void)
 
 
     debmesh.initBox(16);
+    //debmesh.initPlane(16);
 
 
 
+
+
+  waterSkin.loadTex("data/watertex.png");
+  waterDeb.initPlane(32768, 0, 0, 32,32);
 
 
 
@@ -386,12 +391,37 @@ invokeGame::render(void)
 
     myDraw.render(&frust, &myRender, tileSkin.handle);
 
+
+    
+    xEnt * e;
+    e = myRender.addFrame(0);
+      e->pos = 0; //pos;
+      e->pos.y = 200.0f + sinf( ((float)(gameTime % 314)) *0.01f)*16.0f;
+      e->sortpos = e->pos;
+      e->blend = 2; //0 solid   1 alpha test   2 transparent   3 additive
+      e->fmesh = &waterDeb;
+      e->vmesh = &waterDeb;
+      e->alpha = 0.25;
+      e->color = 1;
+      e->twoSide = 1;
+      e->skin = waterSkin.handle;
+      e->useColor = 0; ///1 use color data of mesh or 0 for the e->color of xEnt
+  
+
+
   myRender.render(true);
 
 
+/*
+  glColor3f(0,0,1);
 
 
+    glPushMatrix();
+      glTranslatef(0,200,0);
+      waterDeb.render();
+    glPopMatrix();
 
+*/
 
   glColor3f(1,0,0);
 

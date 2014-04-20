@@ -419,6 +419,14 @@ SOURCE=.\invoke\invokeMenu.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\invoke\xBuildTest.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\invoke\xBuildTest.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\invoke\xInvActor.cpp
 # End Source File
 # Begin Source File

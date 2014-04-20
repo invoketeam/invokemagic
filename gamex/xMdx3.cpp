@@ -373,6 +373,41 @@ xMdx3::render(void)
 
 
 
+void 
+xMdx3::initPlane(float scale, float u0, float v0, float u1, float v1)
+{
+  clear();
+
+    float neg;
+    float pos;
+
+    neg = -0.5f * scale;
+    pos = 0.5f * scale;
+
+    numFace = 2;
+		numVert = 4;
+
+
+    vecIndex = new short[numFace * 3];
+    vecVert = new mVert[numVert];
+
+    vecIndex[0] = 1;
+    vecIndex[1] = 0;
+    vecIndex[2] = 2;
+    vecIndex[3] = 1;
+    vecIndex[4] = 2;
+    vecIndex[5] = 3;
+
+
+    int i;
+    i = 0;
+    vecVert[i].pos.set(neg, 0.0f, neg);    vecVert[i].u = u1;    vecVert[i].v = v0; ++i;
+    vecVert[i].pos.set(pos, 0.0f, neg);    vecVert[i].u = u0;    vecVert[i].v = v0; ++i;
+    vecVert[i].pos.set(neg, 0.0f, pos);    vecVert[i].u = u1;    vecVert[i].v = v1; ++i;
+    vecVert[i].pos.set(pos, 0.0f, pos);    vecVert[i].u = u0;    vecVert[i].v = v1; ++i;
+
+}//initplane
+
 
 
 

@@ -32,6 +32,11 @@ public:
 
   xMdx3 debmesh;
 
+
+  xTexture waterSkin;
+  xMdx3 waterDeb;
+
+
   xMiniMap myMini;
 
   xFont myFont;
