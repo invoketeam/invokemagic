@@ -8,6 +8,8 @@
 #include "xTileMap.h"
 #include "xRand.h"
 
+#include "pugixml/pugixml.hpp"
+
 
 xTileMap::xTileMap(void)
 {
@@ -533,6 +535,69 @@ xTileMap::applyHeightMap(xImage * img, float yscale)
   if (vec != 0) { delete [] vec; }
 }//applyheight
 
+
+
+
+
+void 
+xTileMap::debLoadUv(std::string fname)
+{
+    pugi::xml_document xms;
+ 	  pugi::xml_node tex;
+ 	  pugi::xml_node img;
+    xTile * a;
+
+    if  (!(xms.load_file(fname.c_str(), 0) ))	{		printf("Couldn't load file [%s] \n", fname);		return;	}//endif
+
+    tex = xms.child("tiletex");
+	    if (tex.empty() ) { return; } //todo error invalid file
+
+
+
+    float picw;
+    float pich;
+    std::string picname;
+
+    picw = tex.attribute("width").as_float();
+    pich = tex.attribute("height").as_float();
+    picname = tex.attribute("name").value(); 
+
+
+    int id;
+    float u0, v0;
+    float u1, v1;
+
+
+     for (img = tex.child("image"); img; img = img.next_sibling("image")) 
+     {
+        id =  img.attribute("id").as_int();
+        if (id < 0 || id >= XTILEMAP_MAX_TILE) { continue; }
+
+        a = &(tileSet[id]);
+
+        u0 = img.attribute("x").as_float() / picw;
+        v0 = img.attribute("y").as_float() / pich;
+        u1 = u0 + img.attribute("width").as_float() / picw;
+        v1 = v0 + img.attribute("height").as_float() / pich;
+
+
+        a->uv[0].x = u0;
+        a->uv[0].y = v0;
+
+        a->uv[1].x = u0;
+        a->uv[1].y = v1;
+ 
+        a->uv[2].x = u1;
+        a->uv[2].y = v0;
+ 
+        a->uv[3].x = u1;
+        a->uv[3].y = v1;
+
+
+     }//nextimg
+
+
+}//loaduv
 
 
 

@@ -24,7 +24,7 @@ public:
 	gamex::cVec3f uv[4];
 
 public:
-  xTile()
+  xTile(void)
   {
     tex = 0; wall = 0;
     mdx = 0;
@@ -54,7 +54,7 @@ public:
   //(unless with crazy shadering, which will be optional
   // so we cannot rely on that)
 public:
-  xRect() { skin = 0; }
+  xRect(void) { skin = 0; }
 
 };//xrect
 
@@ -120,6 +120,9 @@ public:
   void debApplyHeightMap(void);
 
   void applyHeightMap(xImage * img, float yscale=1.0f);
+
+  void debLoadUv(std::string fname);
+
 
 	//void renderDebug();
 //	void renderDebug2();

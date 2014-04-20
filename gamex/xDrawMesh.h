@@ -10,6 +10,8 @@
 #include <vector>
 
 
+class xRender;
+
 class xDrawRect
 {
 public:
@@ -64,7 +66,7 @@ public:
 
   void genChild(void);
   bool addMesh(xMdx3 * a, int maxd=4);
-  void render(xFrustum * frust);
+  void render(xFrustum * frust, xRender * rend, unsigned int skin);
 
 
 };//drawtree
@@ -91,10 +93,21 @@ public:
   void clear(void);
 
 
-  void render(xFrustum * frust)
+  void render(xFrustum * frust, xRender * rend, unsigned int skin)
   {
-    tree.render(frust);
-    /*
+    tree.render(frust, rend, skin);
+
+  }//render
+
+  
+
+  void initRect(xTileMap * tmap);
+
+
+  /*
+  void debRender(xFrustum * frust)
+  {
+    
     int i;
     xDrawRect * a;
     // a 256x256 map will have 1024 zones .. 
@@ -105,13 +118,7 @@ public:
       if (frust->isPointInside(a->pos, a->rad) == false) { continue; }
       a->mesh.render();
     }//nexti
-    */
-  }//render
-
-  
-
-  void initRect(xTileMap * tmap);
-
-
-
+    
+  }//debrender
+   */
 };//drawmesh

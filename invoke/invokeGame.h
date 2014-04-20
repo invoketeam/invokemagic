@@ -25,6 +25,7 @@ public:
   xCursor myCursor;
   
   
+  xTexture tileSkin;
   xTileMap myMap;
   xColMesh myCol;
   xDrawMesh myDraw;

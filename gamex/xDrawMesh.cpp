@@ -2,6 +2,8 @@
 
 #include "xDrawMesh.h"
 
+#include "xRender.h"
+
 #include "xGLCommon.h"
 
 
@@ -177,7 +179,7 @@ xDrawTree::addMesh(xMdx3 * a, int maxd)
 static int debNumNodeDrawn = 0;
 
 void 
-xDrawTree::render(xFrustum * frust)
+xDrawTree::render(xFrustum * frust, xRender * rend, unsigned int skin)
   {
     if (frust->isPointInside(mid, rad) == false) { return; }
 
@@ -195,24 +197,45 @@ xDrawTree::render(xFrustum * frust)
     debNumNodeDrawn += 1;
 
 
+
+   
+
+
+
+
+   xEnt * e;
     //glLineWidth(1);
     //glColor3f(0,0,1);
     xMdx3 * a;
     int i, num;
     num = vecMesh.size();
-    for (i = 0; i < num; i++) { a = vecMesh[i];  a->render(); }
+    for (i = 0; i < num; i++)
+    { 
+      a = vecMesh[i]; 
+      // a->render(); 
+
+      e = rend->addFrame(0);
+      e->pos = 0;
+      e->blend = 0;
+      e->fmesh = a;
+      e->vmesh = a;
+      e->alpha = 1;
+      e->color = 1;
+      e->useColor = 1; //1;
+      e->skin = skin;
+    }
 
 
     if (child0 == 0) { return; }
  
-    child0->render(frust);
-    child1->render(frust);
-    child2->render(frust);
-    child3->render(frust);
-    child4->render(frust);
-    child5->render(frust);
-    child6->render(frust);
-    child7->render(frust);
+    child0->render(frust, rend, skin);
+    child1->render(frust, rend, skin);
+    child2->render(frust, rend, skin);
+    child3->render(frust, rend, skin);
+    child4->render(frust, rend, skin);
+    child5->render(frust, rend, skin);
+    child6->render(frust, rend, skin);
+    child7->render(frust, rend, skin);
     
    // if (depth == 0) { printf("drawn nodes: %d \n", debNumNodeDrawn);}
 
@@ -303,6 +326,9 @@ xDrawMesh::initRect(xTileMap * tmap)
       {
          a = &(vecRect[k+yt]);
          tmap->makeMesh(&(a->mesh),k*cellw,i*cellh,cellw,cellh);
+  
+             a->mesh.makeVbo();
+
        
          // a->mesh.moveMesh(0,-8,0); //debug
 

@@ -231,10 +231,19 @@ invokeGame::init(void)
      // temp.clear();
 
 
+//todo -- the tileset atlas will need a larger edge around the tiles
+  tileSkin.loadTex("data/out_set.png", true, false, false);
+  //tileSkin.loadTex("data/out_set.png", false, false, false);
+
+  //tileSkin.setTexEnv_Blend();
+  //tileSkin.setTexEnv_Decal();
+  myMap.debLoadUv("data/out_set.xms");
+
   layer = tmxLoader.getLayer("tex");
   layer->addNum(-65);
   myMap.setSkinFromLayer(layer->vecGrid, layer->mwidth, layer->mheight);
 
+  
 
 
 
@@ -353,41 +362,21 @@ invokeGame::render(void)
     gluPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
 
 	glMatrixMode(GL_MODELVIEW);
-	//glLoadIdentity();
 
   view.setView(&myCam.pos, &myCam.ori);
-  glLoadMatrixf(view.m);
+    glLoadMatrixf(view.m);
 
 
-
- // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  //todo -- render tilemap with xRender
   xFrustum frust;
       frust.setPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
 	    frust.setPoints(myCam.pos, myCam.ori, 0, 0);
 
 
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-    glLineWidth(1);
-    glColor3f(0,0,1);
-     myDraw.render(&frust);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-      glColor3f(0,0,0);
-       myDraw.render(&frust);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-      glDepthFunc(GL_LESS);
 
-/*
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-glColor3f(1,1,1);
-myCol.render();
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-//  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-*/
+
 
   myRender.resetFrame();
-  myRender.setCam(myCam.pos, myCam.ori);
+   myRender.setCam(myCam.pos, myCam.ori);
   
 
   //todo -- for actors do a query based on the frustum 
@@ -395,7 +384,14 @@ myCol.render();
   //we just pick ones that are potentially inside it 
     myWorld.render2(&myRender);
 
+    myDraw.render(&frust, &myRender, tileSkin.handle);
+
   myRender.render(true);
+
+
+
+
+
 
   glColor3f(1,0,0);
 
@@ -403,6 +399,7 @@ myCol.render();
     glTranslatef(myCursor.coord.x, myCursor.coord.y, myCursor.coord.z); 
        debmesh.render();
   glPopMatrix();
+
 
   glDisable(GL_DEPTH_TEST);
   glPushMatrix();
@@ -413,7 +410,7 @@ myCol.render();
  
  
 
-   glDisable(GL_TEXTURE_2D); debugDraw();
+  // glDisable(GL_TEXTURE_2D); debugDraw();
 
  
 
