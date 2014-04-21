@@ -47,6 +47,8 @@ public:
 
 public:
   xMdx3 * addMdx(std::string fname, std::string altName);
+  xMdx3 * addMdxFromPtr(xMdx3 * mesh, std::string altName); //remember --  deleting will be handled by xData this way
+
   xMdx3 * getMdx(std::string wname);
 
 public:

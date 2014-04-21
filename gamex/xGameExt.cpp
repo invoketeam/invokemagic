@@ -166,7 +166,8 @@ xGameExt::debugDraw(void)
     { 
        a = (*it);
        drawCube(a->pos.x-a->xrad, a->pos.y-a->yrad, a->pos.z-a->zrad,a->xrad+a->xrad,a->yrad+a->yrad,a->zrad+a->zrad);
-      //printf("debdraw %0.2f %0.2f \n", a->pos.x, a->pos.y);
+     
+       //printf("debdraw %0.2f %0.2f \n", a->pos.x, a->pos.y);
       //note: for 2d a drawrect will be better because opengl will use the z to check if the sprite is on screen
     }
   }//debugdraw

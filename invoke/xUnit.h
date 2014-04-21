@@ -16,6 +16,10 @@ public:
   float curFrame;
 
 
+  xMdx3 * shadowMesh;
+  unsigned int shadowSkin;
+
+
 public:
   xUnit(void);
   virtual ~xUnit(void);

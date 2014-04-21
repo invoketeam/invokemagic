@@ -27,11 +27,11 @@ xBuildTest::init(void)
   //mesh.makeVbo();
 
   mesh = game->getMdx("kunyho");
-  skin = game->getSkin("kunyho_textura_walpha");
+  skin = game->getSkin("kunyho");
 
   spectype = 100;
 
-   pos.y = game->getHeight(pos.x, pos.z);
+   pos.y = game->getHeight(pos.x, pos.z) + 32.0f;
 
 }//init
 

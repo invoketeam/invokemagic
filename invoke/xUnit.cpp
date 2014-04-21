@@ -9,6 +9,10 @@ xUnit::xUnit(void)
   curFrame = 0.0f;
   skin = 0;
   color = 0xFFffFFff;
+
+  shadowMesh = 0;
+  shadowSkin = 0;
+
 }//ctor
 
 
@@ -33,12 +37,20 @@ xUnit::init(void)
   //vel.x = 3;
   //vel.z = 2;
 
+  xrad = 32;
+  yrad = 64;
+  zrad = 32;
+
   vel.x = game->getRand2() * 3.0f;
   vel.z = game->getRand2() * 3.0f;
 
   yaw = game->getRand() * 6.28f;
 
   spectype = 100;
+
+
+  shadowMesh = game->getMdx("shadow");
+  shadowSkin = game->getSkin("shadow");
 
 }//init
 
@@ -56,7 +68,7 @@ xUnit::update(void)
     pos.x += vel.x;
     pos.z += vel.z;
 
-    pos.y = game->getHeight(pos.x, pos.z);
+    pos.y = game->getHeight(pos.x, pos.z) + yrad;
 
     yaw += 0.1f;
 
@@ -104,7 +116,7 @@ xUnit::render2(xRender * r)
     //myTest.pos.y = myMap.getHeight(myTest.pos.x, myTest.pos.z);
 
       //a = myRender.addFrame(0);
-      e->pos = pos;
+      e->pos = pos; e->pos.y -= (yrad); 
       e->blend = 0;
       e->fmesh = &mesh;
       e->vmesh = &mesh;
@@ -130,6 +142,26 @@ xUnit::render2(xRender * r)
 
      skel.applySkin(&mesh, lodMesh->numVert);
     */
+
+
+
+
+
+    e = r->addFrame(1);
+ 
+      e->pos = pos;   
+      e->pos.y = game->getHeight(pos.x, pos.z) + 3;
+      e->blend = 2;  //0 solid   1 alpha test   2 transparent   3 additive
+      e->fmesh = shadowMesh;
+      e->vmesh = shadowMesh;
+      e->alpha = 1;
+      e->color = 1;
+      e->twoSide = 1;
+      e->skin = shadowSkin;
+      e->useColor = 0; ///1 use color data of mesh or 0 for the e->color of xEnt
+
+
+
 
 
 }//render2

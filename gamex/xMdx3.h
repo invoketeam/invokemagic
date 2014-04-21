@@ -59,7 +59,7 @@ public:
 
 
  void initBox(float scale = 1.0f);
- void initPlane(float scale = 1.0f, float u0=0.0f, float v0=0.0f, float u1=0.0f, float v1=1.0f);
+ void initPlane(float scale = 1.0f, float u0=0.0f, float v0=0.0f, float u1=1.0f, float v1=1.0f);
   
  void loadFile(std::string fname); 
  void readFile(FILE * file);

@@ -31,13 +31,24 @@ xData::addMdx(std::string fname, std::string altName)
   xMdx3 * a;
   a = new xMdx3();
   a->loadFile(fname);
+
   if (altName != "0") { fname = altName;  }
   else { fname = stripName(fname); }
+
   printf("addmdx %s \n" ,fname.c_str());
 
   storeMesh.addData( fname , a);
   return a;
 }//addanim
+
+
+xMdx3 * 
+xData::addMdxFromPtr(xMdx3 * mesh, std::string altName)
+{
+  storeMesh.addData( altName, mesh);
+  return mesh;
+}//addmdx2
+
 
 
 xTexture * 

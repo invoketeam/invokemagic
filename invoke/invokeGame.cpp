@@ -191,8 +191,10 @@ invokeGame::init(void)
 
  
 
-
-
+  mesh = new xMdx3();
+  mesh->initPlane(64.0f);
+  myData.addMdxFromPtr(mesh, "shadow");  mesh->makeVbo();
+  myData.addSkin("data/shadlarge.png", "shadow", true,true);
 
 
 
@@ -239,8 +241,8 @@ invokeGame::init(void)
     //todo -- align trees to grid    
   }//nexti
 
-/*
-  for (i = 0; i < 32; i++)
+
+  for (i = 0; i < 16; i++)
   {
     a = new xBuildTest(); 
      a->pos.set(getRand()*wwidth, 0, getRand()*wheight);
@@ -248,7 +250,7 @@ invokeGame::init(void)
 
     //todo -- align trees to grid    
   }//nexti
-*/
+
 
 
   a = new xPartTest();
@@ -355,7 +357,7 @@ invokeGame::render(void)
 
     
     xEnt * e;
-    e = myRender.addFrame(0);
+    e = myRender.addFrame(1);
       e->pos = 0; //pos;
       e->pos.y = 200.0f + sinf( ((float)(gameTime % 314)) *0.01f)*16.0f;
       e->sortpos = e->pos;
@@ -400,8 +402,8 @@ invokeGame::render(void)
 
  
  
-
-  // glDisable(GL_TEXTURE_2D); debugDraw();
+glEnable(GL_DEPTH_TEST);
+   glDisable(GL_TEXTURE_2D); debugDraw();
 
  
 
