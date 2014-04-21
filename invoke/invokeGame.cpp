@@ -144,6 +144,20 @@ invokeGame::init(void)
 
 
   layer = tmxLoader.getLayer("tex");
+//  myMap.cw = 64.0f;  myMap.ch = 64.0f;
+//todo -- set these with function  
+//128x128 per tile seems good enough so far
+//maybe the non walkable tileset should be seperate from the tilemap (entirely)
+  myMap.cw = 128.0f;  myMap.ch = 128.0f;
+  myMap.icw = 1.0f/myMap.cw;
+  myMap.ich = 1.0f/myMap.cw;
+
+
+//  myMap.cw = 256.0f;  myMap.ch = 256.0f;
+
+
+
+
   myMap.initEmpty(layer->mwidth, layer->mheight);
  
 
@@ -153,7 +167,7 @@ invokeGame::init(void)
   myMap.genHeightRect();
   xImage hmap;
   hmap.loadImage("data/test_heightmap.png");
-    myMap.applyHeightMap(&hmap, 4.0f);
+    myMap.applyHeightMap(&hmap, 1.0f);
   hmap.clear();
 
 
@@ -355,11 +369,13 @@ invokeGame::render(void)
     myDraw.render(&frust, &myRender, tileSkin.handle);
 
 
+float waterHeight; //todo -- make this a member variable (or add it as part of the tilemap)
+waterHeight = 50.0f;
     
     xEnt * e;
     e = myRender.addFrame(1);
       e->pos = 0; //pos;
-      e->pos.y = 200.0f + sinf( ((float)(gameTime % 314)) *0.01f)*16.0f;
+      e->pos.y = waterHeight + sinf( ((float)(gameTime % 314)) *0.01f)*16.0f;
       e->sortpos = e->pos;
       e->blend = 2; //0 solid   1 alpha test   2 transparent   3 additive
       e->fmesh = &waterDeb;
@@ -649,8 +665,8 @@ invokeGame::gotCmd(int cmd, int arg0, int arg1)
  //for now the minimap movement is hacked together like this (should be refined in the future)
  if (cmd == 500)
  {
-    camPos.x = arg0 * 64;
-    camPos.z = arg1 * 64;
+    camPos.x = arg0 * myMap.cw;
+    camPos.z = arg1 * myMap.ch;
  }//endif
 
 
