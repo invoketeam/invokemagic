@@ -170,6 +170,8 @@ xTileMap::initEmpty(int mw, int mh)
   vecZtype = new int[num];
   memset(vecZtype, 0, num * 4);
 
+  int i;
+  for (i =0;i < num; i++) { vecZtype[i] = 1;}
 
 }//initempty
 
@@ -202,24 +204,8 @@ xTileMap::initFromLayer(int * vec, int mw, int mh)
     //note -- zone type is flags -- 0 is not walkable under any circumstance
     //so we cant use memset as it sets it per byte, it would set it to 0x01010101 instead of 0x00000001
     int i;
-      for (i =0;i < num; i++) { vecZtype[i] = 1;}
+    for (i =0;i < num; i++) { vecZtype[i] = 1;}
 
-
-
-/*
-     int t, i, k, yt;
-        for (i = 0; i < mheight; i++)
-        {
-          yt = i * mwidth;
-          for (k = 0; k < mwidth; k++)
-          {
-            t = vecGrid[k+yt];
-            printf("%d", t);
-          }//nextk
-          printf("\n");
-        }//nexti
-          printf("\n");
-*/
 }//initlayer
 
 
@@ -424,7 +410,7 @@ xTileMap::setSkinFromLayer(int * vec, int mw, int mh)
 
   for (i = 0; i < num; i++)
   {
-    vecRect[i].skin = vec[i]; 
+    vecRect[i].skin = vec[i] - 1; 
   }
 
 }//setskin
@@ -567,6 +553,11 @@ xTileMap::debLoadUv(std::string fname)
     float u0, v0;
     float u1, v1;
 
+    //add half pixel to the uv (doesnt help much)
+    float ax, ay;
+    ax = (1.0f/picw)*0.5f;
+    ay = (1.0f/pich)*0.5f;
+
 
      for (img = tex.child("image"); img; img = img.next_sibling("image")) 
      {
@@ -580,6 +571,9 @@ xTileMap::debLoadUv(std::string fname)
         u1 = u0 + img.attribute("width").as_float() / picw;
         v1 = v0 + img.attribute("height").as_float() / pich;
 
+
+        u0+=ax; v0+=ay;
+        u1-=ax; v1-=ay;
 
         a->uv[0].x = u0;
         a->uv[0].y = v0;

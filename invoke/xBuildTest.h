@@ -7,7 +7,7 @@
 class xBuildTest : public xActor
 {
 public:
-  xMdx3 mesh;
+  xMdx3 * mesh;
   unsigned int skin;
 
   float yaw;

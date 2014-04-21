@@ -23,11 +23,15 @@ xBuildTest::init(void)
 
 //todo -- get file from game
 
-  mesh.loadFile("data/knight_mesh.mdx3");
-  mesh.makeVbo();
+  //mesh.loadFile("data/build/kunyho.mdx3");
+  //mesh.makeVbo();
 
+  mesh = game->getMdx("kunyho");
+  skin = game->getSkin("kunyho_textura_walpha");
 
   spectype = 100;
+
+   pos.y = game->getHeight(pos.x, pos.z);
 
 }//init
 
@@ -48,8 +52,8 @@ xBuildTest::render2(xRender * r)
     e = r->addFrame(0);
       e->pos = pos;
       e->blend = 0;
-      e->fmesh = &mesh;
-      e->vmesh = &mesh;
+      e->fmesh = mesh;
+      e->vmesh = mesh;
       e->alpha = 1;
       e->color = 1;
       e->twoSide = 0;
@@ -57,3 +61,6 @@ xBuildTest::render2(xRender * r)
 
 
 }//render2
+
+
+

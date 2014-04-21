@@ -172,7 +172,7 @@ xTexture::makeTex(xImage  * img, bool mip, bool clamp)
    //trilinear
      
         if (mip)
-        {
+        { 
           glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
           glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
         }
@@ -201,9 +201,13 @@ xTexture::makeTex(xImage  * img, bool mip, bool clamp)
         else
         { glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img->mw, img->mh, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, img->dat);  }
 
-   //default
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); 
+       //default blending
+          glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); 
 
+
+        //todo -- set mip map max level
+
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 3)
 
     }//maketex
     
@@ -251,6 +255,8 @@ xTexture::buildMipMap(int w, int h, unsigned int * dat)
       }//wend
       
       delete [] buf;
+
+;
 }//buildmipmap
 
 

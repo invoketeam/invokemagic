@@ -12,6 +12,8 @@
 
 #include "xPartTest.h"
 
+#include "xBuildTest.h"
+
 
 
 
@@ -82,11 +84,7 @@ invokeGame::init(void)
  // myRand.setSeed(1); //important for gameplay
 
 
-//load resources first (only do this once per game)
-  myData.addMdx("data/tree.mdx3", "tree");
-  myData.addSkin("data/treeskin.png", "treeskin",true,true);
 
- 
   myData.addSkin("data/knight_skin.png", "knight_skin",true,true);
   
   myData.addSprite("data/mysmoke.xms","data/mysmoke.png");
@@ -129,144 +127,82 @@ invokeGame::init(void)
 
 //Create a tilemap and some units for testing
 
-  //testing
-  int i;
-  xActor * a;
-  for (i = 0; i < 16; i++)
-  {
-    a = new xUnit();
-    a->pos.set(getRand()*1024,0, getRand()*1024);
-      addActor(a);
-  }//nexti
 
 
-  xTile * tileSet;
-  xTile * ta;
+
+
   xTmxLayer * layer;
 
 
   xTmx tmxLoader;
-  tmxLoader.loadFile("data/testmap.tmx");
+  tmxLoader.loadFile("data/testmap2.tmx");
 
-  layer = tmxLoader.getLayer("terra");
-  myMap.initFromLayer(layer->vecGrid, layer->mwidth, layer->mheight);
-
-    //rem: a 512x512 map is half million tris
-  // myMap.initEmpty(128, 128);
-
-   //myMap.initEmpty(32, 32);
-    
+//todo -- the tileset atlas will need a larger edge around the tiles
+  tileSkin.loadTex("data/out_set.png", true, false, false);
+  myMap.debLoadUv("data/out_set.xms");
 
 
-/*
-  tileSet = myMap.tileSet;
 
-  ta = &(tileSet[0]);
-  ta->height = 0;
-
-  ta = &(tileSet[1]);
-  ta->height = 0;
-  ta->spec = 303;
+  layer = tmxLoader.getLayer("tex");
+  myMap.initEmpty(layer->mwidth, layer->mheight);
  
-  ta = &(tileSet[2]);
-  ta->height = 1;
-
-  ta = &(tileSet[3]);
-  ta->height = 2;
-
-  ta = &(tileSet[4]);
-  ta->height = 3;
-*/
-
-  //set tile heights etc (todo -- load from xml?)
-  tileSet = myMap.tileSet;
-  ta = &(tileSet[0]);  ta->height = 0;  
-
-  ta = &(tileSet[8]);  ta->height = 1;  
-  ta = &(tileSet[8+1]);  ta->height = 2;  
-  ta = &(tileSet[8+2]);  ta->height = 3;  
-  ta = &(tileSet[8+3]);  ta->height = 4;  
-  ta = &(tileSet[8+4]);  ta->height = 5;  
-  ta = &(tileSet[8+5]);  ta->height = 6;  
-  ta = &(tileSet[8+6]);  ta->height = 7;  
-  ta = &(tileSet[8+7]);  ta->height = 8;  
-
-  ta = &(tileSet[8+8]);  ta->height = 1;     ta->spec = 303;
-  ta = &(tileSet[8+8+1]);  ta->height = 2;   ta->spec = 303;
-  ta = &(tileSet[8+8+2]);  ta->height = 3;   ta->spec = 303;
-  ta = &(tileSet[8+8+3]);  ta->height = 4;   ta->spec = 303;
-  ta = &(tileSet[8+8+4]);  ta->height = 5;   ta->spec = 303;
-  ta = &(tileSet[8+8+5]);  ta->height = 6;   ta->spec = 303;
-  ta = &(tileSet[8+8+6]);  ta->height = 7;   ta->spec = 303;
-  ta = &(tileSet[8+8+7]);  ta->height = 8;   ta->spec = 303;
 
 
-  
-  /*
-  myMap.setRect(2,2, 10, 10, 4);
-  myMap.setRect(1,1, 3, 3, 2);
-  myMap.setRect(3,1, 3, 4, 3);
-  myMap.setRect(4,4, 3, 3, 1);
-  myMap.setRect(14,14, 9, 9, 4);
-*/
+
 
   myMap.genHeightRect();
-  //  myMap.debApplyHeightMap();
-
-//todo -- maybe the extra wall rendering is not needed
-//and instead it should be based on the heightmap?
-
   xImage hmap;
   hmap.loadImage("data/test_heightmap.png");
     myMap.applyHeightMap(&hmap, 4.0f);
   hmap.clear();
 
 
-  //  xMdx3 temp;
-      //ok so-- the thing is i chosen to use shorts for storing the number of faces possible in an mdx
-      //and now it bite me in the ass as you cant have more than 16384 faces in a mesh
-      //so you cant just init the collision mesh from taking the entire map
-     // myMap.makeMesh(&temp, 0,0, myMap.mwidth, myMap.mheight);
-      //myCol.initFromMesh(&temp);
-     // temp.clear();
-
-
-//todo -- the tileset atlas will need a larger edge around the tiles
-  tileSkin.loadTex("data/out_set.png", true, false, false);
-  //tileSkin.loadTex("data/out_set.png", false, false, false);
-
-  //tileSkin.setTexEnv_Blend();
-  //tileSkin.setTexEnv_Decal();
-  myMap.debLoadUv("data/out_set.xms");
-
-  layer = tmxLoader.getLayer("tex");
-  layer->addNum(-65);
   myMap.setSkinFromLayer(layer->vecGrid, layer->mwidth, layer->mheight);
-
-  
-
-
-
+   
+ 
     myCol.clear();
     myCol.addTileMap(&myMap);
-/*
-    xMdx3 temp;
-    myMap.makeMesh(&temp, 0,0, 32, 32);
-    myCol.initFromMesh(&temp);
-    temp.clear();
-*/
+
     myDraw.initRect(&myMap);
 
 
     debmesh.initBox(16);
-    //debmesh.initPlane(16);
-
-
-
+ 
 
 
   waterSkin.loadTex("data/watertex.png");
   waterDeb.initPlane(32768, 0, 0, 32,32);
+
+
+
+
+
+//preload all unit models and textures
+//todo -- this part will need to use an xml or something
+
+  xMdx3 * mesh;
+
+  mesh = myData.addMdx("data/build/kunyho.mdx3", "kunyho");  mesh->makeVbo();
+  myData.addSkin("data/build/kunyho_textura_walpha.png", "kunyho", true, true);
+
+
+  mesh = myData.addMdx("data/tree.mdx3", "tree"); mesh->makeVbo();
+  myData.addSkin("data/treeskin.png", "treeskin",true,true);
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -278,6 +214,20 @@ invokeGame::init(void)
   wwidth = myMap.mwidth * myMap.cw;
   wheight = myMap.mheight * myMap.ch;
 
+
+
+  //testing
+  int i;
+  xActor * a;
+  for (i = 0; i < 16; i++)
+  {
+    a = new xUnit();
+    a->pos.set(getRand()*1024,0, getRand()*1024);
+      addActor(a);
+  }//nexti
+
+
+
 //todo -- frustum cull units (and trees)
 
   for (i = 0; i < 256; i++)
@@ -288,6 +238,17 @@ invokeGame::init(void)
 
     //todo -- align trees to grid    
   }//nexti
+
+/*
+  for (i = 0; i < 32; i++)
+  {
+    a = new xBuildTest(); 
+     a->pos.set(getRand()*wwidth, 0, getRand()*wheight);
+    addActor(a);
+
+    //todo -- align trees to grid    
+  }//nexti
+*/
 
 
   a = new xPartTest();
