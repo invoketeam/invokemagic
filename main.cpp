@@ -37,13 +37,15 @@ xTexture debFontSkin;
 //run afer opengl is loaded (but before game is started)
 void init(void)
 {
-  testGame.init();
+ 
 
   //todo - store this font and texture inside the exe(?)
   debFont.loadCharDef("data/atari16.xfnt");
   debFontSkin.loadTex("data/atari16.png",true,true,true);
 //  debFontSkin.setTexEnv_Modulate();
 
+
+  testGame.init();
 }//init
 
 

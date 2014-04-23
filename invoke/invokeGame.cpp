@@ -128,7 +128,8 @@ invokeGame::init(void)
 
 
 
-
+  
+  //todo -- read size from tmx map
   myHeight.cw = 128;
   myHeight.ch = 128;
   myHeight.initEmpty(128, 128);
@@ -139,7 +140,7 @@ invokeGame::init(void)
 
   xImage hmap;
        hmap.loadImage("data/test_heightmap.png");
-          myHeight.loadHeight(&hmap, 1.0f);
+          myHeight.loadHeight(&hmap, 4.0f);
 
        hmap.loadImage("data/colormap.png");
        hmap.endianSwap();
@@ -310,8 +311,8 @@ invokeGame::update(void)
 
 
   //todo -- this needs some smoothing (adjusting?)
-  myCam.pos = camPos;
-  myCam.pos.y += myHeight.getHeight(camPos.x, camPos.z);
+ // myCam.pos = camPos;
+ // myCam.pos.y += myHeight.getHeight(camPos.x, camPos.z);
 
 
 
@@ -347,6 +348,13 @@ invokeGame::render(void)
 {
   //assuming zbuffer is cleared at this point
 
+
+
+//update camera based on camera pos
+  myCam.pos = camPos;
+  myCam.pos.y += myHeight.getHeight(camPos.x, camPos.z);
+
+
   gamex::cMat view;
 
   glMatrixMode(GL_PROJECTION);
@@ -372,9 +380,10 @@ invokeGame::render(void)
     gamex::cVec3f dist;
     float mag;
     float diff;
+
       dist = lastPos - camPos;
-    //diff = 128.0f;
       diff = myHeight.cw * 2.0f;
+
       mag = dist.getMag();
 
         if (mag >= diff)
@@ -394,7 +403,7 @@ invokeGame::render(void)
             //no need to check sides for difference as it seems to naturally be overestimated
             myHeight.updateMesh(viewBox.min.x, viewBox.min.z-diff, (viewBox.max.x-viewBox.min.x), (viewBox.max.z-viewBox.min.z)+diff*2.0f);
 
-          //printf("updatemesh %d %d \n", gameTime, myHeight.mesh.drawFace);
+          printf("updatemesh %d %d \n", gameTime, myHeight.mesh.drawFace);
         }//endif
       
 
@@ -439,6 +448,7 @@ invokeGame::render(void)
                   e = myRender.addFrame(1);
                     e->pos = 0; //pos;
                     e->pos.y = waterHeight + sinf( ((float)(gameTime % 314)) *0.01f)*16.0f;
+                    e->pos.x = 8192.0f; e->pos.z = 8192.0f;
                     e->sortpos = e->pos;
                    
                     e->fmesh = &waterDeb;
@@ -723,6 +733,8 @@ invokeGame::gotCmd(int cmd, int arg0, int arg1)
  {
     camPos.x = arg0 * myHeight.cw;
     camPos.z = arg1 * myHeight.ch;
+    lastPos = -1; //force update
+
  }//endif
 
 
