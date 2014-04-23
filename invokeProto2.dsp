@@ -171,6 +171,10 @@ SOURCE=.\gamex\xColMesh.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\gamex\xCursor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\gamex\xCursor.h
 # End Source File
 # Begin Source File
@@ -240,6 +244,14 @@ SOURCE=.\gamex\xGuiGame.cpp
 # Begin Source File
 
 SOURCE=.\gamex\xGuiGame.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\gamex\xHeightMap.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\gamex\xHeightMap.h
 # End Source File
 # Begin Source File
 
@@ -356,14 +368,6 @@ SOURCE=.\gamex\xTexture.cpp
 # Begin Source File
 
 SOURCE=.\gamex\xTexture.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\gamex\xTileFlat.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\gamex\xTileFlat.h
 # End Source File
 # Begin Source File
 

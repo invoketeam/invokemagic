@@ -136,7 +136,7 @@ xTmx::loadFile(std::string fname)
   clear();
 
 
-	if  (!(tmx.load_file(fname.c_str(), 0) ))	{		printf("xTmx: Couldn't load tmx [%s] \n", fname);		return false;	}//endif
+	if  (!(tmx.load_file(fname.c_str(), 0) ))	{		printf("xTmx: Couldn't load tmx [%s] \n", fname.c_str());		return false;	}//endif
 
 	map = tmx.child("map");
 	if (map.empty() ) { return false; } //todo error invalid file

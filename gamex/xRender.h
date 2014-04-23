@@ -18,6 +18,10 @@ public:
   xMdx3 * vmesh; //vertmesh
   unsigned int skin;
   unsigned int skin2;
+
+  int skinBlend;
+  int skin2Blend;
+
   int sortCode; 
   int blend; //0 solid   1 alpha test   2 transparent   3 additive
   

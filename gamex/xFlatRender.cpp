@@ -129,7 +129,7 @@ xFlatRender::addFrame(float ax, float ay, float az, float aw, float ah, unsigned
     //set default values
       a->spec = 0;
       a->ang = 0;
-      a->alpha = 1;
+      a->alpha = 1.0f;
       a->u0 = 0.0f;
       a->v0 = 0.0f;
       a->u1 = 1.0f;
@@ -171,8 +171,8 @@ xFlatRender::render(bool bSort)
 
 
        glClientActiveTextureARB(GL_TEXTURE0);     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    
        glActiveTextureARB(GL_TEXTURE1);    glDisable(GL_TEXTURE_2D); 
-
        glClientActiveTextureARB(GL_TEXTURE1);   glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
   
@@ -183,6 +183,9 @@ xFlatRender::render(bool bSort)
       glEnable(GL_BLEND);    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       glDisable(GL_CULL_FACE);
       glDisable(GL_DEPTH_TEST);
+
+    //reset texture blending mode
+      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
     int i;
     xFrame * a;
@@ -205,7 +208,6 @@ xFlatRender::render(bool bSort)
 
 
       glColor4f(1,1,1, a->alpha);
-
 
     //todo -- not sure how to speed this up (or if it needs speed up at all, probably not)
  

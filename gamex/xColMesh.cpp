@@ -144,7 +144,7 @@ xColRect::render(float yc)
 void 
 xColMesh::addMesh(xMdx3 * mdx, int maxd)
   {
-    short * vecIndex;    mVert * vecVert;
+    int * vecIndex;    mVert * vecVert;
     int num, i, t;
     xTri * a;
     bool b;
@@ -188,7 +188,7 @@ xColMesh::initRect(float ax, float ay, float aw, float ah)
 void 
 xColMesh::initMesh(xMdx3 * mdx, int maxd)
   {
-    short * vecIndex;    mVert * vecVert;
+    int * vecIndex;    mVert * vecVert;
     int num;    int i;    int t;
     xTri * a;
 
@@ -233,7 +233,7 @@ xColMesh::initMesh(xMdx3 * mdx, int maxd)
 
 
 
-
+/*
 void 
 xColMesh::addTileMap(xTileMap * tmap)
 {
@@ -273,7 +273,7 @@ xColMesh::addTileMap(xTileMap * tmap)
 
     int maxd;   maxd = 4;
 
-    short * vecIndex;
+    int * vecIndex;
     mVert * vecVert;
     int f;
     int num;
@@ -321,7 +321,7 @@ xColMesh::addTileMap(xTileMap * tmap)
     temp.clear(); //would happen anyway but whatever
 }//initfromtmap
 
-
+*/
 
 
 

@@ -32,11 +32,13 @@ public:
   
   void updateTex(xImage * img);
 
-  void setTexEnv_Modulate(void);
   void setTexEnv_Replace(void);
   void setTexEnv_Blend(void);
   void setTexEnv_Decal(void);
+
   void setTexClamp(bool clamp);
+
+  void setMaxLod(int lod);
 
 private:
   void makeTex(xImage * img, bool mip, bool clamp);

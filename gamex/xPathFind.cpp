@@ -24,15 +24,15 @@ public:
 	int dirty;
 
 public:
-	xQuad();
+	xQuad(void);
 
-	void clear(); //mark all zones in vec as dead
-	void clean(); //get rid of dead zones from the vecNext (connections) of each zone in vec
+	void clear(void); //mark all zones in vec as dead
+	void cleanDead(void); //get rid of dead zones from the vecNext (connections) of each zone in vec
 
 };//xquad
 
 
-xQuad::xQuad()
+xQuad::xQuad(void)
 {
 	tx = 0;
 	ty = 0;
@@ -42,7 +42,7 @@ xQuad::xQuad()
 
 
 void
-xQuad::clear()
+xQuad::clear(void)
 { 
 	tdVecZone ::iterator it;
 
@@ -59,7 +59,7 @@ xQuad::clear()
 
 
 void 
-xQuad::clean()
+xQuad::cleanDead(void)
 {
 	//int i;
 	//int num;
@@ -149,7 +149,7 @@ xPathZone::xPathZone()
 
 
 
-xPathFind::xPathFind() 
+xPathFind::xPathFind(void) 
 {
 	maxOpen = 8192;
 	vecOpen = 0;
@@ -185,7 +185,7 @@ xPathFind::xPathFind()
 
 
 
-xPathFind::~xPathFind() 
+xPathFind::~xPathFind(void) 
 {
 	clear();
 
@@ -196,7 +196,7 @@ xPathFind::~xPathFind()
 
 
 void 
-xPathFind::clear()
+xPathFind::clear(void)
 {
 	
   if (vecQuad != 0) { delete [] vecQuad; vecQuad = 0; }
@@ -217,7 +217,7 @@ xPathFind::clear()
 
 
 void 
-xPathFind::debRender()
+xPathFind::debRender(float ay)
 {
 	xPathZone * a;
   xPathZone * b;
@@ -226,18 +226,13 @@ xPathFind::debRender()
 	tdVecZone ::iterator kt;
 
 	glColor3f(0.5f, 0.5f, 0.5f);
-	glLineWidth(3);
+	glLineWidth(1);
 
-
-//xRand mrand;
 
   float m;
   float y;
 
-  m = 0; //0.035f;
-  y = 256.0f; //0.4f; //0.1f;
-
- // m = 0.15;
+  m = 0; 
 
 
 	for (it = vecZone.begin(); it != vecZone.end(); it++)
@@ -252,7 +247,10 @@ xPathFind::debRender()
         glutWireCube(1);
     glPopMatrix();*/
 
-glColor3f(0,1, 0);
+    y = ay + (a->height * 32.0f);
+
+
+    glColor3f(0,1, 0);
 		glBegin(GL_LINES);
 			glVertex3f(a->cx+m, y, a->cy+m);
 			glVertex3f(a->cx+m, y, a->cy2-m);
@@ -267,12 +265,10 @@ glColor3f(0,1, 0);
 			glVertex3f(a->cx+m, y, a->cy2-m);
 			glVertex3f(a->cx2-m, y, a->cy2-m);
 
-
-
-
 		glEnd();
 
-glColor3f(1,0,0);
+    glColor3f(1,0,0);
+
 //seems that certain areas are not connected ???
     for (kt = a->vecNext.begin(); kt != a->vecNext.end(); kt++)
     {
@@ -607,14 +603,14 @@ xPathFind::buildZone(xTileMap * tmap)
   
   clear();
   
-  mw = tmap->mwidth;
-  mh = tmap->mheight;
+  mw = tmap->mw;
+  mh = tmap->mh;
   cw = tmap->cw;
   ch = tmap->ch;
  
   qcell = 16;
-  qwidth = tmap->mwidth / qcell;
-  qheight = tmap->mheight / qcell;
+  qwidth = tmap->mw / qcell;
+  qheight = tmap->mh / qcell;
   
   num = qwidth * qheight;
   vecQuad = new xQuad[num];
@@ -916,10 +912,9 @@ xPathFind::makeZoneQuad(xTileMap * tmap, xQuad * qa)
                  for (k = qa->tx; k < ex; k++)
                  {
                     if (vecCol[k] > i) { continue; }    
-                    xt = tmap->getXTile(k, i);
-                        zt =  tmap->getZoneType(k, i);
-                    //zt = xt->zt;
-                    height = xt->height;
+                    xt = tmap->getTileAt(k, i);
+                        zt =  tmap->getZoneAt(k, i);
+                    height = tmap->getHeightAt(k,i); //xt->height;
                     spec = xt->spec;
                      if (zt < 0) { continue;  } //wall
 
@@ -928,13 +923,12 @@ xPathFind::makeZoneQuad(xTileMap * tmap, xQuad * qa)
                     //find next wall in line
                     for (k2 = k; k2 < ex; k2++)
                     {                      
-                      xt =  tmap->getXTile(k2, i); 
-                      //t = xt->zt;
-                      t = tmap->getZoneType(k2, i);
+                      xt =  tmap->getTileAt(k2, i); 
+                      t = tmap->getZoneAt(k2, i);
                       if ((k2-k)>7) { break; }
                       if (vecCol[k2] > i) { break; } 
                       if (t != zt) { break; }
-                      if (height != xt->height) { break; }
+                      if (height != tmap->getHeightAt(k2, i)) { break; }
                       if (spec != xt->spec) { break; }
 
                     }
@@ -951,13 +945,13 @@ xPathFind::makeZoneQuad(xTileMap * tmap, xQuad * qa)
                       
                       for (k2 =k; k2 <ex2; k2++)
                       {
-                         xt = tmap->getXTile(k2, i2);
+                         xt = tmap->getTileAt(k2, i2);
                          //t = xt->zt;
 
-                         t = tmap->getZoneType(k2, i2);
+                         t = tmap->getZoneAt(k2, i2);
                          if (vecCol[k2] > i2) { break; } 
                          if (t != zt) { break;} 
-                         if (height != xt->height) { break; }
+                         if (height != tmap->getHeightAt(k2, i2)) { break; }
                          if (spec != xt->spec) { break; }
                       }
                       if (k2 < ex2) { break; }
@@ -1168,7 +1162,7 @@ xPathFind::rebuildQuad(xTileMap * tmap)
 //clean up all zones //this seem to not work that well (?)
   for (i = 0; i < num; i++)
   {
-    vecQuad[i].clean();
+    vecQuad[i].cleanDead();
   }
 
 

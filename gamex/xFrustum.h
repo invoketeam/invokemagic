@@ -54,6 +54,10 @@ public:
 	//aspect -- e.g. 640/480
 	void setPerspective(float fov_= 60, float aspect_=1.33f, float nearDist_=1, float farDist_=300);
 
+
+//todo -- getplaneinter is more of a static function
+//its staying here as its mostly used with frustum related calculations
+//(maybe it should be put in xMath sometime)
 //p plane position
 //n plane normal
 //a b  -- points of line you want to test

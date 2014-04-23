@@ -70,10 +70,10 @@ xPartSys::initPart(int maxp)
     mesh.numVert = maxPart * 4;
     
     mVert * vecVert;
-    short * vecIndex;
+    int * vecIndex;
  
     vecVert = new mVert[mesh.numVert];
-    vecIndex = new short[mesh.numFace*3];
+    vecIndex = new int[mesh.numFace*3];
     vecPart = new xPart[maxPart];
 
     mesh.vecVert = vecVert;

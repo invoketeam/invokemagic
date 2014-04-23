@@ -12,6 +12,8 @@ xEnt::xEnt(void)
     vmesh = 0;
     skin = 0;
     skin2 = 0;
+    skinBlend = 0;
+    skin2Blend = 0;
     sortCode = 0;
     alpha = 1;
     color = 1;
@@ -89,8 +91,8 @@ xBucket::addFrame(void)
     xEnt * a;
     a = vecEnt[it];
     //todo -- reset entity values? (dont need to reset all)
-      a->skin = 0;
-      a->skin2 = 0;
+      a->skin = 0; a->skinBlend = 0;
+      a->skin2 = 0; a->skin2Blend = 0;
       a->useColor = 0;
       a->twoSide = 0;
 
@@ -114,8 +116,12 @@ xBucket::render(void)
     int blend;
     unsigned int skin;
     unsigned int skin2;
+    int skinBlend;
+    int skin2Blend;
     int useColor;
     int twoSide;
+
+
 
     //note -- also need to set
     //http://www.opengl.org/wiki/Texture_Combiners
@@ -160,6 +166,8 @@ xBucket::render(void)
     skin2 = -1;
     useColor = -1;
     twoSide = -1;
+    skinBlend = -1;
+    skin2Blend = -1;
 
 /*
     glActiveTextureARB(GL_TEXTURE0);
@@ -169,11 +177,6 @@ xBucket::render(void)
     glDisable(GL_CULL_FACE);
 
 */
-
-    int stat_t1 = 0;
-    int stat_t2 = 0;
-
-    
 
 
 
@@ -186,41 +189,73 @@ xBucket::render(void)
       fmesh = a->fmesh;
       vmesh = a->vmesh;
 
+
+
+
       if (a->twoSide != twoSide)
       {
         twoSide = a->twoSide;
-        if (twoSide == 1)
-        { glDisable(GL_CULL_FACE); }
-        else { glEnable(GL_CULL_FACE); }
+        if (twoSide == 1) { glDisable(GL_CULL_FACE); }  else { glEnable(GL_CULL_FACE); }
       }//endif
+
+
 
       if (a->skin != skin)
       {
-        stat_t1 += 1;
-
+        
         skin = a->skin;
-        glActiveTextureARB(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, skin);
-        //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); 
+        glActiveTextureARB(GL_TEXTURE0);  glBindTexture(GL_TEXTURE_2D, skin);
+
       }//endif
 
 
       if (a->skin2 != skin2)
       {
-        stat_t2 += 1;
-
+       
         skin2 = a->skin2;
         glActiveTextureARB(GL_TEXTURE1);
         if (skin2 == 0) { glDisable(GL_TEXTURE_2D); }
-        else {
-           glEnable(GL_TEXTURE_2D);
-           glBindTexture(GL_TEXTURE_2D, skin2);
-           //glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL); //todo -- set per texture
-          //printf("skin2 %d \n", skin2);
-        } 
+        else { glEnable(GL_TEXTURE_2D);   glBindTexture(GL_TEXTURE_2D, skin2); } 
+      }//endif
+
+
+      if (a->skinBlend != skinBlend)
+      {
+        skinBlend = a->skinBlend;
+        glActiveTextureARB(GL_TEXTURE0);
+
+        //i should probably use a function for this, but whatever
+        if (skinBlend == 0)      { glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); }
+        else if (skinBlend == 1) { glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND ); }
+        else if (skinBlend == 2) { glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL); }
+        else if (skinBlend == 3) { glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE); }
+        else if (skinBlend == 4)
+        {   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+           glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
+           glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE);
+           glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+           glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA); }
+      }//endif
+
+      if (skin2 != 0)
+      if (a->skin2Blend != skin2Blend)
+      {
+        skin2Blend = a->skin2Blend;
+        glActiveTextureARB(GL_TEXTURE1);
+        if (skin2Blend == 0)      { glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); }
+        else if (skin2Blend == 1) { glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND ); }
+        else if (skin2Blend == 2) { glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL); }
+        else if (skin2Blend == 3) { glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE); }
+        else if (skin2Blend == 4)
+        {   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+           glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
+           glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE);
+           glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+           glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA); }
 
       }//endif
 
+      //todo -- texture matrix
 
 
 
@@ -260,15 +295,17 @@ xBucket::render(void)
       }//endif
 
 
+
       if (a->useColor != useColor)
       {
         useColor = a->useColor;
       
         if (useColor == 1)
         {  glEnableClientState(GL_COLOR_ARRAY); }
-        else   { glDisableClientState(GL_COLOR_ARRAY);  }
+        else   {  glDisableClientState(GL_COLOR_ARRAY);  }
 
       }//endif
+
 
       //todo -- bind texture, check for changes etc
 
@@ -276,11 +313,10 @@ xBucket::render(void)
       { glColor4f(a->color.x, a->color.y, a->color.z, a->alpha); }
 
       
+
       glPushMatrix();
         glTranslatef(a->pos.x, a->pos.y, a->pos.z);
-        //glRotatef(ang*(180.0 / 3.1415), 0, 1, 0);
         //todo -- rotation matrix -- or rotation values
-
 
        //todo -- 36 is the vertex struct size -- it will be probably better to use a constant or something for this
 
@@ -297,11 +333,15 @@ xBucket::render(void)
           glTexCoordPointer(2, GL_FLOAT, 36, &(vmesh->vecVert[0].u));
 
         glClientActiveTextureARB(GL_TEXTURE1);
-          glTexCoordPointer(2, GL_FLOAT, 36, &(vmesh->vecVert[0].u));
+          glTexCoordPointer(2, GL_FLOAT, 36, &(vmesh->vecVert[0].u2));
 
          glVertexPointer(3, GL_FLOAT, 36, &(vmesh->vecVert[0].pos.x));   
 
-  	    glDrawElements(GL_TRIANGLES, fmesh->numFace*3,  GL_UNSIGNED_SHORT, fmesh->vecIndex); 
+        //if (fmesh->drawFace > fmesh->numFace) { fmesh->drawFace = fmesh->numFace; }
+
+  	    glDrawElements(GL_TRIANGLES, fmesh->drawFace*3,  GL_UNSIGNED_INT, fmesh->vecIndex); 
+  	    //glDrawElements(GL_TRIANGLES, fmesh->numFace*3,  GL_UNSIGNED_INT, fmesh->vecIndex); 
+
 
        }
        else
@@ -311,15 +351,15 @@ xBucket::render(void)
          glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, fmesh->indexBuf); 
          glBindBufferARB(GL_ARRAY_BUFFER_ARB, vmesh->vertBuf);  
        
-//vbo stride is tricky..
-//should store these in a constant as well
-/*
-  gamex::cVec3f pos;
-  float u, v;
-  float u2, v2;
-  int norm; //compressed normal
-  int rgba; //color
-*/
+                //vbo stride is tricky..
+                //should store the size of these in a constant as well
+                /*
+                  gamex::cVec3f pos;
+                  float u, v;
+                  float u2, v2;
+                  int norm; //compressed normal
+                  int rgba; //color
+                */
 
          if (useColor == 1)
          { glColorPointer(4, GL_UNSIGNED_BYTE, 36, (char*)12+8+8+4 );  }
@@ -333,7 +373,8 @@ xBucket::render(void)
             
           glVertexPointer(3, GL_FLOAT, 36, 0); 
 
-          glDrawElements(GL_TRIANGLES, fmesh->numFace*3,  GL_UNSIGNED_SHORT, 0); 
+        //if (fmesh->drawFace > fmesh->numFace) { fmesh->drawFace = fmesh->numFace; }
+          glDrawElements(GL_TRIANGLES, fmesh->drawFace*3,  GL_UNSIGNED_INT, 0); 
        }//endif
 
 
@@ -350,25 +391,15 @@ xBucket::render(void)
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
 
+    glActiveTextureARB(GL_TEXTURE0);    glDisable(GL_TEXTURE_2D);
+    glActiveTextureARB(GL_TEXTURE1);    glDisable(GL_TEXTURE_2D); 
+
+    glClientActiveTextureARB(GL_TEXTURE0);      glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glClientActiveTextureARB(GL_TEXTURE1);      glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
     glActiveTextureARB(GL_TEXTURE0);
-    glDisable(GL_TEXTURE_2D);
-
-    glClientActiveTextureARB(GL_TEXTURE0);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-    glActiveTextureARB(GL_TEXTURE1);
-    glDisable(GL_TEXTURE_2D); 
-
-    glClientActiveTextureARB(GL_TEXTURE1);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-    glActiveTextureARB(GL_TEXTURE0);
-
-  
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-
+ 
+    glEnable(GL_CULL_FACE);    glCullFace(GL_BACK);
     glDisable(GL_BLEND);
 
     //printf("Texture switches:  %d  %d \n", stat_t1, stat_t2);   

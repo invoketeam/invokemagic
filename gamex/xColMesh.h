@@ -81,7 +81,7 @@ public:
   void initRect(float ax, float ay, float aw, float ah);
 
   void addMesh(xMdx3 * mdx, int maxd = 4);
-  void addTileMap(xTileMap * tmap);
+//  void addTileMap(xTileMap * tmap);
 
   void clear(void);
   float lineTest(gamex::cVec3f * start, gamex::cVec3f  * end, float rad = 1.0f);

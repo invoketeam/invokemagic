@@ -15,10 +15,9 @@ xMdx3::xMdx3()
   {
     numFace = 0;
     numVert = 0;
-    
-    numTarg = 0;
-    numLod = 0;
-    
+
+    drawFace = 0;
+        
     rad = 0;
     
     vecIndex = 0;
@@ -47,7 +46,7 @@ xMdx3::clear(void)
     if (vecVert != 0) { delete [] vecVert; } vecVert = 0;
     numFace = 0;
     numVert = 0;
-    numTarg = 0;
+    drawFace = 0;
     
     clearVbo();
     
@@ -64,7 +63,7 @@ xMdx3::readFile(FILE * file)
   {
   
   //HEADER
-    fread(&numFace, 4, 1, file);  
+    fread(&numFace, 4, 1, file); drawFace = numFace;  
     fread(&numVert, 4, 1, file);
 
     fread(&rad, 4, 1, file);
@@ -77,9 +76,19 @@ xMdx3::readFile(FILE * file)
     fseek ( file , (16+16) , SEEK_CUR);
 
   //DATA
-    vecIndex = new short[numFace * 3];
-    fread(&vecIndex[0], 2, numFace*3, file);
-    
+
+    //indices are stored in shorts (2byte)
+    //convert them to int (4byte)
+    short * temp;
+    int i;
+    int num;
+      num = numFace * 3;
+      temp = new short[num];
+      fread(&temp[0], 2, num, file);
+      vecIndex = new int[num];
+      for (i = 0; i < num; i++)    { vecIndex[i] = (int) temp[i]; }
+    delete [] temp;
+
     vecVert = new mVert[numVert];
     fread(&vecVert[0], sizeof(mVert), numVert, file);
   }//readfile
@@ -166,91 +175,6 @@ xMdx3::scaleMesh(float sx, float sy, float sz)
 
 
 
-  
-  /*
-  
-void 
-xMdx3::saveFile(std::string fname)
-  {
-    if (numFace <= 0) { return; }
-    
-    char head[] = "MDX002_2013\0";
-    int izero = 0;
-//    int i;
-//    int num;
-    mLodIndex * k;
-    //short szero = 0;
-    FILE * file;
-    
-    file = fopen(fname.c_str(), "wb");
-    if (file == 0) { return; } //todo error
-    
-    //HEADER
-    
-    fwrite(head, 12, 1, file); //identify file 
-    
-    fwrite(&numFace, 4, 1, file);
-    fwrite(&numVert, 4, 1, file);
-    
-    fwrite(&rad, 4, 1, file);
-    
-    fwrite(&min, 12, 1, file);
-    fwrite(&max, 12, 1, file);
-    fwrite(&off, 12, 1, file);
-    
-    //extra data -- 32 bytes
-      fwrite(&numTarg, 2, 1, file);
-      
-      numLod = vecLod.size();
-       fwrite(&numLod, 2, 1, file);
-
-      fwrite(&izero, 4, 1, file);
-      fwrite(&izero, 4, 1, file);
-      fwrite(&izero, 4, 1, file);
-
-      fwrite(&izero, 4, 1, file);
-      fwrite(&izero, 4, 1, file);
-      fwrite(&izero, 4, 1, file);
-      fwrite(&izero, 4, 1, file);
-    
-    //DATA
-      
-      fwrite(&vecIndex[0], 2, numFace*3, file);
-      fwrite(&vecVert[0], sizeof(mVert), numVert, file);
-      
-    //EXTRA DATA
-      fwrite(&vecTarg[0], sizeof(mTarg), numTarg, file);
-      
-      std::vector <mLodIndex *> ::iterator it;
-      
-      for (it = vecLod.begin(); it != vecLod.end(); it++)
-      {
-        k = (*it);
-        fwrite(&(k->numFace), 4, 1, file);
-        fwrite(&(k->numVert), 4, 1, file); //new
-        fwrite(&(k->vecIndex[0]), 2, k->numFace * 3, file);
-
-      }//nextit
-      
-     
-     
-    
-    
-    fclose(file);
-  }//savefile+
-  
-*/
-
-
-
-
-
-
-
-
-
-
-
 
 
   void 
@@ -273,93 +197,35 @@ xMdx3::renderVert(int num)
     
   }//rendervert
   
-  /*
-  void
-xMdx3::renderLod(int i)
-  {
-    if (i < 0) { return; }
-    if (i >= vecLod.size()) {return; }
-    
-    mLodIndex * m;
-    
-    m = vecLod[i];
-    
-    renderVec(m->vecIndex, m->numFace*3);
-  }//renderlod
-  */
-  //vec is vector of indexes
-  // num is the number of indexes (not tris)
-/*  
-void 
-xMdx3::renderVec(short * vec, int num)
-  {
-    int i;
-    mVert * v;
 
-    glBegin(GL_TRIANGLES);
-    
-    for (i = 0; i < num; i++)
-    {
-      v = &(vecVert[ vec[i] ]);
-      
-      glTexCoord2f(v->u, v->v);
-      glVertex3f(v->pos.x, v->pos.y, v->pos.z);
-    
-    }//nexti
-    
-    glEnd();
-  
-  }//rendervec
-  */
-
-/*
-void 
-xMdx3::render2(gamex::cVec3f * altVert)
-{
-
-
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-    
- glTexCoordPointer(2, GL_FLOAT, 36, &(vecVert[0].u));
-
- glVertexPointer(3, GL_FLOAT, 12, altVert);   
-
-  	glDrawElements(GL_TRIANGLES, numFace*3,  GL_UNSIGNED_SHORT, vecIndex); 
-  //	glDrawElements(GL_TRIANGLES, numFace,  GL_SHORT, vecIndex); 
-
-  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-  glDisableClientState(GL_VERTEX_ARRAY);
-}//render2
-*/
 
 void 
 xMdx3::render(void)
 {
 
-//todo multitex:  set active texture
+  bool bColor;
+  bColor = false; //todo -- set from parameter
+
+
 
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
   glEnableClientState(GL_NORMAL_ARRAY);
- // glEnableClientState(GL_COLOR_ARRAY);
-//todo -- add normal rendering to renderer
-//but that is only needed for shaders and whatever i guess
+  if (bColor) glEnableClientState(GL_COLOR_ARRAY);
 
-  // glColorPointer(4, GL_UNSIGNED_BYTE, 36, &(vecVert[0].rgba) );
+  if (bColor) glColorPointer(4, GL_UNSIGNED_BYTE, 36, &(vecVert[0].rgba) );
   
    glNormalPointer(GL_BYTE, 36, &(vecVert[0].norm));  
   
    glTexCoordPointer(2, GL_FLOAT, 36, &(vecVert[0].u));
 
-   glVertexPointer(3, GL_FLOAT, 36, &(vecVert[0].pos.x));   
+   //vertex should be last
+     glVertexPointer(3, GL_FLOAT, 36, &(vecVert[0].pos.x));   
 
+ // glDrawElements(GL_TRIANGLES, numFace*3, GL_UNSIGNED_INT, vecIndex); 
+   glDrawElements(GL_TRIANGLES, drawFace*3, GL_UNSIGNED_INT, vecIndex); 
 
-  	glDrawElements(GL_TRIANGLES, numFace*3,  GL_UNSIGNED_SHORT, vecIndex); 
-  //	glDrawElements(GL_TRIANGLES, numFace,  GL_SHORT, vecIndex); 
-
-  //glDisableClientState(GL_COLOR_ARRAY);
+  if (bColor) glDisableClientState(GL_COLOR_ARRAY);
   glDisableClientState(GL_TEXTURE_COORD_ARRAY);
   glDisableClientState(GL_VERTEX_ARRAY);
   glDisableClientState(GL_NORMAL_ARRAY);
@@ -384,11 +250,11 @@ xMdx3::initPlane(float scale, float u0, float v0, float u1, float v1)
     neg = -0.5f * scale;
     pos = 0.5f * scale;
 
-    numFace = 2;
+    numFace = 2; drawFace = numFace;
 		numVert = 4;
 
 
-    vecIndex = new short[numFace * 3];
+    vecIndex = new int[numFace * 3];
     vecVert = new mVert[numVert];
 
     vecIndex[0] = 1;
@@ -411,7 +277,7 @@ xMdx3::initPlane(float scale, float u0, float v0, float u1, float v1)
 
 
 
-static short vecFace_cube[] =  
+static int vecFace_cube[] =  
      {	1, 0, 2, 1, 2, 3,
 				1 + 4, 2 + 4, 0 + 4,  1 + 4, 3 + 4, 2 + 4,
 				1 + 8, 2 + 8, 0 + 8,  1 + 8, 3 + 8, 2 + 8,
@@ -431,14 +297,15 @@ xMdx3::initBox(float scale)
     neg = -0.5f * scale;
     pos = 0.5f * scale;
 
-    numFace = 12;
+    numFace = 12;  
 		numVert = 24;
 
+    drawFace = numFace;
 
-    vecIndex = new short[numFace * 3];
+    vecIndex = new int[numFace * 3];
     vecVert = new mVert[numVert];
     
-    memcpy(vecIndex, vecFace_cube, 12*3*2);
+    memcpy(vecIndex, vecFace_cube, 12*3*4);
     
 /*
 //template
@@ -517,7 +384,7 @@ xMdx3::makeVbo(void)
 
   glGenBuffersARB(1, &indexBuf);
 	 glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, indexBuf);
-	 glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, numFace*3*2, vecIndex, GL_STATIC_DRAW_ARB);
+	 glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, numFace*3*4, vecIndex, GL_STATIC_DRAW_ARB);
 
   glGenBuffersARB(1, &vertBuf);
 	 glBindBufferARB(GL_ARRAY_BUFFER_ARB, vertBuf);
@@ -528,6 +395,8 @@ xMdx3::makeVbo(void)
    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
    glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
 }//makevbo
+
+
 
 void 
 xMdx3::updateVboVertex(void)

@@ -38,7 +38,7 @@ xFrustum::getPlaneInter(gamex::cVec3f a, gamex::cVec3f b, gamex::cVec3f p, gamex
 		d = p - a;
 
 		ndotv = (v.x * n.x) + (v.y * n.y) + (v.z * n.z);
-		if (ndotv == 0) { return -99999; } //line and plane parallel, no inters
+		if (ndotv == 0) { return -999.0f; } //line and plane parallel, no inters
 
 			
 		return ( ( ( n.x * d.x) + (n.y * d.y) + (n.z * d.z) ) / ndotv );

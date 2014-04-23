@@ -28,8 +28,6 @@ class xMdx3
 public:
   int numFace;
   int numVert;
-  short numTarg;
-  short numLod;
   
   gamex::cVec3f min;
   gamex::cVec3f max;
@@ -37,14 +35,15 @@ public:
   
   float rad;
   
-  short * vecIndex;
+  int * vecIndex;
   mVert * vecVert;
 
-  
-  bool hasVbo;
+  int drawFace; //number of faces to draw (used by renderer)
+
   unsigned int indexBuf;
   unsigned int vertBuf;
-
+  
+  bool hasVbo; //todo -- test if indexBuf != 0 instead?
 
 public:
    xMdx3();

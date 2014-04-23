@@ -283,6 +283,7 @@ xDrawMesh::clear(void)
     tree.clear();
   }//clear
 
+/*
 
 void 
 xDrawMesh::initRect(xTileMap * tmap)
@@ -351,7 +352,7 @@ xDrawMesh::initRect(xTileMap * tmap)
     }//nexti
   
   }//initrect
-
+*/
 
 
 

@@ -7,6 +7,7 @@
 #include "../gamex/xGuiGame.h"
 #include "../gamex/xGameExt.h"
 #include "../gamex/xData.h"
+#include "../gamex/xHeightMap.h"
 
 #include "xMiniMap.h"
 
@@ -14,33 +15,37 @@ class invokeGame : public xGameExt
 {
 public:
   xData myData;
+
   xGuiGame myGui;
 
-  
-  xCam myCam;
-  gamex::cVec3f camPos;
+  xFont myFont;
+  xTexture myFontSkin;
 
 
   xRender myRender;
   xCursor myCursor;
   
+public:
+  xCam myCam;
+  gamex::cVec3f camPos;
+
+  xViewBox viewBox;
+  gamex::cVec3f lastPos;
+
+
+public:
+  
   
   xTexture tileSkin;
-  xTileMap myMap;
-  xColMesh myCol;
-  xDrawMesh myDraw;
+  xHeightMap myHeight;
 
-  xMdx3 debmesh;
+  xMiniMap myMini;
 
 
   xTexture waterSkin;
   xMdx3 waterDeb;
 
-
-  xMiniMap myMini;
-
-  xFont myFont;
-  xTexture myFontSkin;
+  xMdx3 debmesh;
 
 public:
   invokeGame(void);

@@ -101,7 +101,7 @@ public:
 
   
 
-  void initRect(xTileMap * tmap);
+//  void initRect(xTileMap * tmap);
 
 
   /*

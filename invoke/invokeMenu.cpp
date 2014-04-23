@@ -45,7 +45,7 @@ invokeMenu::init(void)
 
       myFont.loadCharDef("data/atari16.xfnt");
       myFontSkin.loadTex("data/atari16.png",true,true,true);
-      myFontSkin.setTexEnv_Modulate();
+      //myFontSkin.setTexEnv_Modulate();
       myFont.handle = myFontSkin.handle;
     
 

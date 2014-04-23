@@ -57,7 +57,7 @@ xData::addSkin(std::string fname, std::string altName, bool mip, bool ymir, bool
   xTexture * a;
   a = new xTexture();
   a->loadTex(fname, mip, ymir, clamp);
-  a->setTexEnv_Replace();
+
   if (altName != "0") { fname = altName;  }
   else { fname = stripName(fname); }
 

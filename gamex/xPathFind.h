@@ -71,8 +71,6 @@ public:
 
 	bool bFinish;
 
-	//tdVecQuad vecQuad;
-
   xQuad * vecQuad; //qwidth*qheight
   
 	int qcell; //a quadrant is qcell*qcell in size
@@ -86,10 +84,10 @@ public:
 
 		
 public:
-	xPathFind();
-	~xPathFind();
+	xPathFind(void);
+	~xPathFind(void);
 
-	void clear();
+	void clear(void);
 
 
 	void findPath(int numstep = 1024, int mode=0);
@@ -101,7 +99,7 @@ public:
 	void buildZone(xTileMap * tmap);
 	void conQuad(xQuad * qa);
 	void conQuad2(xQuad * qa, xQuad * qb);
-	void genGroup();
+	void genGroup(void);
 
 	void setDirty(float wx, float wy);
   void setDirtyRect(float wx, float wy, float ww, float wh);
@@ -109,23 +107,8 @@ public:
   void makeZoneQuad(xTileMap * tmap, xQuad * qa);
 
 
-  void debRender();
+  void debRender(float ay);
 
 
-	/*
-    public function buildZone(vecGrid:Vector.<int>, mw:int, mh:int,  cellw:Number=1.0, cellh:Number=1.0):int
-          public function conQuad(qa:xQuad):void
-      public function conQuad2(qa:xQuad, qb:xQuad):void
-            public var mr:xMegaRand = new xMegaRand();
-        public function genGroup():void
-     public function getClosex(vec:Vector.<int>, col:Vector.<int>, mw:int, ax:int, ay:int):int
-       public function copyVec(vec:Vector.<int>):Vector.<int>
-     public function setRect(vec:Vector.<int>,mw:int,mh:int,  ax:int, ay:int, aw:int, ah:int, c:int):void
-
-	//rebuild dirty quads (and connections with their neighboring quads)
-		public var tempQuad:Vector.<xQuad> = new Vector.<xQuad>(1024, false);
-		public function rebuildQuad(vecGrid:Vector.<int>, mw:int, mh:int):void
-			public function makeZoneQuad(qa:xQuad, vec:Vector.<int>, mw:int, mh:int,  cellw:Number=1.0, cellh:Number=1.0):void
-    */
 
 };//classend

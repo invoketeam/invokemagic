@@ -73,7 +73,7 @@ invokeGame::init(void)
 
     myFont.loadCharDef("data/atari16.xfnt");
     myFontSkin.loadTex("data/atari16.png",true,true,true);
-    myFontSkin.setTexEnv_Modulate();
+    //myFontSkin.setTexEnv_Modulate();
     myFont.handle = myFontSkin.handle;
 
     myGui.init();
@@ -85,12 +85,10 @@ invokeGame::init(void)
 
 
 
-  myData.addSkin("data/knight_skin.png", "knight_skin",true,true);
-  
-  myData.addSprite("data/mysmoke.xms","data/mysmoke.png");
-  
-  myData.addSprite("data/button.xms","data/button.png");
-  
+
+//setup ingame gui
+
+   myData.addSprite("data/button.xms","data/button.png");
 
   xButton * b;
   b = myGui.addButton("btn1", "", 200, 610-36-36-36,380, 16, 32,32, getSprite("btn_move"), 1);
@@ -117,11 +115,11 @@ invokeGame::init(void)
 
 
   //testing -- a button for the minimap (probably not the best way to go about this)
+     b = myGui.addButton("btn_mini", "minimap", 500, 64+4, 480-64-8, 16, 128,128, getSprite("button64x64"), 1);
+     b->drawMode = -1; //make button hidden but usable
 
 
 
- b = myGui.addButton("btn_mini", "minimap", 500, 64+4, 480-64-8, 16, 128,128, getSprite("button64x64"), 1);
- b->drawMode = -1; //make button hidden but usable
 
 
 
@@ -131,62 +129,49 @@ invokeGame::init(void)
 
 
 
-  xTmxLayer * layer;
+  myHeight.cw = 128;
+  myHeight.ch = 128;
+  myHeight.initEmpty(128, 128);
+  
+  myHeight.loadTileSet("data/out_set.xms");
+  tileSkin.loadTex("data/out_set.png", true, false);
+  tileSkin.setMaxLod(4); //     edge*0.5
 
-
-  xTmx tmxLoader;
-  tmxLoader.loadFile("data/testmap2.tmx");
-
-//todo -- the tileset atlas will need a larger edge around the tiles
-  tileSkin.loadTex("data/out_set.png", true, false, false);
-  myMap.debLoadUv("data/out_set.xms");
-
-
-
-  layer = tmxLoader.getLayer("tex");
-//  myMap.cw = 64.0f;  myMap.ch = 64.0f;
-//todo -- set these with function  
-//128x128 per tile seems good enough so far
-//maybe the non walkable tileset should be seperate from the tilemap (entirely)
-  myMap.cw = 128.0f;  myMap.ch = 128.0f;
-  myMap.icw = 1.0f/myMap.cw;
-  myMap.ich = 1.0f/myMap.cw;
-
-
-//  myMap.cw = 256.0f;  myMap.ch = 256.0f;
-
-
-
-
-  myMap.initEmpty(layer->mwidth, layer->mheight);
- 
-
-
-
-
-  myMap.genHeightRect();
   xImage hmap;
-  hmap.loadImage("data/test_heightmap.png");
-    myMap.applyHeightMap(&hmap, 1.0f);
-  hmap.clear();
+       hmap.loadImage("data/test_heightmap.png");
+          myHeight.loadHeight(&hmap, 1.0f);
+
+       hmap.loadImage("data/colormap.png");
+       hmap.endianSwap();
+           myHeight.loadColor(&hmap);
 
 
-  myMap.setSkinFromLayer(layer->vecGrid, layer->mwidth, layer->mheight);
-   
- 
-    myCol.clear();
-    myCol.addTileMap(&myMap);
+    
 
-    myDraw.initRect(&myMap);
+  xTmx tmx;
+  xTmxLayer * layer;
+   tmx.loadFile("data/testmap2.tmx");
+
+    layer = tmx.getLayer("tex");
+      layer->addNum(-1); //correct tilemap
+        myHeight.loadLayer(layer->vecGrid, layer->mwidth, layer->mheight);
+
+    layer = tmx.getLayer("top");
+     layer->addNum(-1); //correct tilemap
+       myHeight.loadTopLayer(layer->vecGrid, layer->mwidth, layer->mheight);
+    
+
+   myHeight.setBufferMesh(128*128);
+    myHeight.updateMesh(0,0, 2048,2048);
 
 
-    debmesh.initBox(16);
- 
 
 
-  waterSkin.loadTex("data/watertex.png");
-  waterDeb.initPlane(32768, 0, 0, 32,32);
 
+
+
+
+    
 
 
 
@@ -215,6 +200,23 @@ invokeGame::init(void)
 
 
 
+//data used for debug
+  myData.addSkin("data/knight_skin.png", "knight_skin",true,true);
+  
+  myData.addSprite("data/mysmoke.xms","data/mysmoke.png");
+  
+
+
+//mesh used for debugging
+  debmesh.initBox(16);
+ 
+
+//a big plane used for the water
+  waterSkin.loadTex("data/watertex.png");
+  waterDeb.initPlane(32768, 0, 0, 32,32);
+
+
+
 
 
 
@@ -227,8 +229,8 @@ invokeGame::init(void)
 
 
   float wwidth, wheight;
-  wwidth = myMap.mwidth * myMap.cw;
-  wheight = myMap.mheight * myMap.ch;
+  wwidth = myHeight.mw * myHeight.cw;
+  wheight = myHeight.mh * myHeight.ch;
 
 
 
@@ -309,7 +311,7 @@ invokeGame::update(void)
 
   //todo -- this needs some smoothing (adjusting?)
   myCam.pos = camPos;
-  myCam.pos.y += myMap.getHeight(camPos.x, camPos.z);
+  myCam.pos.y += myHeight.getHeight(camPos.x, camPos.z);
 
 
 
@@ -318,7 +320,9 @@ invokeGame::update(void)
   kx =  ((umx*2)-1)*-1;
   ky =  ((umy*2)-1)*-1;
 
-  myCursor.update(&myCam, kx, ky, &myCol);
+//  myCursor.update(&myCam, kx, ky, &myCol);
+  myCursor.updateHmap(&myCam, kx, ky, &myHeight, 0.0f);
+
   //printf("mycursor %0.2f, %0.2f \n", umx, umy);
 
 
@@ -330,6 +334,12 @@ invokeGame::update(void)
 
   gameTime += 1;
 }//update
+
+
+
+
+
+
 
 
 void 
@@ -349,61 +359,106 @@ invokeGame::render(void)
     glLoadMatrixf(view.m);
 
 
-  xFrustum frust;
-      frust.setPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
-	    frust.setPoints(myCam.pos, myCam.ori, 0, 0);
+ 
+     
 
 
 
 
 
-  myRender.resetFrame();
-   myRender.setCam(myCam.pos, myCam.ori);
+//check if camera moved enough that we need to update the heightmap
+
+    xFrustum frust;
+    gamex::cVec3f dist;
+    float mag;
+    float diff;
+      dist = lastPos - camPos;
+    //diff = 128.0f;
+      diff = myHeight.cw * 2.0f;
+      mag = dist.getMag();
+
+        if (mag >= diff)
+        {
+          lastPos = camPos;
+
+           diff *= 2.0f;
+
+           frust.setPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
+	         frust.setPoints(myCam.pos, myCam.ori, 0, 0);
+
+          //todo -- make viewbox use the camera as parameter(?)          
+            viewBox.genBox(&frust, 0,0,0, 0, 1, 0);
+
+         
+           //todo -- only update if box changes considerably
+            //no need to check sides for difference as it seems to naturally be overestimated
+            myHeight.updateMesh(viewBox.min.x, viewBox.min.z-diff, (viewBox.max.x-viewBox.min.x), (viewBox.max.z-viewBox.min.z)+diff*2.0f);
+
+          //printf("updatemesh %d %d \n", gameTime, myHeight.mesh.drawFace);
+        }//endif
+      
+
+
+
+
+
+
+
+//3D rendering part
+
+        myRender.resetFrame();
+         myRender.setCam(myCam.pos, myCam.ori);
   
+               //todo -- for actors do a query based on the frustum 
+                //so instead of testing each one against the frustum
+                //we just pick ones that are potentially inside it 
+                  myWorld.render2(&myRender);
 
-  //todo -- for actors do a query based on the frustum 
-  //so instead of testing each one against the frustum
-  //we just pick ones that are potentially inside it 
-    myWorld.render2(&myRender);
+                
 
-    myDraw.render(&frust, &myRender, tileSkin.handle);
+              xEnt * e;
 
 
-float waterHeight; //todo -- make this a member variable (or add it as part of the tilemap)
-waterHeight = 50.0f;
+                e = myRender.addFrame(0); 
+                  e->pos = 0;
+                  e->skin = tileSkin.handle;   e->skinBlend = 0; //0 replace   1 blend  2 decal  3 modulate  4 experiment
+                  e->skin2 = 0; //mySkin2.handle; e->skin2Blend = 1;
+                  e->fmesh = &(myHeight.mesh);
+                  e->vmesh = &(myHeight.mesh);
+                  e->useColor = 1;
+                  e->blend = 0;
+                  e->color = 1;
+                  e->twoSide = 1;
+
+
+
+              float waterHeight; //todo -- make this a member variable (or add it as part of the tilemap)
+              waterHeight = 50.0f;
     
-    xEnt * e;
-    e = myRender.addFrame(1);
-      e->pos = 0; //pos;
-      e->pos.y = waterHeight + sinf( ((float)(gameTime % 314)) *0.01f)*16.0f;
-      e->sortpos = e->pos;
-      e->blend = 2; //0 solid   1 alpha test   2 transparent   3 additive
-      e->fmesh = &waterDeb;
-      e->vmesh = &waterDeb;
-      e->alpha = 0.25;
-      e->color = 1;
-      e->twoSide = 1;
-      e->skin = waterSkin.handle;
-      e->useColor = 0; ///1 use color data of mesh or 0 for the e->color of xEnt
+               
+                  e = myRender.addFrame(1);
+                    e->pos = 0; //pos;
+                    e->pos.y = waterHeight + sinf( ((float)(gameTime % 314)) *0.01f)*16.0f;
+                    e->sortpos = e->pos;
+                   
+                    e->fmesh = &waterDeb;
+                    e->vmesh = &waterDeb;
+                    e->alpha = 0.25;
+                    e->color = 1;
+                    e->twoSide = 1;
+                    e->skin = waterSkin.handle;
+                    e->blend = 2; //0 solid   1 alpha test   2 transparent   3 additive
+                    e->skinBlend = 3; //0 replace   1 blend  2 decal  3 modulate
+                    e->useColor = 0; ///1 use color data of mesh or 0 for the e->color of xEnt
   
 
 
-  myRender.render(true);
+        myRender.render(true);
 
 
-/*
-  glColor3f(0,0,1);
 
-
-    glPushMatrix();
-      glTranslatef(0,200,0);
-      waterDeb.render();
-    glPopMatrix();
-
-*/
-
+glDisable(GL_TEXTURE_2D);
   glColor3f(1,0,0);
-
   glPushMatrix();
     glTranslatef(myCursor.coord.x, myCursor.coord.y, myCursor.coord.z); 
        debmesh.render();
@@ -418,8 +473,9 @@ waterHeight = 50.0f;
 
  
  
-glEnable(GL_DEPTH_TEST);
-   glDisable(GL_TEXTURE_2D); debugDraw();
+      //debug -- draw aabb around units
+        glEnable(GL_DEPTH_TEST);
+           glDisable(GL_TEXTURE_2D); debugDraw();
 
  
 
@@ -430,31 +486,31 @@ glEnable(GL_DEPTH_TEST);
    glMatrixMode(GL_PROJECTION);  	glLoadIdentity();       glOrtho(0,640,480,0,-3000,3000); 
 	 glMatrixMode(GL_MODELVIEW);	  glLoadIdentity();
 
-   //as a flatrenderer doesnt store anything about the things its supposed to render
-   //we might as well have a global/singleton one (?)
-   xFlatRender * flat;
-   flat = &(myGui.myFlat);
+         //as a flatrenderer doesnt store anything about the things its supposed to render
+         //we might as well have a global/singleton one (?)
+         xFlatRender * flat;
+         flat = &(myGui.myFlat);
 
 
-   flat->resetFrame();
+         flat->resetFrame();
 
-   myGui.myWorld.frameRender(flat);
-   myGui.cursor.frameRender(flat);    
+         myGui.myWorld.frameRender(flat);
+         myGui.cursor.frameRender(flat);    
       
 
-  //render minimap
-  //todo -- set update factor from some variable
-    if ((gameTime % 30) == 0)  { myMini.updateImage(&myWorld); }
+        //render minimap
+        //todo -- set update factor from some variable
+          if ((gameTime % 30) == 0)  { myMini.updateImage(&myWorld); }
 
-    //rem -- coordinates are the middle of the rectangle
-    xFrame * f;
-     f = flat->addFrame(64+4, 480-64-8, 300, 128,128, myMini.skin.handle);
-     flat->render(true);
+          //rem -- coordinates are the middle of the rectangle
+          xFrame * f;
+           f = flat->addFrame(64+4, 480-64-8, 300, 128,128, myMini.skin.handle);
+           flat->render(true);
    
 
-   glDisable(GL_TEXTURE_2D); myGui.debugDraw(); 
+         glDisable(GL_TEXTURE_2D); myGui.debugDraw(); 
 
-   upCursor();
+         upCursor();
 
 }//render
 
@@ -603,7 +659,7 @@ invokeGame::upCursor(void)
 float 
 invokeGame::getHeight(float wx, float wz) 
 {
- return myMap.getHeight(wx, wz);
+ return myHeight.getHeight(wx, wz);
 }//getheight
 
 
@@ -665,8 +721,8 @@ invokeGame::gotCmd(int cmd, int arg0, int arg1)
  //for now the minimap movement is hacked together like this (should be refined in the future)
  if (cmd == 500)
  {
-    camPos.x = arg0 * myMap.cw;
-    camPos.z = arg1 * myMap.ch;
+    camPos.x = arg0 * myHeight.cw;
+    camPos.z = arg1 * myHeight.ch;
  }//endif
 
 
