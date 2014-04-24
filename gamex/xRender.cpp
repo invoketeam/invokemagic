@@ -105,6 +105,43 @@ xBucket::addFrame(void)
 
 
 
+inline static void setSkinBlendMode(int mode)
+{
+
+  //a switch of 0,1,2,3 etc.. is supposed to be compiled into a jump table instead of series of ifs
+  // aka yay we are saving microseconds maybe
+
+  switch (mode)
+  {
+    case 0:      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);    break;
+
+    case 1:      glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND );    break;
+
+    case 2:      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);    break;
+
+    case 3:      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);    break;
+
+    case 4:
+
+     //combiners dont give as much freedom as shaders but certainly less hassle
+
+     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+     
+     glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
+     glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE);
+     
+     glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+     glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA); 
+
+    break;
+
+
+  };//swenc
+
+}//setskinblendmode
+
+
+
 void 
 xBucket::render(void)
   {
@@ -223,18 +260,9 @@ xBucket::render(void)
       {
         skinBlend = a->skinBlend;
         glActiveTextureARB(GL_TEXTURE0);
+        setSkinBlendMode(skinBlend);
 
         //i should probably use a function for this, but whatever
-        if (skinBlend == 0)      { glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); }
-        else if (skinBlend == 1) { glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND ); }
-        else if (skinBlend == 2) { glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL); }
-        else if (skinBlend == 3) { glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE); }
-        else if (skinBlend == 4)
-        {   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-           glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
-           glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE);
-           glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-           glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA); }
       }//endif
 
       if (skin2 != 0)
@@ -242,16 +270,7 @@ xBucket::render(void)
       {
         skin2Blend = a->skin2Blend;
         glActiveTextureARB(GL_TEXTURE1);
-        if (skin2Blend == 0)      { glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); }
-        else if (skin2Blend == 1) { glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND ); }
-        else if (skin2Blend == 2) { glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL); }
-        else if (skin2Blend == 3) { glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE); }
-        else if (skin2Blend == 4)
-        {   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-           glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
-           glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE);
-           glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-           glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA); }
+        setSkinBlendMode(skin2Blend);
 
       }//endif
 
