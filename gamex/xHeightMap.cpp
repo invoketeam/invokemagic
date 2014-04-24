@@ -291,29 +291,40 @@ xHeightMap::updateMesh(float x0, float y0, float w0, float h0)
       //mesh.vecVert[v].v2 = (float)(i+1) / (float)mw;
       mesh.vecVert[v].rgba = c;
 
-      h = vecHeight[yt+k+1];
-      c = vecColor[yt+k+1];
 
-      mesh.vecVert[v+1].pos.set(k*cw+cx+cw, h, i*ch+cz);
-      mesh.vecVert[v+1].u = ht->u1; //1.0f;
-      mesh.vecVert[v+1].v = ht->v0; //0.0f;
-      mesh.vecVert[v+1].u2 = uht->u1; //1.0f;
-      mesh.vecVert[v+1].v2 = uht->v0; //0.0f;
-      //mesh.vecVert[v+1].u2 = (float)(k+1) / (float)mw;
-      //mesh.vecVert[v+1].v2 = (float)(i+1) / (float)mw;
-      mesh.vecVert[v+1].rgba = c;
-      
       h = vecHeight[yt+k+mw];
       c = vecColor[yt+k+mw];
 
-      mesh.vecVert[v+2].pos.set(k*cw+cx, h, i*ch+cz+ch);
-      mesh.vecVert[v+2].u = ht->u0; //0.0f;
-      mesh.vecVert[v+2].v = ht->v1; //1.0f;
-      mesh.vecVert[v+2].u2 = uht->u0; //0.0f;
-      mesh.vecVert[v+2].v2 = uht->v1; //1.0f;
+      mesh.vecVert[v+1].pos.set(k*cw+cx, h, i*ch+cz+ch);
+      mesh.vecVert[v+1].u = ht->u0; //0.0f;
+      mesh.vecVert[v+1].v = ht->v1; //1.0f;
+      mesh.vecVert[v+1].u2 = uht->u0; //0.0f;
+      mesh.vecVert[v+1].v2 = uht->v1; //1.0f;
+      //mesh.vecVert[v+1].u2 = (float)(k+1) / (float)mw;
+      //mesh.vecVert[v+1].v2 = (float)(i+1) / (float)mw;
+      mesh.vecVert[v+1].rgba = c;
+
+
+
+
+      h = vecHeight[yt+k+1];
+      c = vecColor[yt+k+1];
+
+      mesh.vecVert[v+2].pos.set(k*cw+cx+cw, h, i*ch+cz);
+      mesh.vecVert[v+2].u = ht->u1; //1.0f;
+      mesh.vecVert[v+2].v = ht->v0; //0.0f;
+      mesh.vecVert[v+2].u2 = uht->u1; //1.0f;
+      mesh.vecVert[v+2].v2 = uht->v0; //0.0f;
       //mesh.vecVert[v+2].u2 = (float)(k+1) / (float)mw;
       //mesh.vecVert[v+2].v2 = (float)(i+1) / (float)mw;
       mesh.vecVert[v+2].rgba = c;
+      
+
+
+
+
+
+
 
       h = vecHeight[yt+k+1+mw];
       c = vecColor[yt+k+1+mw];

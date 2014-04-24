@@ -495,7 +495,7 @@ invokeGame::render(void)
                   e->useColor = 1;
                   e->blend = 0;
                   e->color = 1;
-                  e->twoSide = 1;
+                  e->twoSide = 0;
 
 
 
