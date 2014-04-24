@@ -32,10 +32,6 @@ public:
   
   void updateTex(xImage * img);
 
-  void setTexEnv_Replace(void);
-  void setTexEnv_Blend(void);
-  void setTexEnv_Decal(void);
-
   void setTexClamp(bool clamp);
 
   void setMaxLod(int lod);

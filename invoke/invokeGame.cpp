@@ -86,7 +86,8 @@ invokeGame::invokeGame(void)
 
 
   myCam.neard = 1.0f;
-  myCam.fard = 6000.0f; //9000.0f;
+//far distance: too much and the zbuffer starts screwing up, too little and we wont see far
+  myCam.fard = 7000.0f; //9000.0f;
   myCam.aspect = 640.0f/480.0f;
   myCam.fov = 70.0f;  //important
 

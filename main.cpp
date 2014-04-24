@@ -38,12 +38,9 @@ xTexture debFontSkin;
 void init(void)
 {
  
-
   //todo - store this font and texture inside the exe(?)
   debFont.loadCharDef("data/atari16.xfnt");
   debFontSkin.loadTex("data/atari16.png",true,true,true);
-//  debFontSkin.setTexEnv_Modulate();
-
 
   testGame.init();
 }//init

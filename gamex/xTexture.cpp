@@ -102,33 +102,6 @@ xTexture::updateTex(xImage * img)
 
 
 
-void 
-xTexture::setTexEnv_Replace(void)
-{
- glBindTexture(GL_TEXTURE_2D, handle);
- glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); 
-}//replace
-
-
-void 
-xTexture::setTexEnv_Decal(void)
-{ 
-
-  glBindTexture(GL_TEXTURE_2D, handle);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-}//blend
-
-
-void 
-xTexture::setTexEnv_Blend(void)
-{ 
-
-  glBindTexture(GL_TEXTURE_2D, handle);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-}//blend
-
-
-
 void
 xTexture::setTexClamp(bool clamp)
 {
