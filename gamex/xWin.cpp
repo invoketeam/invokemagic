@@ -693,15 +693,18 @@ namespace xwin
 
 		//  Specifies the number of color bitplanes in each color buffer. For RGBA pixel types, it is the size of the color buffer, excluding the alpha bitplanes. For color-index pixels, it is the size of the color-index buffer.
 
+
+    //todo -- set these from arguments/parameters
+
 		pfd.cColorBits = 24; //exclude 8 for alpha for 32bit -- so 24 is correct 
 
-		pfd.cDepthBits = 16; //ignored
+		pfd.cDepthBits = 24; 
 
-		pfd.dwLayerMask = PFD_MAIN_PLANE; //ignored
+		pfd.dwLayerMask = PFD_MAIN_PLANE; 
 
 		pfd.cAccumBits = 0;
 
-		pfd.cStencilBits = 0;
+		pfd.cStencilBits = 8;
 
 
 		int pixformat;

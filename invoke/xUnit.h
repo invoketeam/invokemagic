@@ -4,6 +4,8 @@
 #include "../gamex/gamex.h"
 
 
+
+
 class xUnit : public xActor
 {
 public:
@@ -19,6 +21,12 @@ public:
   xMdx3 * shadowMesh;
   unsigned int shadowSkin;
 
+  
+public:
+  gamex::cVec3f teamColor;
+
+  gamex::cVec3f dest;
+  int cmd;
 
 public:
   xUnit(void);
@@ -33,4 +41,7 @@ public:
 
   virtual unsigned int getSkin(std::string wname);
 
+public:
+  virtual void gotMsg(int msg, int arg0, int arg1, int arg2);
+  
 };//xunit

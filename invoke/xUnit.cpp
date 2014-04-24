@@ -2,6 +2,8 @@
 
 #include "xUnit.h"
 
+#include "xInvokeCommon.h"
+
 
 xUnit::xUnit(void) 
 {
@@ -12,6 +14,8 @@ xUnit::xUnit(void)
 
   shadowMesh = 0;
   shadowSkin = 0;
+
+  cmd = 0;
 
 }//ctor
 
@@ -41,16 +45,21 @@ xUnit::init(void)
   yrad = 64;
   zrad = 32;
 
-  vel.x = game->getRand2() * 3.0f;
-  vel.z = game->getRand2() * 3.0f;
+  //vel.x = game->getRand2() * 3.0f;
+  //vel.z = game->getRand2() * 3.0f;
 
   yaw = game->getRand() * 6.28f;
 
   spectype = 100;
 
+  flags = FR_SELECTABLE;
 
   shadowMesh = game->getMdx("shadow");
   shadowSkin = game->getSkin("shadow");
+
+  //color = game->getRand() * 32768;
+
+  teamColor.set(game->getRand(), game->getRand(), game->getRand());
 
 }//init
 
@@ -65,20 +74,53 @@ xUnit::update(void)
     curFrame += 0.5f * fr;
     if (curFrame >= anim.numFrame) { curFrame = 0.0f; } 
 
+
+    if (cmd > 0)
+    {
+      vel.x = dest.x - pos.x;
+      vel.z = dest.z - pos.z;
+      float ms;
+      ms = 4.0f;
+      if (vel.x > ms) { vel.x = ms; }
+      if (vel.x < -ms) { vel.x = -ms; }
+      if (vel.z > ms) { vel.z = ms; }
+      if (vel.z < -ms) { vel.z = -ms; }
+
+      if (abs(vel.x) < ms && abs(vel.z) < ms) { cmd = -1; vel = 0;}
+    }//endif
+
     pos.x += vel.x;
     pos.z += vel.z;
 
     pos.y = game->getHeight(pos.x, pos.z) + yrad;
 
-    yaw += 0.1f;
+   // yaw += 0.1f;
 
-  
+  /*
     if (vel.x < 0 && pos.x < 0) { vel.x *= -1.0f; }
     else if (vel.x > 0 && pos.x > (32*64)) { vel.x *= -1.0f; }
     if (vel.z < 0 && pos.z < 0) { vel.z *= -1.0f; }
     else if (vel.z > 0 && pos.z > (32*64)) { vel.z *= -1.0f; }
+*/
 
+  putInGrid(game->mgrid);
 }//update
+
+
+void 
+xUnit::gotMsg(int msg, int arg0, int arg1, int arg2)
+{
+
+  printf("gotmsg %d  --  %d %d %d %d \n", id, msg, arg0, arg1, arg2);
+
+  cmd = msg;
+  dest.set(arg0, 0, arg1);
+
+
+
+}//gotmsg
+
+
 
 
 void 
@@ -86,6 +128,8 @@ xUnit::render(void)
 {
 
 }//render
+
+
 
   
 unsigned int xUnit::getSkin(std::string wname)
@@ -121,11 +165,17 @@ xUnit::render2(xRender * r)
       e->fmesh = &mesh;
       e->vmesh = &mesh;
       e->alpha = 1;
-      e->color = 1;
+      //e->color = 1;
+      //e->color.set(1,0,0);
       e->twoSide = 1;
       e->skin = getSkin("knight_skin") ;
+      e->useColor = 0;
+      //e->skinBlend = 1;
+      //e->skinBlend = 4;
+      e->color = teamColor;
+      e->skinBlend = 2; //use decal blending for using color as teamcolor
 
-    
+
     //mesh.render();
 
     /*

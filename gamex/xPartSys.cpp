@@ -181,6 +181,8 @@ xPartSys::updateMesh(float * mat)
     num = maxPart;
 		k = 0;
 
+    mesh.drawFace = 0;
+
     //maybe the vertices should be in a seperate array or something
  			
 		for (i = 0; i < num; i++)
@@ -188,6 +190,7 @@ xPartSys::updateMesh(float * mat)
 			a = &(vecPart[i]);
 			if (a->hp <= 0) { continue;}
     	
+      mesh.drawFace += 2;
 			numPart += 1;
       n = k * 4; k += 1;
 			
@@ -197,6 +200,7 @@ xPartSys::updateMesh(float * mat)
       if (a->image < 0 || sprAnim == 0)
       {
         wrgba = a->hp > 100.0f ? 255 : (int)(a->hp*2.55f);
+        wrgba = 20;
         wrgba = wrgba << 24;
         wrgba += 0xffFFff;
 

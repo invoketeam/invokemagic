@@ -439,6 +439,10 @@ SOURCE=.\invoke\xInvActor.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\invoke\xInvokeCommon.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\invoke\xMiniMap.cpp
 # End Source File
 # Begin Source File
@@ -452,6 +456,14 @@ SOURCE=.\invoke\xPartTest.cpp
 # Begin Source File
 
 SOURCE=.\invoke\xPartTest.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\invoke\xSelect.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\invoke\xSelect.h
 # End Source File
 # Begin Source File
 

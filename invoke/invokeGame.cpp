@@ -2,6 +2,9 @@
 
 #include "invokeGame.h"
 
+#include "xInvokeCommon.h"
+
+
 #include "../gamex/xKey.h"
 #include "../gamex/xTmx.h"
 
@@ -13,6 +16,50 @@
 #include "xPartTest.h"
 
 #include "xBuildTest.h"
+
+#include "../gamex/xMultiGrid.h"
+#include "../gamex/xCell.h"
+
+
+
+static void drawRect(float cx, float cy, float cw, float ch)
+{
+  glBegin(GL_LINES);
+    glVertex2f(cx,cy);       glVertex2f(cx+cw,cy);
+    glVertex2f(cx,cy+ch);    glVertex2f(cx+cw,cy+ch);
+    glVertex2f(cx,cy);       glVertex2f(cx,cy+ch);
+    glVertex2f(cx+cw,cy);    glVertex2f(cx+cw,cy+ch);
+  glEnd();
+}//drawcube
+
+
+
+static void drawCube(float cx, float cy, float cz, float cw, float ch, float cd)
+{
+  glBegin(GL_LINES);
+    glVertex3f(cx,cy,cz);       glVertex3f(cx+cw,cy,cz);
+    glVertex3f(cx,cy+ch,cz);    glVertex3f(cx+cw,cy+ch,cz);
+    glVertex3f(cx,cy,cz+cd);    glVertex3f(cx+cw,cy,cz+cd);
+    glVertex3f(cx,cy+ch,cz+cd); glVertex3f(cx+cw,cy+ch,cz+cd);
+
+    glVertex3f(cx,cy,cz);       glVertex3f(cx,cy+ch,cz);
+    glVertex3f(cx+cw,cy,cz);    glVertex3f(cx+cw,cy+ch,cz);
+    glVertex3f(cx,cy,cz+cd);    glVertex3f(cx,cy+ch,cz+cd);
+    glVertex3f(cx+cw,cy,cz+cd); glVertex3f(cx+cw,cy+ch,cz+cd);
+
+    glVertex3f(cx,cy,cz);       glVertex3f(cx,cy,cz+cd);
+    glVertex3f(cx+cw,cy,cz);    glVertex3f(cx+cw,cy,cz+cd);
+    glVertex3f(cx,cy+ch,cz);    glVertex3f(cx,cy+ch,cz+cd);
+    glVertex3f(cx+cw,cy+ch,cz); glVertex3f(cx+cw,cy+ch,cz+cd);
+  glEnd();
+}//drawcube
+
+
+
+
+
+
+
 
 
 
@@ -39,7 +86,7 @@ invokeGame::invokeGame(void)
 
 
   myCam.neard = 1.0f;
-  myCam.fard = 9000.0f;
+  myCam.fard = 6000.0f; //9000.0f;
   myCam.aspect = 640.0f/480.0f;
   myCam.fov = 70.0f;  //important
 
@@ -64,9 +111,9 @@ invokeGame::init(void)
 {
 
 //todo -- load tilemap before world reset (so we know the maps size)
-  resetWorld(64*128,64*128);
+  resetWorld(256*128,256*128);
 
-  //gameTime = 0;
+  //gameTime = 0; //done in resetworld
 
   myRender.init(16384);
 
@@ -202,7 +249,8 @@ invokeGame::init(void)
 
 
 //data used for debug
-  myData.addSkin("data/knight_skin.png", "knight_skin",true,true);
+  //myData.addSkin("data/knight_skin.png", "knight_skin",true,true);
+  myData.addSkin("data/knight_skin2.png", "knight_skin",true,true);
   
   myData.addSprite("data/mysmoke.xms","data/mysmoke.png");
   
@@ -271,7 +319,7 @@ invokeGame::init(void)
 
 
   a = new xPartTest();
-  a->pos.set(512,64,512);
+  a->pos.set(512+2512,64,512+2512);
     addActor(a);
 
     
@@ -310,10 +358,16 @@ invokeGame::update(void)
   if (isKeyDown(KEY_F)) { camPos.y -= ms; }
 
 
-  //todo -- this needs some smoothing (adjusting?)
- // myCam.pos = camPos;
- // myCam.pos.y += myHeight.getHeight(camPos.x, camPos.z);
+  //todo use as parameter
+  float maxHeight;
+  float minHeight;
 
+  maxHeight = 2000.0f;
+  minHeight = 500.0f;
+
+  if (camPos.y > maxHeight) { camPos.y = maxHeight; }
+  if (camPos.y < minHeight) { camPos.y = minHeight; }
+  //also check map limits
 
 
   //transforming the universal mouse coordinates (0,1) to  (-1,1)
@@ -322,15 +376,19 @@ invokeGame::update(void)
   ky =  ((umy*2)-1)*-1;
 
 //  myCursor.update(&myCam, kx, ky, &myCol);
-  myCursor.updateHmap(&myCam, kx, ky, &myHeight, 0.0f);
 
-  //printf("mycursor %0.2f, %0.2f \n", umx, umy);
+   myCam.pos = camPos;
+   myCam.pos.y += myHeight.getHeight(camPos.x, camPos.z);
+
+  myCursor.updateHmap(&myCam, kx, ky, &myHeight, 0.0f);
+  wmx = myCursor.coord.x;
+  wmy = myCursor.coord.y;
+  wmz = myCursor.coord.z;
 
 
   myWorld.update();
 
   myGui.childUpdate(this);
-
 
 
   gameTime += 1;
@@ -403,7 +461,7 @@ invokeGame::render(void)
             //no need to check sides for difference as it seems to naturally be overestimated
             myHeight.updateMesh(viewBox.min.x, viewBox.min.z-diff, (viewBox.max.x-viewBox.min.x), (viewBox.max.z-viewBox.min.z)+diff*2.0f);
 
-          printf("updatemesh %d %d \n", gameTime, myHeight.mesh.drawFace);
+          //printf("updatemesh %d %d \n", gameTime, myHeight.mesh.drawFace);
         }//endif
       
 
@@ -430,8 +488,8 @@ invokeGame::render(void)
 
                 e = myRender.addFrame(0); 
                   e->pos = 0;
-                  e->skin = tileSkin.handle;   e->skinBlend = 0; //0 replace   1 blend  2 decal  3 modulate  4 experiment
-                  e->skin2 = 0; //mySkin2.handle; e->skin2Blend = 1;
+                  e->skin = tileSkin.handle;   e->skinBlend = 4; //0 replace   1 blend  2 decal  3 modulate  4 experiment
+                  //e->skin2 = tileSkin.handle;  e->skin2Blend = 2;
                   e->fmesh = &(myHeight.mesh);
                   e->vmesh = &(myHeight.mesh);
                   e->useColor = 1;
@@ -481,11 +539,14 @@ glDisable(GL_TEXTURE_2D);
        debmesh.render();
   glPopMatrix();
 
+  glEnable(GL_DEPTH_TEST);
+  glDisable(GL_TEXTURE_2D);
+   testSelect.debRender(this);
  
  
       //debug -- draw aabb around units
-        glEnable(GL_DEPTH_TEST);
-           glDisable(GL_TEXTURE_2D); debugDraw();
+   //     glEnable(GL_DEPTH_TEST);
+   //        glDisable(GL_TEXTURE_2D); debugDraw();
 
  
 
@@ -527,65 +588,12 @@ glDisable(GL_TEXTURE_2D);
 
 
 
-static void drawRect(float cx, float cy, float cw, float ch)
-{
-  glBegin(GL_LINES);
-    glVertex2f(cx,cy);       glVertex2f(cx+cw,cy);
-    glVertex2f(cx,cy+ch);    glVertex2f(cx+cw,cy+ch);
-    glVertex2f(cx,cy);       glVertex2f(cx,cy+ch);
-    glVertex2f(cx+cw,cy);    glVertex2f(cx+cw,cy+ch);
-  glEnd();
-}//drawcube
 
 
 
 
 
 
-
-
-
-
-
-
-static int get2DCoord(float * view, float * proj, gamex::cVec3f * pos, float * retx, float * rety)
-{
-	float ta[4];
-	float tb[4];
-
-	ta[0] = pos->x;
-	ta[1] = pos->y;
-	ta[2] = pos->z;
-	ta[3] = 1.0f;
-
-	tb[0] = ta[0] * view[0] + ta[1] * view[4] + ta[2] * view[8] + ta[3] * view[12];
-	tb[1] = ta[0] * view[1] + ta[1] * view[5] + ta[2] * view[9] + ta[3] * view[13];
-	tb[2] = ta[0] * view[2] + ta[1] * view[6] + ta[2] * view[10] + ta[3] * view[14];
-	tb[3] = ta[0] * view[3] + ta[1] * view[7] + ta[2] * view[11] + ta[3] * view[15];
-
-	ta[0] = tb[0] * proj[0] + tb[1] * proj[4] + tb[2] * proj[8] + tb[3] * proj[12];
-	ta[1] = tb[0] * proj[1] + tb[1] * proj[5] + tb[2] * proj[9] + tb[3] * proj[13];
-	ta[2] = tb[0] * proj[2] + tb[1] * proj[6] + tb[2] * proj[10] + tb[3] * proj[14];
-	ta[3] = tb[0] * proj[3] + tb[1] * proj[7] + tb[2] * proj[11] + tb[3] * proj[15];
-
-	if (ta[3] == 0.0f) return(0);
-	ta[0] /= ta[3];
-	ta[1] /= ta[3];
-	//    ta[2] /= ta[3];
-	/* Map x, y and z to range 0-1 */
-	ta[0] = ta[0] * 0.5 + 0.5;
-	ta[1] = ta[1] * 0.5 + 0.5;
-	//    ta[2] = in[2] * 0.5 + 0.5;
-
-	ta[0] = ((ta[0]) *2) -1;
-	ta[1] = ((ta[1]) *2) -1;
-
-	*retx = ta[0];
-	*rety = ta[1];
-
-
-	return (1);
-}//get2d
 
 
 
@@ -615,9 +623,49 @@ invokeGame::upCursor(void)
       glColor3f(0,1,0);
       drawRect(selx,sely, mx-selx, my-sely);
     }
-  }else { se = 0; }
+  }
+  else 
+  { 
+    if (se == 1)
+    {
+      if (isKeyDown(KEY_SHIFT) == false)
+      {testSelect.resetSelect(); }
+      
+     
+        //testSelect.selectOver(&myCam, mgrid, 0,0, 10000, 10000, selx<mx?selx:mx,sely<my?sely:my, abs(mx-selx), abs(my-sely));
+        
+        testSelect.appendOverToSelect();
+
+    }//endif
+
+    selx = mx;
+    sely = my;  
+    se = 0; 
+  }//mdownleft
 
 
+  //printf("clickright  %d  %d  \n ", mClickRight, gameTime);
+  //because of debugging upcursor is called in render
+  //so right click test will need to be altered later (aka fixed)
+  if (mClickRight >= (gameTime-2) )
+  {
+  
+    printf("clickright %d \n ", gameTime);
+    //check which unit the cursor is over
+    //to figure out what command to send
+
+    //todo -- build formation out of the units
+
+    //(still need to test if they attempt to reach something where another unit is standing)
+
+    testSelect.sendMsg(this, MSG_MOVE, wmx, wmz, 0);
+  
+  }//endif
+
+
+
+
+/*
   gamex::cMat proj;
   gamex::cMat view;
 
@@ -632,6 +680,14 @@ invokeGame::upCursor(void)
 
   //todo -- this will need some work
   drawRect(sx*320+320, 480-(sy*240+240), 4,4);
+*/
+
+  if (testSelect.maxSel <= 0) { testSelect.init(); }
+
+  //todo -- optimisation
+  //set viewbox, use viewbox for the size to use on mgrid
+  //testSelect.selectOver(&myCam, mgrid, 0,0, 10000, 10000, selx<mx?selx:mx,sely<my?sely:my, abs(mx-selx), abs(my-sely));
+  testSelect.selectOver(&myCam, mgrid, 0,0, myHeight.mw*myHeight.cw, myHeight.mh*myHeight.ch, selx<mx?selx:mx,sely<my?sely:my, abs(mx-selx), abs(my-sely));
 
 
 

@@ -9,6 +9,10 @@
 #include "../gamex/xData.h"
 #include "../gamex/xHeightMap.h"
 
+#include "xSelect.h"
+
+
+
 #include "xMiniMap.h"
 
 class invokeGame : public xGameExt
@@ -32,6 +36,8 @@ public:
   xViewBox viewBox;
   gamex::cVec3f lastPos;
 
+
+  xSelect testSelect;
 
 public:
   

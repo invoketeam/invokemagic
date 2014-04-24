@@ -107,5 +107,7 @@ public:
   virtual void trigger(std::string &str) {}
 
 
+public:
+  virtual void gotMsg(int msg, int arg0, int arg1, int arg2) {}
   
 };//classend

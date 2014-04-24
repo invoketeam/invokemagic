@@ -55,7 +55,7 @@ xPartTest::update(void)
 {
  
 
- pos.y = game->getHeight(pos.x, pos.z);
+ pos.y = game->getHeight(pos.x, pos.z) + 64;
 
 
  xPart * a;
@@ -129,6 +129,8 @@ xPartTest::render2(xRender * r)
       e->color = 1;
       e->twoSide = 1;
       e->skin = skin;
+      //needs 3 (modulate) for per/particle (per vertex) alpha
+      e->skinBlend = 3; //1; //looks strange with 1, could be used for horror theme
       e->useColor = 1;
 
 
