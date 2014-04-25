@@ -1,3 +1,9 @@
+*.h           -crlf
+*.cpp        -crlf
+*.h        -crlf
+*.xml        -crlf
+*.xms        -crlf
+
 *.bat           -crlf
 *.bat.in        -crlf
 *.dsp           -crlf
