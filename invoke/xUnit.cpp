@@ -64,6 +64,19 @@ xUnit::init(void)
 }//init
 
 
+  //based on
+  //http://stackoverflow.com/questions/16542042/fastest-way-to-sort-vectors-by-angle-without-actually-computing-that-angle
+static float getAng(float dy, float dx)
+{
+
+  float a;
+  a = dx / ((dy < 0.0f ? -dy:dy)+(dx < 0.0f ? -dx:dx));
+  if (dy < 0.0f) { return (a - 1) * 1.57075f; }
+  return (1.0f - a) * 1.57075f;
+
+}//getang
+
+
 
 void 
 xUnit::update(void)
@@ -79,6 +92,10 @@ xUnit::update(void)
     {
       vel.x = dest.x - pos.x;
       vel.z = dest.z - pos.z;
+
+
+      yaw = getAng(vel.z, vel.x);
+
       float ms;
       ms = 4.0f;
       if (vel.x > ms) { vel.x = ms; }
@@ -221,9 +238,6 @@ xUnit::render2(xRender * r)
       e->twoSide = 1;
       e->skin = shadowSkin;
       e->useColor = 0; ///1 use color data of mesh or 0 for the e->color of xEnt
-
-
-
 
 
 }//render2
