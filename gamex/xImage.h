@@ -42,7 +42,10 @@ public:
    void setPixel(int x, int y, unsigned int c);
    unsigned int getPixel32(int x, int y);
    void fillImage(unsigned int c);       //clear the image to color c
+   
    void drawRect(int x, int y, int w, int h, unsigned int c); 
+   void fillRect(int dx, int dy, int dw, int dh, unsigned int c);
+  
    void xorFill(void);  //clear image to a xor texture 
    void blendImage(xImage * src, int dx, int dy, unsigned char op=255);
    void drawImage(xImage * src, int dx, int dy);

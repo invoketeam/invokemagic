@@ -388,6 +388,59 @@ xImage::fillImage(unsigned int c)
   }//fill
 
 
+
+void 
+xImage::fillRect(int dx, int dy, int dw, int dh, unsigned int c)
+  {
+   // int sx, sy;
+    //int smw, smh;
+    int y, i;
+    //unsigned int * sd;
+    int wr;
+
+   // smw = dw;    smh = dh;   // sd = src->dat;
+
+    //new based on ub11
+    int ax,ay,aw,ah; //our rect
+    int bx,by,bw,bh; //source rect
+    int cx,cy,cx2,cy2, cw,ch; //resulting intersection of the 2 rectangles
+
+    ax = 0; ay = 0;  //always 0
+    aw = mw; ah = mh; //always same as mw and mh
+    bx = dx; by = dy; bw = dw; bh = dh; //src->mw; bh = src->mh;
+
+    cx = ax > bx ? ax : bx; 
+    cy = ay > by ? ay : by; 
+    cx2 = aw < (bx+bw) ? aw : (bx+bw);
+    cy2 = ah < (by+bh) ? ah : (by+bh); 
+    cw = cx2-cx; ch = cy2-cy;
+
+    if (cw < 0 || ch < 0) { return; } //trying to draw outside the image
+
+   // sx = 0;  sy = 0;
+   // if (bx < 0) { sx = -bx; }
+    //if (by < 0) { sy = -by; }
+
+
+      wr = cw;
+      wr *= 4;
+      int x;
+      int yt;
+      for (y = 0; y < ch; y++)
+      {
+        i = cy + y;
+        yt = i * mw;
+        for (x = 0; x < cw; x++)
+        {
+          dat[yt + x + cx] = c;
+        }//nextx
+      
+        //memcpy(dat+(i*mw)+cx, sd+((sy+y)*smw)+sx, wr);  
+      }//nexty
+
+  }//fillrect
+
+
 void 
 xImage::drawRect(int x, int y, int w, int h, unsigned int c)
   {
@@ -788,12 +841,12 @@ xImage::resize(xImage * src, int w, int h)
   for (i = 0; i < h; i++)
   {
     yt = i * w; //yt in new image
-    sy = (int)(i * iy);
+    sy = (i*iy);
     //printf("sy %d \n ", sy);
     syt = sy * src->mw;  //yt in old image
     for (k = 0; k < w; k++)
     {
-      sx = (int)(k * ix);
+      sx = k*ix;
       dat[yt + k] = sdat[syt+sx];
     }//nextk
   }//nexti
