@@ -103,8 +103,20 @@ xUnit::update(void)
     else if (vel.z > 0 && pos.z > (32*64)) { vel.z *= -1.0f; }
 */
 
+   checkColXZ(game->mgrid);
+
   putInGrid(game->mgrid);
 }//update
+
+
+
+
+
+
+
+
+
+
 
 
 void 
@@ -215,3 +227,21 @@ xUnit::render2(xRender * r)
 
 
 }//render2
+
+
+
+bool
+xUnit::handCol(xActor * a)
+{
+
+  //so simple and yet it works
+  //(a further improvement will be to figure out positions before sending units)
+  //so they dont try to arrive at the same exact spot
+
+  if (a->pos.x < pos.x) { pos.x +=0.5f; } else { pos.x -=0.5f; }
+  if (a->pos.z < pos.z) { pos.z +=0.5f; }  else { pos.z -=0.5f; }
+
+
+
+return true;
+}//handcol

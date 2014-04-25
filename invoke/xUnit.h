@@ -41,6 +41,10 @@ public:
 
   virtual unsigned int getSkin(std::string wname);
 
+
+public:
+  virtual bool handCol(xActor * a);
+
 public:
   virtual void gotMsg(int msg, int arg0, int arg1, int arg2);
   
