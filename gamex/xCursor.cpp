@@ -183,6 +183,11 @@ xViewBox::genBox(xFrustum * frust, float px, float py, float pz, float nx, float
     }//nexti
 
 
+    size.x = max.x - min.x;
+    size.y = max.y - min.y;
+    size.z = max.z - min.z;
+
+
   }//genbox
 
 

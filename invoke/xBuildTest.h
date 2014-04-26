@@ -26,4 +26,10 @@ public:
   virtual void update(void);
   virtual void render2(xRender * r);
 
+
+public:
+  virtual void gotMsg(int msg, int arg0, int arg1, int arg2);
+  
+
+
 };//xunit

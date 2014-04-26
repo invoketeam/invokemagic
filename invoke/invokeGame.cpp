@@ -376,6 +376,36 @@ invokeGame::update(void)
 
 
 
+inline static void drawActor(xRender * rend, xMultiGrid * mgrid,   float ax, float az, float aw, float ah)
+{
+	xCell * c;	xActor * a;	
+  float x0, x1, z0, z1; //rectangle on grid
+ 
+  x0 = ax;  x1 = ax + aw;  z0 = az;  z1 = az + ah;
+
+	c = mgrid->doQuery(x0, z0, aw, ah);
+			
+	for (c; c != 0; c= c->next )
+	{
+		for (a = c->first; a != 0; a = a->next)
+		{
+			if (a->dead) { continue; }
+      if (a->visible == false) { continue; }
+
+      	if (a->pos.x + a->xrad < x0) { continue; } 
+				if (a->pos.x - a->xrad > x1) { continue; }
+				if (a->pos.z + a->zrad < z0) { continue; }
+				if (a->pos.z - a->zrad > z1) { continue; }      
+
+       a->render2(rend);
+
+		}//nexta
+	}//nextc
+
+
+}//drawactor
+
+
 
 
 
@@ -459,7 +489,9 @@ invokeGame::render(void)
                //todo -- for actors do a query based on the frustum 
                 //so instead of testing each one against the frustum
                 //we just pick ones that are potentially inside it 
-                  myWorld.render2(&myRender);
+              //    myWorld.render2(&myRender);
+
+              drawActor(&myRender, mgrid, viewBox.min.x,  viewBox.min.z,  viewBox.size.x,viewBox.size.z);
 
                 
 
@@ -769,11 +801,14 @@ invokeGame::gotCmd(int cmd, int arg0, int arg1)
  printf("invokegame gotcmd %d   %d %d \n", cmd, arg0, arg1);
 
 
+//todo -- indeed we are moving the camera with the minimap
+//but dont exactly match the position on screen
+
  //for now the minimap movement is hacked together like this (should be refined in the future)
  if (cmd == 500)
  {
-    camPos.x = arg0 * myHeight.cw;
-    camPos.z = arg1 * myHeight.ch;
+    camPos.x = arg0 * myHeight.cw ;
+    camPos.z = arg1 * myHeight.ch ;
     lastPos = -1; //force update
 
  }//endif

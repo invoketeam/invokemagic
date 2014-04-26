@@ -44,7 +44,7 @@ xHand::update(void)
 
 //check single actor the mouse is over
  mySelect.updateOver(game->getCamPtr(), game->mgrid, 
-  viewBoxPtr->min.x,  viewBoxPtr->min.z,  viewBoxPtr->max.x-viewBoxPtr->min.x,viewBoxPtr->max.z-viewBoxPtr->min.z, game->umx, game->umy);
+  viewBoxPtr->min.x,  viewBoxPtr->min.z,  viewBoxPtr->size.x,viewBoxPtr->size.z, game->umx, game->umy);
 
 
   //selection rectangle

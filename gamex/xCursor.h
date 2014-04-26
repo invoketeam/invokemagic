@@ -40,6 +40,8 @@ public:
   gamex::cVec3f min;
   gamex::cVec3f max;
 
+  gamex::cVec3f size; // = max - min
+
   gamex::cVec3f v0[4];
   gamex::cVec3f v1[4];
 

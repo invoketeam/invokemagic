@@ -4,6 +4,9 @@
 
 #include "xInvokeCommon.h"
 
+#include "xUnit.h"
+
+
 
 
 xBuildTest::xBuildTest(void) 
@@ -74,7 +77,43 @@ xBuildTest::render2(xRender * r)
       e->skin = skin ;
 
 
+  //todo -- render rally point
+
+
 }//render2
+
+
+
+void 
+xBuildTest::gotMsg(int msg, int arg0, int arg1, int arg2)
+{
+
+  printf("gotmsg %d  --  %d %d %d %d \n", id, msg, arg0, arg1, arg2);
+
+
+  //testing -- create an unit and send it to direction
+
+    if (msg == MSG_MOVE)
+    {
+      xActor * a;
+      
+      a = new xUnit();
+      a->pos = pos;
+
+      a->gotMsg(msg, arg0, arg1, arg2);
+
+      game->addActor(a);
+
+
+    }//endif
+
+  
+
+}//gotmsg
+
+
+
+
 
 
 
