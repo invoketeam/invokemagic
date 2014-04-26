@@ -5,6 +5,9 @@
 
 #include "xInvokeCommon.h"
 
+
+#include "../gamex/xDebug.h"
+
 #include "../gamex/xGLCommon.h"
 
 #include "../gamex/xGame.h"
@@ -14,46 +17,9 @@
 #include "../gamex/xActor.h"
 #include "../gamex/xCam.h"
 
+#include "../gamex/xFrustum.h"
 
 
-
-
-
-
-//todo -- put these 2 functions in a common header/cpp or something
-//update: 3 functions, put these 3 functions
-
-
-static void drawRect(float cx, float cy, float cw, float ch)
-{
-  glBegin(GL_LINES);
-    glVertex2f(cx,cy);       glVertex2f(cx+cw,cy);
-    glVertex2f(cx,cy+ch);    glVertex2f(cx+cw,cy+ch);
-    glVertex2f(cx,cy);       glVertex2f(cx,cy+ch);
-    glVertex2f(cx+cw,cy);    glVertex2f(cx+cw,cy+ch);
-  glEnd();
-}//drawcube
-
-
-static void drawCube(float cx, float cy, float cz, float cw, float ch, float cd)
-{
-  glBegin(GL_LINES);
-    glVertex3f(cx,cy,cz);       glVertex3f(cx+cw,cy,cz);
-    glVertex3f(cx,cy+ch,cz);    glVertex3f(cx+cw,cy+ch,cz);
-    glVertex3f(cx,cy,cz+cd);    glVertex3f(cx+cw,cy,cz+cd);
-    glVertex3f(cx,cy+ch,cz+cd); glVertex3f(cx+cw,cy+ch,cz+cd);
-
-    glVertex3f(cx,cy,cz);       glVertex3f(cx,cy+ch,cz);
-    glVertex3f(cx+cw,cy,cz);    glVertex3f(cx+cw,cy+ch,cz);
-    glVertex3f(cx,cy,cz+cd);    glVertex3f(cx,cy+ch,cz+cd);
-    glVertex3f(cx+cw,cy,cz+cd); glVertex3f(cx+cw,cy+ch,cz+cd);
-
-    glVertex3f(cx,cy,cz);       glVertex3f(cx,cy,cz+cd);
-    glVertex3f(cx+cw,cy,cz);    glVertex3f(cx+cw,cy,cz+cd);
-    glVertex3f(cx,cy+ch,cz);    glVertex3f(cx,cy+ch,cz+cd);
-    glVertex3f(cx+cw,cy+ch,cz); glVertex3f(cx+cw,cy+ch,cz+cd);
-  glEnd();
-}//drawcube
 
 
 
@@ -159,12 +125,34 @@ xSelect::appendOverToSelect(void)
 
   for (i = 0; i < numOver; i++)
   {
+    
     setId.insert(vecOver[i]);
   }//nexti
 
+
+
     printf("appendselect %d %d \n",numOver, setId.size());
 
+
 }//append
+
+
+
+void 
+xSelect::appendSingleToSelect(void)
+{
+
+  if (overId != 0) { setId.insert(overId); }
+
+  if (overId != 0)  printf("appendselectSingle %d  \n",overId);
+
+
+}//appendsingle
+
+
+
+
+
 
 //idea
 //instead of setting the units rectangle size
@@ -299,7 +287,158 @@ xSelect::debRender(xGame * game)
     
   }//nextit
 
+
+  a = game->getActor(overId);
+  if (a != 0)
+  {
+    drawCube(a->pos.x-a->xrad, a->pos.y-a->yrad, a->pos.z-a->zrad,a->xrad+a->xrad,a->yrad+a->yrad,a->zrad+a->zrad);
+  }
+
 }//debrender
+
+
+
+
+
+
+
+
+
+
+
+// source: Christer Ericson (2005) 'Real-Time Collision Detection' p183-184
+// bmin should be smaller value than bmax
+// p0 and p1 is the segment
+
+inline static bool testSegmentAABB(gamex::cVec3f &p0, gamex::cVec3f &p1, gamex::cVec3f &bmin, gamex::cVec3f &bmax)
+{
+
+//strangely enough the code only seems
+//to work right with the suggested optimization (what the heck)
+	gamex::cVec3f e = bmax - bmin;
+	gamex::cVec3f d = p1 - p0;
+	gamex::cVec3f m = p0 + p1 - bmin - bmax;
+
+float adx = abs(d.x);
+	if (abs(m.x) > e.x + adx) return false; //0;
+
+float ady = abs(d.y);
+	if (abs(m.y) > e.y + ady) return false; //0;
+
+float adz = abs(d.z);
+	if (abs(m.z) > e.z + adz) return false; //0;
+
+
+// Add in an epsilon term to counteract arithmetic errors when segment is
+// (near) parallel to a coordinate axis (see text for detail)
+	adx += 0.000001f; //EPSILON; 
+	ady += 0.000001f; //EPSILON; 
+	adz += 0.000001f; //EPSILON;
+
+// Try cross products of segment direction vector with coordinate axes
+	if (abs(m.y * d.z - m.z * d.y) > e.y * adz + e.z * ady) return false;//0;
+	if (abs(m.z * d.x - m.x * d.z) > e.x * adz + e.z * adx) return false;//0;
+	if (abs(m.x * d.y - m.y * d.x) > e.x * ady + e.y * adx) return false;//0;
+
+// No separating axis found; segment must be overlapping AABB
+	return true; //1;
+
+}//testsegaab
+
+
+
+void 
+xSelect::updateOver(xCam * cam, xMultiGrid * mgrid,   float ax, float ay, float aw, float ah, float umx, float umy)
+{
+
+
+
+	xCell * c;	xActor * a;	
+  float x0, x1, y0, y1; //rectangle on grid
+  int it;
+
+//  int last;
+//  float t;
+
+  gamex::cVec3f bmin;
+  gamex::cVec3f bmax;
+
+  gamex::cVec3f p0;
+  gamex::cVec3f p1;
+
+
+  float kx, ky;
+  kx =  ((umx*2)-1)*-1;
+  ky =  ((umy*2)-1)*-1;
+
+  xFrustum frust; 
+  
+      frust.setPerspective(cam->fov, cam->aspect, cam->neard, cam->fard);
+	    frust.setPoints(cam->pos, cam->ori, 0, 0);
+
+	    p0 = frust.nc;
+	    p0 += frust.nearUp * ky;
+	    p0 += frust.nearSide * kx;
+
+	    p1 = frust.fc;
+	    p1 += frust.farUp * ky;
+	    p1 += frust.farSide * kx;
+
+
+
+
+  overId = 0;
+
+  x0 = ax;  x1 = ax + aw;  y0 = ay;  y1 = ay + ah;
+
+	c = mgrid->doQuery(x0, y0, aw, ah);
+			
+  it = 0;
+
+	for (c; c != 0; c= c->next )
+	{
+		for (a = c->first; a != 0; a = a->next)
+		{
+			if (a->dead) { continue; }
+
+      //check if actor is selectable
+      if ((a->flags & FR_SELECTABLE) == 0) { continue; }
+
+
+      bmin.x = a->pos.x - a->xrad;
+      bmin.y = a->pos.y - a->yrad;
+      bmin.z = a->pos.z - a->zrad;
+
+      bmax.x = a->pos.x + a->xrad;
+      bmax.y = a->pos.y + a->yrad;
+      bmax.z = a->pos.z + a->zrad;
+
+      if (testSegmentAABB(p0,p1, bmin, bmax)) { overId = a->id; }      
+
+
+
+       // vecOver[it] = a->id;
+       // it += 1;
+       // if (it >= maxSel) { numOver = it; return; } //reached maximum selection
+		}//nexta
+	}//nextc
+
+  //numOver = it;
+
+
+
+}//updateover
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -37,13 +37,38 @@ xHand::update(void)
 
   mx = game->mx;
   my = game->my;
+
   wmx = game->wmx;
   wmz = game->wmz;
 
 
- if (game->mDownLeft)
+//check single actor the mouse is over
+ mySelect.updateOver(game->getCamPtr(), game->mgrid, 
+  viewBoxPtr->min.x,  viewBoxPtr->min.z,  viewBoxPtr->max.x-viewBoxPtr->min.x,viewBoxPtr->max.z-viewBoxPtr->min.z, game->umx, game->umy);
+
+
+  //selection rectangle
+  float sx;
+  float sy;
+  float sw;
+  float sh;
+
+
+  sx = selx < mx ? selx:mx;
+  sy = sely < my ? sely:my;
+
+  sw = abs(mx - selx);
+  sh = abs(my - sely);
+
+
+
+
+
+
+
+  if (game->mDownLeft)
   {  
-    if (selStart == 0)
+    if (selStart <= 0)
     {
       selStart = 1;
       selx = mx;
@@ -51,13 +76,14 @@ xHand::update(void)
     }
     else
     {
+      selStart += 1;
       glColor3f(0,1,0);
       drawRect(selx,sely, mx-selx, my-sely);
     }
   }
   else 
   { 
-    if (selStart == 1)
+    if (selStart >= 1)
     {
       if (game->isKeyDown(KEY_SHIFT) == false)
       { mySelect.resetSelect(); }
@@ -65,7 +91,12 @@ xHand::update(void)
      
         //testSelect.selectOver(&myCam, mgrid, 0,0, 10000, 10000, selx<mx?selx:mx,sely<my?sely:my, abs(mx-selx), abs(my-sely));
         
-        mySelect.appendOverToSelect();
+        if (sw > 16 || sh > 16)
+        {
+          mySelect.appendOverToSelect();
+        }
+
+        mySelect.appendSingleToSelect();
 
     }//endif
 
@@ -95,9 +126,14 @@ xHand::update(void)
 
   }//endif
 
+
+ if (selStart > 0)
+ if (sw > 16 || sh > 16)
+ {
   mySelect.selectOver(game->getCamPtr(), game->mgrid, 
   viewBoxPtr->min.x,  viewBoxPtr->min.z,  viewBoxPtr->max.x-viewBoxPtr->min.x,viewBoxPtr->max.z-viewBoxPtr->min.z,
-  selx<mx?selx:mx,sely<my?sely:my, abs(mx-selx), abs(my-sely));
+  sx, sy, sw, sh);
+ }//endif
 
 
 }//update

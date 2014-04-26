@@ -3,6 +3,10 @@
 #include "xTree.h"
 
 
+#include "xInvokeCommon.h"
+
+
+
 xTree::xTree(void) 
 {
   skin = 0;
@@ -22,7 +26,15 @@ xTree::init(void)
   mesh = game->getMdx("tree");
   skin = game->getSkin("treeskin");
 
-  pos.y = game->getHeight(pos.x, pos.z);
+  xrad = 48;
+  yrad = 64;
+  zrad = 48;
+
+
+flags = FR_SELECTABLE;
+
+ pos.y = game->getHeight(pos.x, pos.z) + yrad;
+
 
 }//init
 
@@ -32,6 +44,8 @@ void
 xTree::update(void)
 {
 
+
+  putInGrid(game->mgrid);
 }//update
 
 
@@ -57,6 +71,7 @@ xTree::render2(xRender * r)
 
     e = r->addFrame(0);
       e->pos = pos;
+      e->pos.y -= yrad;
       e->blend = 0;
       e->fmesh = mesh;
       e->vmesh = mesh;

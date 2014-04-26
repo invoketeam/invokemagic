@@ -2,6 +2,9 @@
 
 #include "xBuildTest.h"
 
+#include "xInvokeCommon.h"
+
+
 
 xBuildTest::xBuildTest(void) 
 {
@@ -26,12 +29,21 @@ xBuildTest::init(void)
   //mesh.loadFile("data/build/kunyho.mdx3");
   //mesh.makeVbo();
 
+
+  xrad = 256;
+  yrad = 128;
+  zrad = 256;
+
   mesh = game->getMdx("kunyho");
   skin = game->getSkin("kunyho");
 
   spectype = 100;
 
-   pos.y = game->getHeight(pos.x, pos.z) + 32.0f;
+
+ flags = FR_SELECTABLE;
+
+ pos.y = game->getHeight(pos.x, pos.z) + yrad;
+
 
 }//init
 
@@ -41,6 +53,7 @@ void
 xBuildTest::update(void)
 {
 
+  putInGrid(game->mgrid);
 }//update
 
 
@@ -51,6 +64,7 @@ xBuildTest::render2(xRender * r)
 
     e = r->addFrame(0);
       e->pos = pos;
+      e->pos.y -= yrad;
       e->blend = 0;
       e->fmesh = mesh;
       e->vmesh = mesh;

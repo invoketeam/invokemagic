@@ -341,6 +341,7 @@ invokeGame::update(void)
   //also check map limits
 
 
+//todo -- move this fransformation into xCursor
   //transforming the universal mouse coordinates (0,1) to  (-1,1)
   float kx, ky;
   kx =  ((umx*2)-1)*-1;
