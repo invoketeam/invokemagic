@@ -43,6 +43,10 @@ public:
   void appendSingleToSelect(void); //append overId
 
 
+  void eraseOver(void); //take out vecOver from selection
+  void eraseSingle(void); //take out overId from selection
+
+
 
   void sendMsg(xGame * game, int msg, int arg0, int arg1, int arg2);
 

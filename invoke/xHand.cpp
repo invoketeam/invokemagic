@@ -85,11 +85,26 @@ xHand::update(void)
   { 
     if (selStart >= 1)
     {
+      //shift to append to selection
+      //control to remove selected from selection
+
+      //hmm.. control is usually used to make groups..
+      //so this will need some tweaking later
+
       if (game->isKeyDown(KEY_SHIFT) == false)
+      if (game->isKeyDown(KEY_CONTROL) == false)    
       { mySelect.resetSelect(); }
       
      
-        //testSelect.selectOver(&myCam, mgrid, 0,0, 10000, 10000, selx<mx?selx:mx,sely<my?sely:my, abs(mx-selx), abs(my-sely));
+      if (game->isKeyDown(KEY_CONTROL))
+      { 
+
+        if (sw > 16 || sh > 16)   {  mySelect.eraseOver(); }
+        mySelect.eraseSingle();
+        
+      }
+      else
+      {
         
         if (sw > 16 || sh > 16)
         {
@@ -97,6 +112,8 @@ xHand::update(void)
         }
 
         mySelect.appendSingleToSelect();
+
+      }//endif2
 
     }//endif
 

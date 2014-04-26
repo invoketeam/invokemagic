@@ -116,11 +116,15 @@ xSelect::resetSelect(void)
   setId.clear();
 }//reset
 
+
+
+
 void 
 xSelect::appendOverToSelect(void)
 {
   int i;
-  //need to check if unit is already selected
+ 
+  //no need to check if unit is already selected (hooray for std::set)
 
 
   for (i = 0; i < numOver; i++)
@@ -148,6 +152,43 @@ xSelect::appendSingleToSelect(void)
 
 
 }//appendsingle
+
+
+
+
+
+
+
+
+void
+xSelect::eraseOver(void)
+{
+
+  int i;
+  for (i = 0; i < numOver; i++)
+  {
+    setId.erase(vecOver[i]);
+  }//nexti
+
+ printf("eraseselect %d %d \n",numOver, setId.size());
+
+}//eraseover
+
+  
+void 
+xSelect::eraseSingle(void)
+{
+
+ if (overId != 0) { setId.erase(overId); }
+ if (overId != 0)  printf("eraseselect Single %d  \n",overId);
+
+}//erasesingle
+
+
+
+
+
+
 
 
 
