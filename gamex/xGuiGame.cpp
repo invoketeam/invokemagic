@@ -53,11 +53,20 @@ xGuiCursor::update(void)
   a->worka = game->gameTime;
   if (game->mDownLeft) { a->workc = game->gameTime; }
     
+  xButton * b;
+  b = (xButton *) a; //todo -- not safe but cannot think of a better solution for now
+
+
+  if (game->mDownLeft)
+  if (b->btnMode == 1) //instant mode
+  {
+    game->gotCmd(b->cmd, pos.x-b->pos.x + b->xrad, pos.y-b->pos.y + b->yrad);
+  }//endif
+
+
   if (worka == 2)
   {
-    xButton * b;
      // b = dynamic_cast<xButton*>(a);
-      b = (xButton *) a; //todo -- not safe but cannot think of a better solution for now
 
       //if (b != 0) { game->gotCmd(b->cmd, b->arg0, b->arg1); }
 
@@ -119,6 +128,7 @@ xButton::xButton(void)
   cmd = 0;
   spectype = 100;
   drawMode = 0;
+  btnMode = 0;
 }//ctor
 
 

@@ -165,7 +165,7 @@ invokeGame::init(void)
   //testing -- a button for the minimap (probably not the best way to go about this)
      b = myGui.addButton("btn_mini", "minimap", 500, 64+4, 480-64-8, 16, 128,128, getSprite("button64x64"), 1);
      b->drawMode = -1; //make button hidden but usable
-
+     b->btnMode = 1; //make button react when you hold down the button on it
 
 
 

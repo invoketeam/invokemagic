@@ -32,6 +32,7 @@ public:
   int cmd;
   int arg0, arg1;
   int drawMode;
+  int btnMode; //0 normal   1 instant (repeating)
 public:
   xButton(void);
   virtual void init(void);
