@@ -93,8 +93,10 @@ xUnit::update(void)
       vel.x = dest.x - pos.x;
       vel.z = dest.z - pos.z;
 
-
-      yaw = getAng(vel.z, vel.x);
+      if (vel.x != 0 && vel.z != 0)
+      {
+        yaw = getAng(vel.z, vel.x);
+      }
 
       float ms;
       ms = 4.0f;

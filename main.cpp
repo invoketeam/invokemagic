@@ -20,6 +20,7 @@
 #include "invoke/invokeGame.h"
 #include "invoke/invokeMenu.h"
 
+#include "gamex/xDebug.h"
 
 //invokeGame testGame;
 
@@ -44,30 +45,6 @@ void init(void)
 
   testGame.init();
 }//init
-
-
-
-
-void drawRect(float ax, float ay, float aw, float ah)
-  {
-   glBegin(GL_TRIANGLE_STRIP);
-    glTexCoord2f(0.0f, 0.0f);
-    glVertex2f(ax, ay); //0
-
-    glTexCoord2f(0.0f, 1.0f);
-    glVertex2f(ax, ay+ah); //1
-
-    glTexCoord2f(1.0f, 0.0f);
-    glVertex2f(ax+aw, ay); //2
-
-    glTexCoord2f(1.0f, 1.0f);
-    glVertex2f(ax+aw, ay+ah);//3
-   glEnd();
-    
-  }//drawrect
-
-
-
 
 
 

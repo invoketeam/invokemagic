@@ -9,11 +9,12 @@
 #include "../gamex/xData.h"
 #include "../gamex/xHeightMap.h"
 
-#include "xSelect.h"
-
-
-
 #include "xMiniMap.h"
+
+#include "xSelect.h"
+#include "xHand.h"
+
+
 
 class invokeGame : public xGameExt
 {
@@ -37,7 +38,8 @@ public:
   gamex::cVec3f lastPos;
 
 
-  xSelect testSelect;
+  xHand myHand; //cursor used for commands 
+  //xSelect testSelect;
 
 public:
   

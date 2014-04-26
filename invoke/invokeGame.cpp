@@ -20,42 +20,7 @@
 #include "../gamex/xMultiGrid.h"
 #include "../gamex/xCell.h"
 
-
-
-static void drawRect(float cx, float cy, float cw, float ch)
-{
-  glBegin(GL_LINES);
-    glVertex2f(cx,cy);       glVertex2f(cx+cw,cy);
-    glVertex2f(cx,cy+ch);    glVertex2f(cx+cw,cy+ch);
-    glVertex2f(cx,cy);       glVertex2f(cx,cy+ch);
-    glVertex2f(cx+cw,cy);    glVertex2f(cx+cw,cy+ch);
-  glEnd();
-}//drawcube
-
-
-
-static void drawCube(float cx, float cy, float cz, float cw, float ch, float cd)
-{
-  glBegin(GL_LINES);
-    glVertex3f(cx,cy,cz);       glVertex3f(cx+cw,cy,cz);
-    glVertex3f(cx,cy+ch,cz);    glVertex3f(cx+cw,cy+ch,cz);
-    glVertex3f(cx,cy,cz+cd);    glVertex3f(cx+cw,cy,cz+cd);
-    glVertex3f(cx,cy+ch,cz+cd); glVertex3f(cx+cw,cy+ch,cz+cd);
-
-    glVertex3f(cx,cy,cz);       glVertex3f(cx,cy+ch,cz);
-    glVertex3f(cx+cw,cy,cz);    glVertex3f(cx+cw,cy+ch,cz);
-    glVertex3f(cx,cy,cz+cd);    glVertex3f(cx,cy+ch,cz+cd);
-    glVertex3f(cx+cw,cy,cz+cd); glVertex3f(cx+cw,cy+ch,cz+cd);
-
-    glVertex3f(cx,cy,cz);       glVertex3f(cx,cy,cz+cd);
-    glVertex3f(cx+cw,cy,cz);    glVertex3f(cx+cw,cy,cz+cd);
-    glVertex3f(cx,cy+ch,cz);    glVertex3f(cx,cy+ch,cz+cd);
-    glVertex3f(cx+cw,cy+ch,cz); glVertex3f(cx+cw,cy+ch,cz+cd);
-  glEnd();
-}//drawcube
-
-
-
+#include "../gamex/xDebug.h"
 
 
 
@@ -117,6 +82,11 @@ invokeGame::init(void)
   //gameTime = 0; //done in resetworld
 
   myRender.init(16384);
+
+
+  myHand.viewBoxPtr = &viewBox;
+  myHand.game = this;
+  myHand.init();
 
 
     myFont.loadCharDef("data/atari16.xfnt");
@@ -190,7 +160,7 @@ invokeGame::init(void)
        hmap.loadImage("data/test_heightmap.png");
           myHeight.loadHeight(&hmap, 4.0f);
 
-       hmap.loadImage("data/colormap.png");
+       //hmap.loadImage("data/colormap.png");
        hmap.endianSwap();
            myHeight.loadColor(&hmap);
 
@@ -392,6 +362,13 @@ invokeGame::update(void)
   myGui.childUpdate(this);
 
 
+    xFrustum frust;
+      frust.setPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
+	    frust.setPoints(myCam.pos, myCam.ori, 0, 0);
+      viewBox.genBox(&frust, 0,0,0, 0, 1, 0);
+
+
+
   gameTime += 1;
 }//update
 
@@ -431,6 +408,7 @@ invokeGame::render(void)
 
 
 
+         
 
 
 //check if camera moved enough that we need to update the heightmap
@@ -542,8 +520,8 @@ glDisable(GL_TEXTURE_2D);
 
   glEnable(GL_DEPTH_TEST);
   glDisable(GL_TEXTURE_2D);
-   testSelect.debRender(this);
- 
+  // testSelect.debRender(this);
+  myHand.mySelect.debRender(this);
  
       //debug -- draw aabb around units
    //     glEnable(GL_DEPTH_TEST);
@@ -582,10 +560,10 @@ glDisable(GL_TEXTURE_2D);
 
          glDisable(GL_TEXTURE_2D); myGui.debugDraw(); 
 
-         upCursor();
+          upCursor();
+ 
 
 }//render
-
 
 
 
@@ -604,6 +582,11 @@ glDisable(GL_TEXTURE_2D);
 void 
 invokeGame::upCursor(void)
 {
+
+  myHand.update();
+
+
+/*
   //selecting units
   //for now in a brute-force way (going through all and projecting them on screen)
 
@@ -662,7 +645,7 @@ invokeGame::upCursor(void)
     testSelect.sendMsg(this, MSG_MOVE, wmx, wmz, 0);
   
   }//endif
-
+*/
 
 
 
@@ -682,15 +665,15 @@ invokeGame::upCursor(void)
   //todo -- this will need some work
   drawRect(sx*320+320, 480-(sy*240+240), 4,4);
 */
-
-  if (testSelect.maxSel <= 0) { testSelect.init(); }
+/*
+ // if (testSelect.maxSel <= 0) { testSelect.init(); }
 
   //todo -- optimisation
   //set viewbox, use viewbox for the size to use on mgrid
   //testSelect.selectOver(&myCam, mgrid, 0,0, 10000, 10000, selx<mx?selx:mx,sely<my?sely:my, abs(mx-selx), abs(my-sely));
   testSelect.selectOver(&myCam, mgrid, 0,0, myHeight.mw*myHeight.cw, myHeight.mh*myHeight.ch, selx<mx?selx:mx,sely<my?sely:my, abs(mx-selx), abs(my-sely));
 
-
+*/
 
 /*
    mat = projview;

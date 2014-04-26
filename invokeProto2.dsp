@@ -187,6 +187,14 @@ SOURCE=.\gamex\xData.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\gamex\xDebug.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\gamex\xDebug.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\gamex\xDrawMesh.cpp
 # End Source File
 # Begin Source File
@@ -428,6 +436,14 @@ SOURCE=.\invoke\xBuildTest.cpp
 # Begin Source File
 
 SOURCE=.\invoke\xBuildTest.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\invoke\xHand.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\invoke\xHand.h
 # End Source File
 # Begin Source File
 

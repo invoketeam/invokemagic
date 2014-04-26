@@ -6,7 +6,7 @@
 
 #include "xMultiGrid.h"
 
-
+#include "xDebug.h"
 
 
 
@@ -132,25 +132,6 @@ xGameExt::clearNameZone(void)
 
 
 
-static void drawCube(float cx, float cy, float cz, float cw, float ch, float cd)
-{
-  glBegin(GL_LINES);
-    glVertex3f(cx,cy,cz);       glVertex3f(cx+cw,cy,cz);
-    glVertex3f(cx,cy+ch,cz);    glVertex3f(cx+cw,cy+ch,cz);
-    glVertex3f(cx,cy,cz+cd);    glVertex3f(cx+cw,cy,cz+cd);
-    glVertex3f(cx,cy+ch,cz+cd); glVertex3f(cx+cw,cy+ch,cz+cd);
-
-    glVertex3f(cx,cy,cz);       glVertex3f(cx,cy+ch,cz);
-    glVertex3f(cx+cw,cy,cz);    glVertex3f(cx+cw,cy+ch,cz);
-    glVertex3f(cx,cy,cz+cd);    glVertex3f(cx,cy+ch,cz+cd);
-    glVertex3f(cx+cw,cy,cz+cd); glVertex3f(cx+cw,cy+ch,cz+cd);
-
-    glVertex3f(cx,cy,cz);       glVertex3f(cx,cy,cz+cd);
-    glVertex3f(cx+cw,cy,cz);    glVertex3f(cx+cw,cy,cz+cd);
-    glVertex3f(cx,cy+ch,cz);    glVertex3f(cx,cy+ch,cz+cd);
-    glVertex3f(cx+cw,cy+ch,cz); glVertex3f(cx+cw,cy+ch,cz+cd);
-  glEnd();
-}//drawcube
 
 
 void 
