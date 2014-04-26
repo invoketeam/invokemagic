@@ -78,7 +78,7 @@ xPartTest::update(void)
 
  myPart.update();
 
-
+  putInGrid(game->mgrid);
 }//update
 
 
