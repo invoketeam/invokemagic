@@ -296,7 +296,8 @@ invokeGame::init(void)
     
     
     
-    
+  //todo -- make minimap part of xHand (needs to be used to send units after all)
+
   //minimap
   //todo -- set texture/image size based on map size
     myMini.init();
@@ -368,7 +369,7 @@ invokeGame::update(void)
 	    frust.setPoints(myCam.pos, myCam.ori, 0, 0);
       viewBox.genBox(&frust, 0,0,0, 0, 1, 0);
 
-
+  if ((gameTime % 30) == 0)  { myMini.updateImage(&myWorld); }
 
   gameTime += 1;
 }//update
@@ -581,9 +582,11 @@ glDisable(GL_TEXTURE_2D);
          myGui.cursor.frameRender(flat);    
       
 
+
+        //note -- minimap is updated in update, because frameskipping makes it lose frames if updated here
         //render minimap
         //todo -- set update factor from some variable
-          if ((gameTime % 30) == 0)  { myMini.updateImage(&myWorld); }
+        //  if ((gameTime % 30) == 0)  { myMini.updateImage(&myWorld); }
 
           //rem -- coordinates are the middle of the rectangle
           xFrame * f;

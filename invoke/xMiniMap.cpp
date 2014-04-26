@@ -32,8 +32,11 @@ xMiniMap::updateImage(xWorld * world)
   float ix, iz;
 
   //todo -- set these from parameters or members
-  ix = 1.0f/64.0f;
-  iz = 1.0f/64.0f;
+//  ix = 1.0f/64.0f;
+//  iz = 1.0f/64.0f;
+  ix = 1.0f/128.0f;
+  iz = 1.0f/128.0f;
+
 
   ax = 0.0f;
   az = 0.0f;
