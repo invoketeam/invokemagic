@@ -74,7 +74,7 @@ xTexture::initEmpty(int size)
    
     //empty textures dont use mipmaps (todo -- set clamping from parameter)
     makeTex(&temp, false, false);
-
+    setTexClamp(true);
   }//initempty
 
 

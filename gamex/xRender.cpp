@@ -20,6 +20,7 @@ xEnt::xEnt(void)
     blend = 0;
     useColor = 0;
     twoSide = 0;
+    useTexMat = 0;
   }//ctor
 
 
@@ -95,6 +96,13 @@ xBucket::addFrame(void)
       a->skin2 = 0; a->skin2Blend = 0;
       a->useColor = 0;
       a->twoSide = 0;
+      a->useTexMat = 0;
+
+      //reset orientation and scale
+      a->useTransMat = 0;
+      a->ori.reset();
+      a->scale = 1.0f;
+      //position is expected to be always set (for now)
 
     it += 1;
     if (it >= numEnt) { it = numEnt - 1; } //keep repeating last ent if out of range
@@ -157,7 +165,7 @@ xBucket::render(void)
     int skin2Blend;
     int useColor;
     int twoSide;
-
+    int texMat;
 
 
     //note -- also need to set
@@ -174,6 +182,9 @@ xBucket::render(void)
     //so the trick is that 
     //there is a seperate activetexture and clientactivetexture
     //function to make things harder
+
+    //default shade
+    glShadeModel(GL_SMOOTH);
 
     glEnableClientState(GL_VERTEX_ARRAY);
  
@@ -205,6 +216,7 @@ xBucket::render(void)
     twoSide = -1;
     skinBlend = -1;
     skin2Blend = -1;
+    texMat = -1;
 
 /*
     glActiveTextureARB(GL_TEXTURE0);
@@ -215,7 +227,8 @@ xBucket::render(void)
 
 */
 
-
+	  glMatrixMode(GL_MODELVIEW);
+	 
 
     //for testing, everythings two-sided
    // glDisable(GL_CULL_FACE);
@@ -274,7 +287,20 @@ xBucket::render(void)
 
       }//endif
 
-      //todo -- texture matrix
+      //texture matrix
+      if (a->useTexMat != texMat)
+      {
+        glMatrixMode(GL_TEXTURE);
+        texMat = a->useTexMat;
+        if (texMat == 0)  { glLoadIdentity(); }
+        else { glLoadMatrixf(a->texMat.m); }
+
+        //restore to modelview matrix mode
+         glMatrixMode(GL_MODELVIEW);
+
+      }//endif
+
+
 
 
 
@@ -314,7 +340,6 @@ xBucket::render(void)
       }//endif
 
 
-
       if (a->useColor != useColor)
       {
         useColor = a->useColor;
@@ -326,16 +351,26 @@ xBucket::render(void)
       }//endif
 
 
-      //todo -- bind texture, check for changes etc
-
+   
       if (useColor != 1)
       { glColor4f(a->color.x, a->color.y, a->color.z, a->alpha); }
 
       
 
       glPushMatrix();
-        glTranslatef(a->pos.x, a->pos.y, a->pos.z);
-        //todo -- rotation matrix -- or rotation values
+        if (a->useTransMat)
+        {
+          glMultMatrixf(a->transMat.m);
+        }
+        else
+        {
+          //only use transmat for rotation
+          a->ori.setMatrix(a->transMat.m);
+            glTranslatef(a->pos.x, a->pos.y, a->pos.z);
+             glMultMatrixf(a->transMat.m);
+              glScalef(a->scale.x, a->scale.y, a->scale.z);
+        }
+
 
        //todo -- 36 is the vertex struct size -- it will be probably better to use a constant or something for this
 
@@ -423,6 +458,70 @@ xBucket::render(void)
 
     //printf("Texture switches:  %d  %d \n", stat_t1, stat_t2);   
   }//render
+
+
+
+
+
+
+void xBucket::simpRender(void)
+{
+
+  glShadeModel(GL_FLAT); //for speed
+
+  //for now use vertex array for everything
+
+ 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+  glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+  
+  glEnableClientState(GL_VERTEX_ARRAY);   
+  
+  glMatrixMode(GL_MODELVIEW);
+
+  
+  //todo -- only render ones that cast or receive shadows
+
+  int i;
+  xEnt * a;
+  xMdx3 * fmesh;
+  xMdx3 * vmesh;
+
+    for (i = 0; i < it; i++)
+    {
+      a = vecEnt[i];
+      fmesh = a->fmesh;
+      vmesh = a->vmesh;
+
+      glPushMatrix();
+        if (a->useTransMat)
+        {        glMultMatrixf(a->transMat.m);      }
+        else
+        {
+          //only use transmat for rotation
+          a->ori.setMatrix(a->transMat.m);
+          glTranslatef(a->pos.x, a->pos.y, a->pos.z);
+          glMultMatrixf(a->transMat.m);
+          glScalef(a->scale.x, a->scale.y, a->scale.z);
+        }
+  
+
+       glVertexPointer(3, GL_FLOAT, 36, &(vmesh->vecVert[0].pos.x));   
+       glDrawElements(GL_TRIANGLES, fmesh->drawFace*3,  GL_UNSIGNED_INT, fmesh->vecIndex); 
+
+      glPopMatrix();
+  }//nexti
+
+
+
+  glDisableClientState(GL_VERTEX_ARRAY);   
+  
+}//simprender
+
+
+
+
+
+
 
 
 
@@ -573,6 +672,15 @@ xRender::render(bool bSort)
 
     for (i = 0; i < numBucket; i++) { vecBucket[i].render(); }
   }//render
+
+
+void
+xRender::simpRender(void)
+  {
+    //only render solids
+      vecBucket[0].simpRender();
+
+  }//simprender
 
 
 

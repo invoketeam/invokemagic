@@ -13,31 +13,54 @@
 //entity
 class xEnt
 {
-public:
-  xMdx3 * fmesh; //facemesh
-  xMdx3 * vmesh; //vertmesh
-  unsigned int skin;
-  unsigned int skin2;
-
-  int skinBlend;
-  int skin2Blend;
-
+public: 
   int sortCode; 
-  int blend; //0 solid   1 alpha test   2 transparent   3 additive
   
   //note -- sortcode is used as if it was unsigned
   //so a -1 is the highest, 0 is the lowest (afaik)
 
-  int twoSide; //2 sided
-  int useColor; //use color array from vmesh
+public:
+  xMdx3 * fmesh; //facemesh
+  xMdx3 * vmesh; //vertmesh
 
-  //color is 4 floats -- probably not the best idea
+
+public:
+  unsigned int skin; 
+  int skinBlend;
+
+  unsigned int skin2;
+  int skin2Blend;
+
+public:
+  //color is 4 floats
   gamex::cVec3f color;
   float alpha; 
+  
+  int useColor; //use color array from vmesh (rename to useVmeshColor)
 
+public:
+  int useTransMat; //0 use pos and ori    1 use transmat
   gamex::cVec3f pos; //translate
+  gamex::cQuat ori; //orientation
+  gamex::cVec3f scale; 
+
+  gamex::cMat transMat;
 
   gamex::cVec3f sortpos; //sort by this position
+
+
+public:  
+  int blend; //0 solid   1 alpha test   2 transparent   3 additive
+
+  int twoSide; //2 sided (disable culling with 1)
+
+
+ 
+public:
+  int useTexMat;  //use texture matrix (for effects)
+  gamex::cMat texMat;
+
+public:
 
   int debid; //debug -- was used to test a bug -- kept as a reminder of it
 public:
@@ -73,7 +96,7 @@ public:
 
   void render(void);
 
-
+  void simpRender(void); //no textures, flat shade, single color
 
 
 
@@ -127,6 +150,8 @@ public:
   void resetFrame(void);
 
   void render(bool bSort = true);
+
+  void simpRender(void);
 
 };//xrender
 
