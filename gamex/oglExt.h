@@ -8,6 +8,10 @@ namespace extOgl
   extern bool extVbo;
   extern bool extMultiTex;
 
+  extern bool extShadow;
+  extern bool extDepthTex;
+  extern bool extFbo;
+
   extern void getOglExtensions();
 
 };//extogl
@@ -30,10 +34,25 @@ extern PFNGLBUFFERDATAARBPROC glBufferDataARB;					// VBO Data Loading Procedure
 extern PFNGLDELETEBUFFERSARBPROC glDeleteBuffersARB;			// VBO Deletion Procedure
 extern PFNGLBUFFERSUBDATAARBPROC glBufferSubDataARB;	
 
-
+//Multiexture function pointers
 extern PFNGLMULTITEXCOORD1FARBPROC		glMultiTexCoord1fARB;
 extern PFNGLMULTITEXCOORD2FARBPROC		glMultiTexCoord2fARB;
 extern PFNGLMULTITEXCOORD3FARBPROC		glMultiTexCoord3fARB;
 extern PFNGLMULTITEXCOORD4FARBPROC		glMultiTexCoord4fARB;
 extern PFNGLACTIVETEXTUREARBPROC		glActiveTextureARB;
 extern PFNGLCLIENTACTIVETEXTUREARBPROC	glClientActiveTextureARB;	
+
+
+
+extern PFNGLBINDFRAMEBUFFEREXTPROC   glBindFramebufferEXT;
+extern PFNGLDELETEFRAMEBUFFERSEXTPROC	    glDeleteFramebuffersEXT;
+extern PFNGLGENFRAMEBUFFERSEXTPROC	    glGenFramebuffersEXT;
+extern PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC	    glCheckFramebufferStatusEXT;
+extern PFNGLFRAMEBUFFERTEXTURE2DEXTPROC	    glFramebufferTexture2DEXT;
+extern PFNGLBINDRENDERBUFFEREXTPROC	    glBindRenderbufferEXT;
+extern PFNGLDELETERENDERBUFFERSEXTPROC	    glDeleteRenderbuffersEXT;
+extern PFNGLGENRENDERBUFFERSEXTPROC	    glGenRenderbuffersEXT;
+extern PFNGLRENDERBUFFERSTORAGEEXTPROC	    glRenderbufferStorageEXT;
+extern PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC	    glFramebufferRenderbufferEXT;
+extern PFNGLDRAWBUFFERSARBPROC	    glDrawBuffersARB;
+	    
