@@ -292,8 +292,14 @@ invokeMenu::setMousePos(float ax, float ay)
 }//setmousepos
 
 
+void 
+invokeMenu::setViewPort(int x, int y, int w, int h)
+{
+  xGame::setViewPort(x, y, w, h);
 
+  testGame.setViewPort(x,y,w,h);
 
+}//viewport
 
 
 

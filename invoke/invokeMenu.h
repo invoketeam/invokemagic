@@ -43,6 +43,7 @@ public:
   virtual xSprite * getSprite(std::string wname); 
 
 
+
 public:
   virtual void setKeyDown(short k);
   virtual void setKeyUp(short k);
@@ -50,6 +51,8 @@ public:
   virtual void setMouseUp(int btn);
   virtual void setMousePos(float ax, float ay);
 
+  virtual void setViewPort(int x, int y, int w, int h);
 
 
+ 
 };//invokemenu

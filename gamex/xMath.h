@@ -652,9 +652,17 @@ public:
     float * a;    float * b;    float * r;
 
     a = ma.m;    b = mb.m;    r = mr.m;
+  
+    multMatrix(a,b,r);
+  }//multmat2
+
+
+  //needs 3  float[16]     r is result
+  inline static void multMatrix(float * a, float * b, float * r )
+  {
 
     /*
-//int i;
+    //int i;
 		for (i = 0; i < 16; i +=4)
 		{
 			r.m[i] = a.m[0]*b.m[i]  +  a.m[4]* b.m[i+1]+a.m[8]*b.m[i+2] +  a.m[12]*b.m[i+3];

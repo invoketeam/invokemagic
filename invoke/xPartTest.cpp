@@ -133,5 +133,4 @@ xPartTest::render2(xRender * r)
       e->skinBlend = 3; //1; //looks strange with 1, could be used for horror theme
       e->useColor = 1;
 
-
 }//render2

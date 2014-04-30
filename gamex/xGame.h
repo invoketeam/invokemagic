@@ -41,6 +41,10 @@ public:
   //these are hacks so key detection doesn't need to be handled async
 
 public:
+  int view_x, view_y, view_width, view_height; //viewport (screen size)
+
+
+public:
   int gameTime;
 
   //notes:
@@ -62,8 +66,7 @@ public:
   virtual void update() { /*gamelogic here*/ gameTime += 1;}
 	virtual void render() {}
 
-//todo -- figure out a better way to handle fonts and drawing
-  virtual void drawStr(int font, float size, float cx, float cy, float cz, const char* str, ...) {}
+
 
 public:
   virtual void setKeyDown(short k);
@@ -78,7 +81,7 @@ public:
   virtual bool isKeyDown(int k);
   virtual bool isKeyPress(int k);
 
-
+  virtual void setViewPort(int x, int y, int w, int h);
 
 public:
 	virtual void addActor(xActor * a) {}
@@ -106,6 +109,10 @@ public:
 public:
 
   virtual xCam * getCamPtr(void) { return 0;}
+
+//todo -- figure out a better way to handle fonts and drawing
+  virtual void drawStr(int font, float size, float cx, float cy, float cz, const char* str, ...) {}
+
 
 public:
   //rem -- update xtilemap AND xpathfind (!!!)

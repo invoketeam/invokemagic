@@ -54,7 +54,7 @@ public:
 
   int twoSide; //2 sided (disable culling with 1)
 
-
+  int flags; 
  
 public:
   int useTexMat;  //use texture matrix (for effects)
@@ -96,7 +96,9 @@ public:
 
   void render(void);
 
-  void simpRender(void); //no textures, flat shade, single color
+
+
+  void simpRender(int flag); 
 
 
 
@@ -116,6 +118,8 @@ public:
 
 
 };//xbucket
+
+
 
 
 
@@ -151,7 +155,28 @@ public:
 
   void render(bool bSort = true);
 
-  void simpRender(void);
+  //todo -- seperated for shadow testing only
+  void renderBucket0(void);
+  void renderBucket1(void);
+
+
+  void simpRender(int flag = 0xFFffFFff);
 
 };//xrender
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

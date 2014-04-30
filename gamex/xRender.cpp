@@ -21,6 +21,7 @@ xEnt::xEnt(void)
     useColor = 0;
     twoSide = 0;
     useTexMat = 0;
+    flags = 0;
   }//ctor
 
 
@@ -97,6 +98,7 @@ xBucket::addFrame(void)
       a->useColor = 0;
       a->twoSide = 0;
       a->useTexMat = 0;
+      a->flags = 0;
 
       //reset orientation and scale
       a->useTransMat = 0;
@@ -188,26 +190,20 @@ xBucket::render(void)
 
     glEnableClientState(GL_VERTEX_ARRAY);
  
-    glActiveTextureARB(GL_TEXTURE0);
-    glEnable(GL_TEXTURE_2D);
-    glActiveTextureARB(GL_TEXTURE1);
-     glDisable(GL_TEXTURE_2D);
+    glActiveTextureARB(GL_TEXTURE0);    glEnable(GL_TEXTURE_2D);
+    glActiveTextureARB(GL_TEXTURE1);    glDisable(GL_TEXTURE_2D);
 
-    glClientActiveTextureARB(GL_TEXTURE0);
-     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-   
-    glClientActiveTextureARB(GL_TEXTURE1);
-     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glClientActiveTextureARB(GL_TEXTURE0);  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glClientActiveTextureARB(GL_TEXTURE1);  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
    
    // glDisable(GL_DEPTH_TEST);
-    glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_TRUE);
+    glEnable(GL_DEPTH_TEST);   glDepthMask(GL_TRUE);
 
     //todo -- 2 sided
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
+    glEnable(GL_CULL_FACE);   glCullFace(GL_BACK);
 
     glDisable(GL_BLEND);
+    glDisable(GL_ALPHA_TEST);
   
     blend = -1;
     skin = -1;
@@ -454,7 +450,12 @@ xBucket::render(void)
     glActiveTextureARB(GL_TEXTURE0);
  
     glEnable(GL_CULL_FACE);    glCullFace(GL_BACK);
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+
     glDisable(GL_BLEND);
+    glDisable(GL_ALPHA_TEST);
 
     //printf("Texture switches:  %d  %d \n", stat_t1, stat_t2);   
   }//render
@@ -464,12 +465,14 @@ xBucket::render(void)
 
 
 
-void xBucket::simpRender(void)
+void xBucket::simpRender(int flag)
 {
 
-  glShadeModel(GL_FLAT); //for speed
+  //glShadeModel(GL_FLAT); //for speed 
 
-  //for now use vertex array for everything
+
+
+
 
  	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
   glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
@@ -479,8 +482,6 @@ void xBucket::simpRender(void)
   glMatrixMode(GL_MODELVIEW);
 
   
-  //todo -- only render ones that cast or receive shadows
-
   int i;
   xEnt * a;
   xMdx3 * fmesh;
@@ -489,6 +490,10 @@ void xBucket::simpRender(void)
     for (i = 0; i < it; i++)
     {
       a = vecEnt[i];
+      
+      if ( (a->flags & flag) <= 0) { continue; }
+
+
       fmesh = a->fmesh;
       vmesh = a->vmesh;
 
@@ -497,13 +502,14 @@ void xBucket::simpRender(void)
         {        glMultMatrixf(a->transMat.m);      }
         else
         {
-          //only use transmat for rotation
-          a->ori.setMatrix(a->transMat.m);
-          glTranslatef(a->pos.x, a->pos.y, a->pos.z);
-          glMultMatrixf(a->transMat.m);
-          glScalef(a->scale.x, a->scale.y, a->scale.z);
-        }
+         
+          a->ori.setMatrix(a->transMat.m); // use transmat for rotation
+           glTranslatef(a->pos.x, a->pos.y, a->pos.z);
+             glMultMatrixf(a->transMat.m);
+              glScalef(a->scale.x, a->scale.y, a->scale.z);
+        }//endif
   
+    //todo -- vertex buffer
 
        glVertexPointer(3, GL_FLOAT, 36, &(vmesh->vecVert[0].pos.x));   
        glDrawElements(GL_TRIANGLES, fmesh->drawFace*3,  GL_UNSIGNED_INT, fmesh->vecIndex); 
@@ -671,14 +677,35 @@ xRender::render(bool bSort)
     }
 
     for (i = 0; i < numBucket; i++) { vecBucket[i].render(); }
+   
   }//render
 
 
 void
-xRender::simpRender(void)
+ xRender::renderBucket0(void)
+{
+    vecBucket[0].calcSort_Skin();
+    vecBucket[0].sortEnt();
+    vecBucket[0].render(); 
+}//render
+
+
+void 
+xRender::renderBucket1(void)
+{
+  vecBucket[1].calcSort_CamDist(camPos);
+  vecBucket[1].sortEnt();
+  vecBucket[1].render(); 
+}//render2
+
+
+
+
+void
+xRender::simpRender(int flag)
   {
     //only render solids
-      vecBucket[0].simpRender();
+      vecBucket[0].simpRender(flag);
 
   }//simprender
 

@@ -34,6 +34,11 @@ xGame::xGame()
   mClickRight = 0;
 
 
+  view_x = 0;
+  view_y = 0;
+  view_width = 640;
+  view_height = 480;
+
   gameTime = 1; //rem -- gametime should always reset to 1
 
   gameState = -1;
@@ -45,6 +50,18 @@ xGame::~xGame()
  clear(); 
  if (mgrid != 0) { delete mgrid; mgrid = 0;}
 }//dtor
+
+
+void 
+xGame::setViewPort(int x, int y, int w, int h)
+{
+  view_x = x;
+  view_y = y;
+  view_width = w;
+  view_height = h;
+}//setviewport
+
+
 
 
 bool 

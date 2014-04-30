@@ -44,6 +44,7 @@ void init(void)
   debFontSkin.loadTex("data/atari16.png",true,true,true);
 
   testGame.init();
+
 }//init
 
 
@@ -146,6 +147,10 @@ void update(void)
 
 void render(void)
 {
+
+  //todo -- scaling for widescreen
+  testGame.setViewPort(0, 0, xwin::xwinGetCanvasWidth(),  xwin::xwinGetCanvasHeight()); 
+
   glViewport(0, 0, xwin::xwinGetCanvasWidth(),  xwin::xwinGetCanvasHeight());
 	glClearColor(0.5, 0.5, 0.5, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	 

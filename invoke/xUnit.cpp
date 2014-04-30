@@ -205,7 +205,7 @@ xUnit::render2(xRender * r)
       //e->skinBlend = 4;
       e->color = teamColor;
       e->skinBlend = 2; //use decal blending for using color as teamcolor
-
+      e->flags = 2; //cast shadow
 
     //mesh.render();
 
@@ -226,22 +226,24 @@ xUnit::render2(xRender * r)
 
 
 
+  //simple shadow (circle under unit)
+  //todo -- make this as an alternative to the projective shadow
+  /*
 
-
-    e = r->addFrame(1);
+      e = r->addFrame(1);
  
-      e->pos = pos;   
-      e->pos.y = game->getHeight(pos.x, pos.z) + 3;
-      e->blend = 2;  //0 solid   1 alpha test   2 transparent   3 additive
-      e->fmesh = shadowMesh;
-      e->vmesh = shadowMesh;
-      e->alpha = 1;
-      e->color = 1;
-      e->twoSide = 1;
-      e->skin = shadowSkin;
-      e->useColor = 0; ///1 use color data of mesh or 0 for the e->color of xEnt
-
-
+        e->pos = pos;   
+        e->pos.y = game->getHeight(pos.x, pos.z) + 3;
+        e->blend = 2;  //0 solid   1 alpha test   2 transparent   3 additive
+        e->fmesh = shadowMesh;
+        e->vmesh = shadowMesh;
+        e->alpha = 1;
+        e->color = 1;
+        e->twoSide = 1;
+        e->skin = shadowSkin;
+        e->useColor = 0; ///1 use color data of mesh or 0 for the e->color of xEnt
+        e->flags = 1;
+  */
 }//render2
 
 
