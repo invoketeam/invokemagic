@@ -5,6 +5,8 @@
 
 //vector, quaternion and matrix math
 
+//todo -- rename to xVec3f, xQuat etc
+
 
 namespace gamex
 {
@@ -111,6 +113,7 @@ public:
 		return cVec3f(x / f_,   y / f_,   z / f_); }
 	
 
+  //nowadays sqrt might be faster on modern systems though
 	static inline float invSquareRoot(float x)
   {//source: //http://bits.stephan-brumme.com/invSquareRoot.html
 		 float xHalf = 0.5f*x;
@@ -202,22 +205,33 @@ public:
 	//get front vector (based on converting to matrix)
 	inline void setVecFront(cVec3f &v)
 	{
-		v.x = 2.0f * ( x*z + y*w );
-		v.y = 2.0f * ( y*z - x*w );
-		v.z = 1.0f - 2.0f * ( x*x + y*y );
+    // * -1   because this is the front in opengl coordinate system
+		v.x = -(2.0f * ( x*z + y*w ));
+		v.y = -(2.0f * ( y*z - x*w ));
+		v.z = -(1.0f - 2.0f * ( x*x + y*y ));
 	}//vecfront
 
-  inline cVec3f getFront()
+
+  inline cVec3f getFront(void)
   {
-    return cVec3f( 2.0f * ( x*z + y*w ), 
-            2.0f * ( y*z - x*w ),
-            1.0f - 2.0f * ( x*x + y*y ));
+    return cVec3f( -(2.0f * ( x*z + y*w )), 
+                   -(2.0f * ( y*z - x*w )),
+                   -(1.0f - 2.0f * ( x*x + y*y )) );
             
   }//getfront
 
 
+  inline float getFrontX(void)  { return  -(2.0f * ( x*z + y*w )); }
+  inline float getFrontY(void)  { return  -(2.0f * ( y*z - x*w )); }
+  inline float getFrontZ(void)  { return  -(1.0f - 2.0f * ( x*x + y*y )); }
 
+  inline float getSideX(void) { return  1.0f - 2.0f * ( y*y + z*z ); }
+  inline float getSideY(void) { return  2.0f * ( x*y + z*w ); }
+  inline float getSideZ(void) { return  2.0f * ( x*z - y*w ); }
 
+  inline float getUpX(void) { return 2.0f * ( x*y - z*w ); }
+  inline float getUpY(void) { return 1.0f - 2.0f * ( x*x + z*z ); }
+  inline float getUpZ(void) { return 2.0f * ( y*z + x*w ); }
 
 
 
@@ -553,6 +567,7 @@ public:
 
 /* MATRIX 4x4 */
 
+
 class cMat
 {
 public:
@@ -698,17 +713,19 @@ public:
  inline void setView(cVec3f *pos, cQuat *ori)
  {
 
- 
-   // float * m;
  		gamex::cVec3f up;
 		gamex::cVec3f forw; 
 		gamex::cVec3f side;
   
-   // m = mat.m;
   
     ori->setVecFront(forw);
     ori->setVecSide(side);
     ori->setVecUp(up);
+
+    
+    //fix (using opengl front)
+    forw.x = -forw.x;    forw.y = -forw.y;    forw.z = -forw.z;
+   
   
     //identity matrix
 			memset(m, 0, 64); //16*4 -- 16 * 4byte
@@ -809,8 +826,13 @@ public:
 
 
 
-/*
-       | 0  1  2  3  |            | 0  4  8  12 |
+/*    
+//matrix row order reminder
+
+
+        Directx:                   Opengl:
+
+        | 0  1  2  3  |            | 0  4  8  12 |
         |             |            |             |
         | 4  5  6  7  |            | 1  5  9  13 |
     M = |             |        M = |             |

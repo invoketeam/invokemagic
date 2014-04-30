@@ -64,7 +64,7 @@ xFrustum::getPlaneInter(gamex::cVec3f a, gamex::cVec3f b, gamex::cVec3f p, gamex
 
   //FIX
     side = -side;
-    front = -front;
+    //front = -front; //update: got fixed in xMath.h, this fix no longer needed
 
     //moved to member
 	//	gamex::cVec3f fc, nc;

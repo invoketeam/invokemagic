@@ -23,7 +23,7 @@ public:
 	
 
   //works with opengl coordinates -- negative is forward
-	void moveForward(float speed = -1.0f);
+	void moveForward(float speed = 1.0f);
 
   //using the up and right relative to the current orientation
 	void strafeUp(float speed = 1.0f);
