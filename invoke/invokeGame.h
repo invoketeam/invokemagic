@@ -9,6 +9,9 @@
 #include "../gamex/xData.h"
 #include "../gamex/xHeightMap.h"
 
+#include "../gamex/xShadowTex.h"
+
+
 #include "xMiniMap.h"
 
 #include "xSelect.h"
@@ -42,12 +45,16 @@ public:
   //xSelect testSelect;
 
 public:
-  
-  
+  xShadowTex shadTex;
+  float lightProj[16];
+  float lightView[16];
+
   xTexture tileSkin;
   xHeightMap myHeight;
 
   xMiniMap myMini;
+
+
 
 
   xTexture waterSkin;
@@ -64,6 +71,10 @@ public:
 
   virtual void update(void);
 	virtual void render(void);
+
+  virtual void makeShadow(void);
+  virtual void drawShadow(void);
+
 
 public:
   virtual void upCursor(void);

@@ -339,6 +339,14 @@ SOURCE=.\gamex\xRender.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\gamex\xShadowTex.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\gamex\xShadowTex.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\gamex\xSkel.cpp
 # End Source File
 # Begin Source File

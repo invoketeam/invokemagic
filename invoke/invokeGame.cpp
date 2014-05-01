@@ -30,124 +30,6 @@
 
 
 
-//todo -- need a better name for this one
-// dynamic texture?
-// dynamic skin?
-
-
-class xShadowTex
-{
-public:
-  int mw, mh;
-  unsigned int handle; //handle of color texture
-  unsigned int depth; //handle of depth texture
-  unsigned int fbo; //frambuffer
-
-public:
-  xShadowTex(void);
-  ~xShadowTex(void);
-
-  void clear(void);
-  void init(int size);
-
-
-};//shadowtex
-
-
-xShadowTex::xShadowTex(void)
-{
-  mw = 0; mh = 0; handle = 0; fbo = 0; depth = 0;
-}//ctor
-
-xShadowTex::~xShadowTex(void)
-{
-  clear();
-}//dtor
-
-void 
-xShadowTex::clear(void)
-{
-  if (handle != 0) { glDeleteTextures(1, &handle); handle = 0; }
-  if (depth != 0) { glDeleteTextures(1, &depth); depth = 0; }
-  if (fbo != 0) { glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0); glDeleteFramebuffersEXT(1, &fbo); fbo=0;}
-  mw = 0; mh = 0;
-}//clear
-
-void 
-xShadowTex::init(int size)
-{
-  clear();
-
-  float clampColor[] = { 0, 0, 0, 0 };
-
-//  size = 512;
-    size = 1024;
-
-  //todo: check if size is power of 2
-  mw = size;
-  mh = size;
-
-
-//COLOR TEXTURE
-  glGenTextures(1, &handle);
-	  glBindTexture(GL_TEXTURE_2D, handle);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, size, size, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);	   
-	     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-       glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-       glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
-       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, clampColor);
-
- //DEPTH TEXTURE
-   glGenTextures(1, &depth);
-	  glBindTexture(GL_TEXTURE_2D, depth);
-
-    
-    
-      //note -- this is not classic shadowing   
-      //as instead of drawing the scene twice the shadows are just drawn in black afterwards everythings drawn 
-       glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_ALPHA);
-     // glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_LUMINANCE);
-      //glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_INTENSITY);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE_ARB);
-     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, GL_LEQUAL);
-
-     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, GL_GEQUAL);
-       //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE);
-
-   
-	   glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, clampColor);
-     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
-     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-       glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-       glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-
-    //depth component is default depth of the scene
-      glTexImage2D(	GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, size, size, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-
-   glGenFramebuffersEXT(1, &fbo);
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
-     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, handle, 0);
-     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, depth, 0);
-
-//todo
-//https://www.opengl.org/wiki/Framebuffer_Object_Examples
-// glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) == GL_FRAMEBUFFER_COMPLETE_EXT   
-
-//remember to unbind after rendering too
-  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-
-}//init
-
-
-
 
 
 
@@ -545,12 +427,172 @@ inline static void drawActor(xRender * rend, xMultiGrid * mgrid,   float ax, flo
 
 
 
+void 
+invokeGame::makeShadow(void)
+{
+
+  if (shadTex.handle == 0) { shadTex.init(1024); }
+
+
+  //using opengl to generate matrices for the light (directional light)
+    glMatrixMode(GL_MODELVIEW); 
+    glPushMatrix();
+      glLoadIdentity();
+        //glOrtho(-512, 0, -512, 512, -9000, 9000);
+        //glOrtho(-viewBox.size.x, viewBox.size.x, -viewBox.size.z, viewBox.size.z, -9000, 9000);
+       // glOrtho(-viewBox.size.x*0.6f, viewBox.size.x*0.6f, -viewBox.size.z*0.5f, viewBox.size.z*0.5f, -9000, 9000);
+        //glOrtho(-viewBox.size.z*0.5f, viewBox.size.z*0.5f, -viewBox.size.x*0.6f, viewBox.size.x*0.6f, -9000, 9000);
+ 
+        glOrtho(-viewBox.size.x*0.5f, 0, -viewBox.size.z*0.6f, viewBox.size.z*0.6f, -4000, 4000);
+
+          glGetFloatv(GL_MODELVIEW_MATRIX, lightProj);
+
+      glLoadIdentity();
+        //glRotatef(45, 0, 1, 0);  //looks good but is buggy for now
+	      glRotatef(70, 1, 0, 0); //sun angle (90 is exactly down) (so far 90 works without bugs) (also try 45 and 135)
+	      glRotatef(90, 0, 1, 0);
+         glTranslatef(myCam.pos.x *-1 , 0, myCam.pos.z *-1 ); //todo -- needs tweaks
+          glGetFloatv(GL_MODELVIEW_MATRIX, lightView);
+    glPopMatrix();
+
+
+//render scene from lights view point (into texture)
+
+    glMatrixMode(GL_PROJECTION);  glLoadMatrixf(lightProj);
+	  glMatrixMode(GL_MODELVIEW);  glLoadMatrixf(lightView);
+ 
+    
+    //set viewport to texture size
+   // glViewport(0, 0, shadTex.mw,  shadTex.mh);
+    glViewport(1, 1, shadTex.mw-2,  shadTex.mh-2); // "Hang back, buddy, and observe my magic"
+    //(explanation: we dont render the edge pixels to avoid a rendering artifact)
+
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, shadTex.fbo);
+   
+      glEnable(GL_POLYGON_OFFSET_FILL);
+      glPolygonOffset(1.0f, 4.0f);
+         glEnable(GL_DEPTH_TEST);
+         glDepthFunc(GL_LEQUAL);
+            glEnable(GL_CULL_FACE);
+              glCullFace(GL_BACK);
+    	      glClearColor(0, 0, 0, 0); //  i tend to disable it to adjust the persepective matrix a bit
+            glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);	 
+            glDisable(GL_TEXTURE_2D);
+            glColor4f(1,1,1,1);   //render shadows in white so we can recolor them later
+               myRender.simpRender(2);
+      glDisable(GL_POLYGON_OFFSET_FILL);
+
+  //restore viewport
+    glViewport(view_x, view_y, view_width,  view_height);
+
+}//makeshadow
+
+
+
+
+//based on 
+//http://www.paulsprojects.net/tutorials/smt/smt.html
+// (aka the tutorial everyone is using for this)
+
+
+void 
+invokeGame::drawShadow(void)
+{
+     glEnable(GL_TEXTURE_2D);
+    //  glBindTexture(GL_TEXTURE_2D, shadTex.handle);
+      glBindTexture(GL_TEXTURE_2D, shadTex.depth);
+
+      glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND );  //important
+
+ 
+      static float row0[4];
+      static float row1[4];
+      static float row2[4];
+      static float row3[4];
+      static float texm[16];
+      static float biasMatrix[16] = {0.5f, 0.0f, 0.0f, 0.0f,
+								      0.0f, 0.5f, 0.0f, 0.0f,
+								      0.0f, 0.0f, 0.5f, 0.0f,
+                      0.5f, 0.5f, 0.5f, 1.0f};
+      static float temp[16];
+
+      gamex::cMat::multMatrix(biasMatrix, lightProj, temp);
+      gamex::cMat::multMatrix(temp, lightView, texm);
+
+
+
+      row0[0] = texm[0];  row0[1] = texm[4];  row0[2] = texm[8];   row0[3] = texm[12];
+      row1[0] = texm[1];  row1[1] = texm[5];  row1[2] = texm[9];   row1[3] = texm[13];
+      row2[0] = texm[2];  row2[1] = texm[6];  row2[2] = texm[10];   row2[3] = texm[14];
+      row3[0] = texm[3];  row3[1] = texm[7];  row3[2] = texm[11];   row3[3] = texm[15];
+
+	    glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+	    glTexGenfv(GL_S, GL_EYE_PLANE, row0);
+	    glEnable(GL_TEXTURE_GEN_S);
+
+	    glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+	    glTexGenfv(GL_T, GL_EYE_PLANE, row1);
+      glEnable(GL_TEXTURE_GEN_T);
+
+	    glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+	    glTexGenfv(GL_R, GL_EYE_PLANE, row2);
+	    glEnable(GL_TEXTURE_GEN_R);
+
+	    glTexGeni(GL_Q, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+	    glTexGenfv(GL_Q, GL_EYE_PLANE, row3);
+	    glEnable(GL_TEXTURE_GEN_Q);
+
+
+
+
+
+
+       //glColor4f(1,1,1, 0.9f);
+       glColor4f(0,0,0, 0.33f);
+
+       glEnable(GL_BLEND);
+       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+       glEnable(GL_DEPTH_TEST); glDepthMask(GL_TRUE);
+       glDepthFunc(GL_LEQUAL); 
+
+       glEnable(GL_CULL_FACE);
+            glCullFace(GL_BACK);
+
+      //the classic approach is drawing the unshadowed scene here
+      //and the shadows are a sort of mask that prevent us from drawing onto the shadowed areas
+      //but our scheme uses a different approach where the shadows are rendered as a transparent texture
+      //(at least for now)
+       //glEnable(GL_ALPHA_TEST);
+     //  glAlphaFunc(GL_LEQUAL, 0.99f);
+
+           myRender.simpRender(4);
+
+
+//turn off texture coordinate generation
+      glBindTexture(GL_TEXTURE_2D, 0);
+      glDisable(GL_TEXTURE_2D);
+      glDisable(GL_TEXTURE_GEN_S);
+      glDisable(GL_TEXTURE_GEN_T);
+      glDisable(GL_TEXTURE_GEN_R);
+      glDisable(GL_TEXTURE_GEN_Q);
+      glDepthFunc(GL_LESS);
+      glDisable(GL_BLEND);
+      glDisable(GL_ALPHA_TEST);
+      glDisable(GL_POLYGON_OFFSET_FILL);
+
+}//drawshadow
+
+
+
 
 
 void 
 invokeGame::render(void) 
 {
   //assuming zbuffer is cleared at this point
+
+gamex::cMat view;
 
 
 
@@ -559,7 +601,8 @@ invokeGame::render(void)
   myCam.pos.y += myHeight.getHeight(camPos.x, camPos.z);
 
 
-  gamex::cMat view;
+/*
+  
 
   glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -570,13 +613,10 @@ invokeGame::render(void)
   view.setView(&myCam.pos, &myCam.ori);
     glLoadMatrixf(view.m);
 
-    
- 
+*/
+
      
 
-
-
-         
 
 
 //check if camera moved enough that we need to update the heightmap
@@ -591,6 +631,7 @@ invokeGame::render(void)
 
       mag = dist.getMag();
 
+      //update heightmap mesh
         if (mag >= diff)
         {
           lastPos = camPos;
@@ -675,155 +716,34 @@ invokeGame::render(void)
 
 
 
-
-  static xShadowTex shadTex;
-
-  if (shadTex.handle == 0) { shadTex.init(1024); }
+  //render shadow from lgiths point of view
+     makeShadow(); 
 
 
-
-  float lightProjectionMatrix[16];
-  float lightViewMatrix[16];
-
-  glPushMatrix();
-    glLoadIdentity();
-      //glOrtho(-512, 0, -512, 512, -9000, 9000);
-      //glOrtho(-viewBox.size.x, viewBox.size.x, -viewBox.size.z, viewBox.size.z, -9000, 9000);
-     // glOrtho(-viewBox.size.x*0.6f, viewBox.size.x*0.6f, -viewBox.size.z*0.5f, viewBox.size.z*0.5f, -9000, 9000);
-      //glOrtho(-viewBox.size.z*0.5f, viewBox.size.z*0.5f, -viewBox.size.x*0.6f, viewBox.size.x*0.6f, -9000, 9000);
+  //Render solids
+    glMatrixMode(GL_PROJECTION); glLoadIdentity();  gluPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
+	  glMatrixMode(GL_MODELVIEW);  view.setView(&myCam.pos, &myCam.ori);   glLoadMatrixf(view.m);
  
-      glOrtho(-viewBox.size.x*0.5f, 0, -viewBox.size.z*0.6f, viewBox.size.z*0.6f, -4000, 4000);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        // myRender.render(true);
+         myRender.renderBucket0(); 
+         //myRender.renderBucket1(); 
 
-        glGetFloatv(GL_MODELVIEW_MATRIX, lightProjectionMatrix);
-
-    glLoadIdentity();
-      //glRotatef(45, 0, 1, 0);  //looks good but is buggy for now
-	    glRotatef(70, 1, 0, 0); //sun angle (90 is exactly down) (so far 90 works without bugs) (also try 45 and 135)
-	    glRotatef(90, 0, 1, 0);
-       glTranslatef(myCam.pos.x *-1 , 0, myCam.pos.z *-1 ); //todo -- needs tweaks
-        glGetFloatv(GL_MODELVIEW_MATRIX, lightViewMatrix);
-  glPopMatrix();
-
-  glMatrixMode(GL_PROJECTION);  glLoadMatrixf(lightProjectionMatrix);
-	glMatrixMode(GL_MODELVIEW);  glLoadMatrixf(lightViewMatrix);
+  //todo -- instead of extra pass use the 3rd texture channel (?)
  
+   //draw shadow (duh)
+     drawShadow();
 
- // glViewport(0, 0, shadTex.mw,  shadTex.mh);
-  glViewport(1, 1, shadTex.mw-2,  shadTex.mh-2); // "Hang back, buddy, and observe my magic"
 
-  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, shadTex.fbo);
-   
-glEnable(GL_POLYGON_OFFSET_FILL);
-glPolygonOffset(1.0f, 4.0f);
-   glEnable(GL_DEPTH_TEST);
-   glDepthFunc(GL_LEQUAL);
-      glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-    	glClearColor(0, 0, 0, 0); //  i tend to disable it to adjust the persepective matrix a bit
-      glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);	 
-      glDisable(GL_TEXTURE_2D);
-      glColor4f(1,1,1,1);   //render shadows in white so we can recolor them later
-         myRender.simpRender(2);
-glDisable(GL_POLYGON_OFFSET_FILL);
+  //draw transparent objects
+    glMatrixMode(GL_PROJECTION); glLoadIdentity();  gluPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
+	  glMatrixMode(GL_MODELVIEW);  view.setView(&myCam.pos, &myCam.ori);   glLoadMatrixf(view.m);
+    //render transparent
+      myRender.renderBucket1(); 
 
 
 
-
-//restore viewport
-  glViewport(view_x, view_y, view_width,  view_height);
-
-  glMatrixMode(GL_PROJECTION); glLoadIdentity();  gluPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
-	glMatrixMode(GL_MODELVIEW);  view.setView(&myCam.pos, &myCam.ori);   glLoadMatrixf(view.m);
- 
-  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-      // myRender.render(true);
-       myRender.renderBucket0(); 
-       //myRender.renderBucket1(); 
-
-//todo -- instead of extra pass use the 3rd texture channel
-
-
-
- 
- glEnable(GL_TEXTURE_2D);
-//  glBindTexture(GL_TEXTURE_2D, shadTex.handle);
-  glBindTexture(GL_TEXTURE_2D, shadTex.depth);
- 
-  float row0[4];float row1[4];float row2[4];float row3[4];
-  float texm[16];
-  float biasMatrix[16] = {0.5f, 0.0f, 0.0f, 0.0f,
-								  0.0f, 0.5f, 0.0f, 0.0f,
-								  0.0f, 0.0f, 0.5f, 0.0f,
-                  0.5f, 0.5f, 0.5f, 1.0f};
-  float temp[16];
-
-  gamex::cMat::multMatrix(biasMatrix, lightProjectionMatrix, temp);
-  gamex::cMat::multMatrix(temp, lightViewMatrix, texm);
-
-
-  row0[0] = texm[0];  row0[1] = texm[4];  row0[2] = texm[8];   row0[3] = texm[12];
-  row1[0] = texm[1];  row1[1] = texm[5];  row1[2] = texm[9];   row1[3] = texm[13];
-  row2[0] = texm[2];  row2[1] = texm[6];  row2[2] = texm[10];   row2[3] = texm[14];
-  row3[0] = texm[3];  row3[1] = texm[7];  row3[2] = texm[11];   row3[3] = texm[15];
-
-	glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-	glTexGenfv(GL_S, GL_EYE_PLANE, row0);
-	glEnable(GL_TEXTURE_GEN_S);
-
-	glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-	glTexGenfv(GL_T, GL_EYE_PLANE, row1);
-  glEnable(GL_TEXTURE_GEN_T);
-
-	glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-	glTexGenfv(GL_R, GL_EYE_PLANE, row2);
-	glEnable(GL_TEXTURE_GEN_R);
-
-	glTexGeni(GL_Q, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-	glTexGenfv(GL_Q, GL_EYE_PLANE, row3);
-	glEnable(GL_TEXTURE_GEN_Q);
-
-   //glColor4f(1,1,1, 0.9f);
-   glColor4f(0,0,0, 0.5f);
-
-   glEnable(GL_BLEND);
-   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-   glEnable(GL_DEPTH_TEST); glDepthMask(GL_TRUE);
-   glDepthFunc(GL_LEQUAL); 
-
-   glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-
- //glEnable(GL_POLYGON_OFFSET_FILL);
- //glPolygonOffset(0.2f, 0.2f);
-   //glEnable(GL_ALPHA_TEST);
- //  glAlphaFunc(GL_LEQUAL, 0.5f);
-  //  glAlphaFunc(GL_GEQUAL, 0.99f);
-
-       myRender.simpRender(4);
-
-  glBindTexture(GL_TEXTURE_2D, 0);
-  glDisable(GL_TEXTURE_2D);
-  glDisable(GL_TEXTURE_GEN_S);
-  glDisable(GL_TEXTURE_GEN_T);
-  glDisable(GL_TEXTURE_GEN_R);
-  glDisable(GL_TEXTURE_GEN_Q);
-  glDepthFunc(GL_LESS);
-  glDisable(GL_BLEND);
-  glDisable(GL_ALPHA_TEST);
-  glDisable(GL_POLYGON_OFFSET_FILL);
-
-
-
-  glMatrixMode(GL_PROJECTION); glLoadIdentity();  gluPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
-	glMatrixMode(GL_MODELVIEW);  view.setView(&myCam.pos, &myCam.ori);   glLoadMatrixf(view.m);
-  //render transparent
-    myRender.renderBucket1(); 
-
-
-
-
-
+//draw (debug) cursor
 
 glDisable(GL_TEXTURE_2D);
   glColor3f(1,0,0);
