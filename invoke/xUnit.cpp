@@ -205,7 +205,7 @@ xUnit::render2(xRender * r)
       //e->skinBlend = 4;
       e->color = teamColor;
       e->skinBlend = 2; //use decal blending for using color as teamcolor
-      e->flags = 2; //cast shadow
+      e->flags = 2 + 4; //cast shadow
 
     //mesh.render();
 

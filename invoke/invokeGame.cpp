@@ -105,22 +105,29 @@ xShadowTex::init(int size)
    glGenTextures(1, &depth);
 	  glBindTexture(GL_TEXTURE_2D, depth);
 
-    /*
-      //todo -- for self shadowing
-      glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_LUMINANCE);
-      glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_INTENSITY);
+    
+    
+      //note -- this is not classic shadowing   
+      //as instead of drawing the scene twice the shadows are just drawn in black afterwards everythings drawn 
+       glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_ALPHA);
+     // glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_LUMINANCE);
+      //glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_INTENSITY);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE_ARB);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, GL_LEQUAL);
-      */
+     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, GL_LEQUAL);
+
+     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, GL_GEQUAL);
+       //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE);
 
    
 	   glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, clampColor);
      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 	   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+       glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+       glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
     //depth component is default depth of the scene
       glTexImage2D(	GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, size, size, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
@@ -289,7 +296,7 @@ invokeGame::init(void)
        hmap.loadImage("data/test_heightmap.png");
           myHeight.loadHeight(&hmap, 4.0f);
 
-       //hmap.loadImage("data/colormap.png");
+       hmap.loadImage("data/colormap.png");
        hmap.endianSwap();
            myHeight.loadColor(&hmap);
 
@@ -685,15 +692,15 @@ invokeGame::render(void)
      // glOrtho(-viewBox.size.x*0.6f, viewBox.size.x*0.6f, -viewBox.size.z*0.5f, viewBox.size.z*0.5f, -9000, 9000);
       //glOrtho(-viewBox.size.z*0.5f, viewBox.size.z*0.5f, -viewBox.size.x*0.6f, viewBox.size.x*0.6f, -9000, 9000);
  
-      glOrtho(-viewBox.size.x*0.5f, 0, -viewBox.size.z*0.55f, viewBox.size.z*0.55f, -9000, 9000);
+      glOrtho(-viewBox.size.x*0.5f, 0, -viewBox.size.z*0.6f, viewBox.size.z*0.6f, -4000, 4000);
 
         glGetFloatv(GL_MODELVIEW_MATRIX, lightProjectionMatrix);
 
     glLoadIdentity();
-      //glRotatef(45, 0, 1, 0); //a slight angle looks good but introduces shadowing bugs
-	    glRotatef(90, 1, 0, 0); //sun angle (90 is exactly down) (so far 90 works without bugs) (also try 45 and 135)
+      //glRotatef(45, 0, 1, 0);  //looks good but is buggy for now
+	    glRotatef(70, 1, 0, 0); //sun angle (90 is exactly down) (so far 90 works without bugs) (also try 45 and 135)
 	    glRotatef(90, 0, 1, 0);
-      glTranslatef(myCam.pos.x *-1 , 0, myCam.pos.z *-1 );
+       glTranslatef(myCam.pos.x *-1 , 0, myCam.pos.z *-1 ); //todo -- needs tweaks
         glGetFloatv(GL_MODELVIEW_MATRIX, lightViewMatrix);
   glPopMatrix();
 
@@ -705,21 +712,25 @@ invokeGame::render(void)
   glViewport(1, 1, shadTex.mw-2,  shadTex.mh-2); // "Hang back, buddy, and observe my magic"
 
   glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, shadTex.fbo);
-
+   
+glEnable(GL_POLYGON_OFFSET_FILL);
+glPolygonOffset(1.0f, 4.0f);
+   glEnable(GL_DEPTH_TEST);
+   glDepthFunc(GL_LEQUAL);
       glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
     	glClearColor(0, 0, 0, 0); //  i tend to disable it to adjust the persepective matrix a bit
-      glClear(GL_COLOR_BUFFER_BIT);	 
+      glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);	 
       glDisable(GL_TEXTURE_2D);
       glColor4f(1,1,1,1);   //render shadows in white so we can recolor them later
-      glDisable(GL_DEPTH_TEST);
-        myRender.simpRender(2);
+         myRender.simpRender(2);
+glDisable(GL_POLYGON_OFFSET_FILL);
+
+
+
 
 //restore viewport
   glViewport(view_x, view_y, view_width,  view_height);
-
-
-
 
   glMatrixMode(GL_PROJECTION); glLoadIdentity();  gluPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
 	glMatrixMode(GL_MODELVIEW);  view.setView(&myCam.pos, &myCam.ori);   glLoadMatrixf(view.m);
@@ -732,7 +743,8 @@ invokeGame::render(void)
 //todo -- instead of extra pass use the 3rd texture channel
 
  glEnable(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, shadTex.handle);
+//  glBindTexture(GL_TEXTURE_2D, shadTex.handle);
+  glBindTexture(GL_TEXTURE_2D, shadTex.depth);
 
   float row0[4];float row1[4];float row2[4];float row3[4];
   float texm[16];
@@ -775,9 +787,16 @@ invokeGame::render(void)
 
    glEnable(GL_DEPTH_TEST);
    glDepthFunc(GL_LEQUAL); 
+
    glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
-    
+
+ //glEnable(GL_POLYGON_OFFSET_FILL);
+ //glPolygonOffset(0.2f, 0.2f);
+   //glEnable(GL_ALPHA_TEST);
+ //  glAlphaFunc(GL_LEQUAL, 0.5f);
+  //  glAlphaFunc(GL_GEQUAL, 0.99f);
+
        myRender.simpRender(4);
 
   glDisable(GL_TEXTURE_2D);
@@ -787,7 +806,8 @@ invokeGame::render(void)
   glDisable(GL_TEXTURE_GEN_Q);
   glDepthFunc(GL_LESS);
   glDisable(GL_BLEND);
-
+  glDisable(GL_ALPHA_TEST);
+  glDisable(GL_POLYGON_OFFSET_FILL);
 
 /*
   glMatrixMode(GL_PROJECTION); glLoadIdentity();  gluPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
@@ -854,6 +874,8 @@ glDisable(GL_TEXTURE_2D);
           xFrame * f;
            f = flat->addFrame(64+4, 480-64-8, 300, 128,128, myMini.skin.handle);
            f = flat->addFrame( 64+8,64+8, 350, 128,128, shadTex.handle);
+           //f = flat->addFrame( 64+8,64+8, 350, 128,128, shadTex.depth);
+
 
          flat->render(true);
    

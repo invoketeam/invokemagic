@@ -80,7 +80,7 @@ xTree::render2(xRender * r)
       e->twoSide = 0;
       e->skin = skin;
       //e->skin = getSkin("knight_skin") ;
-      e->flags = 2; //cast shadow
+      e->flags = 2 + 4; //cast shadow
     
     //mesh.render();
 
