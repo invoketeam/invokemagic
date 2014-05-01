@@ -680,10 +680,12 @@ invokeGame::render(void)
 
   glPushMatrix();
     glLoadIdentity();
-      //glOrtho(-512, 512, -512, 512, -9000, 9000);
+      //glOrtho(-512, 0, -512, 512, -9000, 9000);
       //glOrtho(-viewBox.size.x, viewBox.size.x, -viewBox.size.z, viewBox.size.z, -9000, 9000);
-      glOrtho(-viewBox.size.x*0.6f, viewBox.size.x*0.6f, -viewBox.size.z*0.5f, viewBox.size.z*0.5f, -9000, 9000);
+     // glOrtho(-viewBox.size.x*0.6f, viewBox.size.x*0.6f, -viewBox.size.z*0.5f, viewBox.size.z*0.5f, -9000, 9000);
       //glOrtho(-viewBox.size.z*0.5f, viewBox.size.z*0.5f, -viewBox.size.x*0.6f, viewBox.size.x*0.6f, -9000, 9000);
+ 
+      glOrtho(-viewBox.size.x*0.5f, 0, -viewBox.size.z*0.55f, viewBox.size.z*0.55f, -9000, 9000);
 
         glGetFloatv(GL_MODELVIEW_MATRIX, lightProjectionMatrix);
 
@@ -691,7 +693,7 @@ invokeGame::render(void)
       //glRotatef(45, 0, 1, 0); //a slight angle looks good but introduces shadowing bugs
 	    glRotatef(90, 1, 0, 0); //sun angle (90 is exactly down) (so far 90 works without bugs) (also try 45 and 135)
 	    glRotatef(90, 0, 1, 0);
-      glTranslatef(myCam.pos.x *-1, 0, myCam.pos.z *-1);
+      glTranslatef(myCam.pos.x *-1 , 0, myCam.pos.z *-1 );
         glGetFloatv(GL_MODELVIEW_MATRIX, lightViewMatrix);
   glPopMatrix();
 
