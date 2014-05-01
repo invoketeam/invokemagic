@@ -189,9 +189,10 @@ xBucket::render(void)
     glShadeModel(GL_SMOOTH);
 
     glEnableClientState(GL_VERTEX_ARRAY);
+
  
-    glActiveTextureARB(GL_TEXTURE0);    glEnable(GL_TEXTURE_2D);
-    glActiveTextureARB(GL_TEXTURE1);    glDisable(GL_TEXTURE_2D);
+    glActiveTextureARB(GL_TEXTURE0);    glEnable(GL_TEXTURE_2D); glBindTexture(GL_TEXTURE_2D, 0);   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    glActiveTextureARB(GL_TEXTURE1);    glDisable(GL_TEXTURE_2D); glBindTexture(GL_TEXTURE_2D, 0); 
 
     glClientActiveTextureARB(GL_TEXTURE0);  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glClientActiveTextureARB(GL_TEXTURE1);  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -204,7 +205,7 @@ xBucket::render(void)
 
     glDisable(GL_BLEND);
     glDisable(GL_ALPHA_TEST);
-  
+
     blend = -1;
     skin = -1;
     skin2 = -1;
@@ -234,9 +235,6 @@ xBucket::render(void)
       a = vecEnt[i];
       fmesh = a->fmesh;
       vmesh = a->vmesh;
-
-
-
 
       if (a->twoSide != twoSide)
       {
@@ -274,6 +272,7 @@ xBucket::render(void)
         //i should probably use a function for this, but whatever
       }//endif
 
+
       if (skin2 != 0)
       if (a->skin2Blend != skin2Blend)
       {
@@ -302,23 +301,18 @@ xBucket::render(void)
 
       if (a->blend != blend)
       { 
-       // printf("blend switch %d %d \n", blend, a->blend);
+       
         blend = a->blend; 
-        
-        //blend = 2; //debug
-       // if (blend > 0) { return; }
-       // blend = 0;
         if (blend < 2) 
         {
           //turn on zbuffer write
           //turn off blending
-         // glDepthMask(true);
           glDepthMask(GL_TRUE);
           glDisable(GL_BLEND);
-          //is this part not reached??
 
           if (blend == 1) { glEnable(GL_ALPHA_TEST); } //turn on alpha test
           else { glDisable(GL_ALPHA_TEST); } //turn off alpha test
+
         }
         else
         {
@@ -441,22 +435,25 @@ xBucket::render(void)
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
 
-    glActiveTextureARB(GL_TEXTURE0);    glDisable(GL_TEXTURE_2D);
-    glActiveTextureARB(GL_TEXTURE1);    glDisable(GL_TEXTURE_2D); 
+
+    glActiveTextureARB(GL_TEXTURE0);    glDisable(GL_TEXTURE_2D); glBindTexture(GL_TEXTURE_2D, 0);   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    glActiveTextureARB(GL_TEXTURE1);    glDisable(GL_TEXTURE_2D); glBindTexture(GL_TEXTURE_2D, 0);  
+    glActiveTextureARB(GL_TEXTURE0); 
 
     glClientActiveTextureARB(GL_TEXTURE0);      glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glClientActiveTextureARB(GL_TEXTURE1);      glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glClientActiveTextureARB(GL_TEXTURE0);
 
-    glActiveTextureARB(GL_TEXTURE0);
  
-    glEnable(GL_CULL_FACE);    glCullFace(GL_BACK);
+    glDisable(GL_CULL_FACE);    glCullFace(GL_BACK);
 
-    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
-
+    
     glDisable(GL_BLEND);
     glDisable(GL_ALPHA_TEST);
 
+    glColor4f(1,1,1,1);
     //printf("Texture switches:  %d  %d \n", stat_t1, stat_t2);   
   }//render
 
@@ -491,8 +488,8 @@ void xBucket::simpRender(int flag)
     {
       a = vecEnt[i];
       
-      if ( (a->flags & flag) <= 0) { continue; }
-
+        if ( (a->flags & flag) <= 0) { continue; } 
+  
 
       fmesh = a->fmesh;
       vmesh = a->vmesh;

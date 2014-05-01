@@ -736,16 +736,19 @@ glDisable(GL_POLYGON_OFFSET_FILL);
 	glMatrixMode(GL_MODELVIEW);  view.setView(&myCam.pos, &myCam.ori);   glLoadMatrixf(view.m);
  
   glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-       myRender.render(true);
-       //myRender.renderBucket0(); 
-
+      // myRender.render(true);
+       myRender.renderBucket0(); 
+       //myRender.renderBucket1(); 
 
 //todo -- instead of extra pass use the 3rd texture channel
 
+
+
+ 
  glEnable(GL_TEXTURE_2D);
 //  glBindTexture(GL_TEXTURE_2D, shadTex.handle);
   glBindTexture(GL_TEXTURE_2D, shadTex.depth);
-
+ 
   float row0[4];float row1[4];float row2[4];float row3[4];
   float texm[16];
   float biasMatrix[16] = {0.5f, 0.0f, 0.0f, 0.0f,
@@ -785,7 +788,7 @@ glDisable(GL_POLYGON_OFFSET_FILL);
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-   glEnable(GL_DEPTH_TEST);
+   glEnable(GL_DEPTH_TEST); glDepthMask(GL_TRUE);
    glDepthFunc(GL_LEQUAL); 
 
    glEnable(GL_CULL_FACE);
@@ -799,6 +802,7 @@ glDisable(GL_POLYGON_OFFSET_FILL);
 
        myRender.simpRender(4);
 
+  glBindTexture(GL_TEXTURE_2D, 0);
   glDisable(GL_TEXTURE_2D);
   glDisable(GL_TEXTURE_GEN_S);
   glDisable(GL_TEXTURE_GEN_T);
@@ -809,12 +813,13 @@ glDisable(GL_POLYGON_OFFSET_FILL);
   glDisable(GL_ALPHA_TEST);
   glDisable(GL_POLYGON_OFFSET_FILL);
 
-/*
+
+
   glMatrixMode(GL_PROJECTION); glLoadIdentity();  gluPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
 	glMatrixMode(GL_MODELVIEW);  view.setView(&myCam.pos, &myCam.ori);   glLoadMatrixf(view.m);
   //render transparent
     myRender.renderBucket1(); 
-*/
+
 
 
 
