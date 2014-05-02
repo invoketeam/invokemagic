@@ -51,7 +51,8 @@ void getOglExtensions()
 		glBufferDataARB = (PFNGLBUFFERDATAARBPROC) wglGetProcAddress("glBufferDataARB");
 		glDeleteBuffersARB = (PFNGLDELETEBUFFERSARBPROC) wglGetProcAddress("glDeleteBuffersARB");
     glBufferSubDataARB = (PFNGLBUFFERSUBDATAARBPROC)wglGetProcAddress("glBufferSubDataARB");
-					
+		
+    if (glGenBuffersARB == 0) { extVbo = false; printf("Error loading GL_ARB_vertex_buffer_object \n");  }			
 	}//endif
 
 
@@ -74,6 +75,7 @@ void getOglExtensions()
 		  glActiveTextureARB		= (PFNGLACTIVETEXTUREARBPROC)		wglGetProcAddress("glActiveTextureARB");
 		  glClientActiveTextureARB= (PFNGLCLIENTACTIVETEXTUREARBPROC)	wglGetProcAddress("glClientActiveTextureARB");		
 
+      if (glActiveTextureARB == 0) { extMultiTex = false; printf("Error loading GL_ARB_multitexture \n");  }
     }//endif
 
 
@@ -120,6 +122,8 @@ void getOglExtensions()
 	    glFramebufferRenderbufferEXT = (PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC) wglGetProcAddress("glFramebufferRenderbufferEXT");
 	    glDrawBuffersARB = (PFNGLDRAWBUFFERSARBPROC) wglGetProcAddress("glDrawBuffersARB");
 	    
+      //todo -- might worth checking all functions (?)
+      if (glGenFramebuffersEXT == 0) { extFbo = false;  printf("Error loading GL_EXT_framebuffer_object \n");  }
 
     }//endif
 
