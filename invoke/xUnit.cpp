@@ -184,6 +184,7 @@ xUnit::render2(xRender * r)
     //new step -- upload the vertex data to the gpu
     mesh.updateVboVertex();
 
+
     xEnt * e;
 
     e = r->addFrame(0);

@@ -4,6 +4,8 @@
 
 #include "xInvokeCommon.h"
 
+#include "../gamex/xGLCommon.h"
+#include "../gamex/oglExt.h"
 
 #include "../gamex/xKey.h"
 #include "../gamex/xTmx.h"
@@ -49,6 +51,8 @@
 
 invokeGame::invokeGame(void) 
 {
+  shadowMode = 0;
+
 
 
   //init camera
@@ -75,7 +79,7 @@ invokeGame::invokeGame(void)
   myCam.fov = 70.0f;  //important
 
 
-  curId = 0;
+  curId = 1; //start at 1 
 
 }//ctor
 
@@ -93,6 +97,13 @@ invokeGame::~invokeGame(void)
 void
 invokeGame::init(void)
 {
+
+
+//todo -- also change this from settings
+//i encountered some machines where you have shadow but no fbo -- not sure if to support those 
+// (its possible but does it worth the effort)
+  shadowMode = (extOgl::extShadow && extOgl::extDepthTex && extOgl::extFbo) ? 2 : 1;
+
 
 //todo -- load tilemap before world reset (so we know the maps size)
   resetWorld(256*128,256*128);
@@ -716,15 +727,18 @@ gamex::cMat view;
 
 
 
-  //render shadow from lgiths point of view
+if (shadowMode == 2)
+{
+  //render shadow from lights point of view
      makeShadow(); 
+}
 
 
   //Render solids
     glMatrixMode(GL_PROJECTION); glLoadIdentity();  gluPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
 	  glMatrixMode(GL_MODELVIEW);  view.setView(&myCam.pos, &myCam.ori);   glLoadMatrixf(view.m);
  
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+ if (shadowMode == 2) {   glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0); }
         // myRender.render(true);
          myRender.renderBucket0(); 
          //myRender.renderBucket1(); 
@@ -732,7 +746,7 @@ gamex::cMat view;
   //todo -- instead of extra pass use the 3rd texture channel (?)
  
    //draw shadow (duh)
-     drawShadow();
+ if (shadowMode == 2) {  drawShadow(); }
 
 
   //draw transparent objects

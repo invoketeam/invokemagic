@@ -45,6 +45,7 @@ public:
   //xSelect testSelect;
 
 public:
+  int shadowMode; //0 no   1 simple   2 projection  
   xShadowTex shadTex;
   float lightProj[16];
   float lightView[16];

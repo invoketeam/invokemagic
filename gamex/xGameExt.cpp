@@ -13,7 +13,7 @@
 
 xGameExt::xGameExt()
 {
-  curId = 0;
+  curId = 1; //start at 1
 }//ctor
 
 xGameExt::~xGameExt()
@@ -68,7 +68,7 @@ xGameExt::resetWorld(float w, float h)
   mgrid = new xMultiGrid();
   mgrid->init(w,h,7,7,3);  
 
-   curId = 0;
+   curId = 1; //start at 1
  
   myRand.setSeed(1);
 }//resetworld
