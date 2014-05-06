@@ -9,7 +9,7 @@
 #include "openal/al.h"
 #include "openal/alc.h"
 #pragma comment (lib, "gamex/openal/OpenAL32.lib")
-#include "stb_vorbis.h"
+#include "stb/stb_vorbis.h"
 
 
 

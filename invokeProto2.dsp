@@ -101,17 +101,37 @@ SOURCE=.\gamex\pugixml\pugixml.cpp
 SOURCE=.\gamex\pugixml\pugixml.hpp
 # End Source File
 # End Group
+# Begin Group "stb"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\gamex\stb\miniz.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\gamex\stb\miniz.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\gamex\stb\stb_image.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\gamex\stb\stb_image.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\gamex\stb\stb_vorbis.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\gamex\stb\stb_vorbis.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\gamex\gamex.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\gamex\miniz.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\gamex\miniz.h
 # End Source File
 # Begin Source File
 
@@ -120,22 +140,6 @@ SOURCE=.\gamex\oglExt.cpp
 # Begin Source File
 
 SOURCE=.\gamex\oglExt.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\gamex\stb_image.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\gamex\stb_image.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\gamex\stb_vorbis.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\gamex\stb_vorbis.h
 # End Source File
 # Begin Source File
 

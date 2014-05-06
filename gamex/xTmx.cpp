@@ -10,7 +10,7 @@
 #define MINIZ_NO_STDIO
 #define MINIZ_NO_TIME
 #define MINIZ_HEADER_FILE_ONLY
-#include "miniz.h"
+#include "stb/miniz.h"
 
 #include "pugixml/pugixml.hpp"
 

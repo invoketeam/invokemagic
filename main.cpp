@@ -214,7 +214,7 @@ void render(void)
 #define MINIZ_HEADER_FILE_ONLY
 #define MINIZ_NO_STDIO
 #define MINIZ_NO_TIME
-#include "gamex\miniz.h"
+#include "gamex\stb\miniz.h"
 #include "gamex\xImage.h"
 
 

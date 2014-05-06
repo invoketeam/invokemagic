@@ -1,7 +1,7 @@
 #pragma warning (disable : 4786)
 
 
-#include "stb_image.h"
+#include "stb/stb_image.h"
 
 #include "xImage.h"
 
