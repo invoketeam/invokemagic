@@ -92,7 +92,7 @@ public:
 
   virtual void gotHit(float dmg, int dtype, float hx, float hy, float hz);
   
-  virtual void kill(); //no need to override for fx, just use onKilled
+  virtual void kill(void); //no need to override for fx, just use onKilled
   
   virtual void onKilled(void) {} //called by kill
 

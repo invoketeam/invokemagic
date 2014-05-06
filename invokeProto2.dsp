@@ -159,14 +159,6 @@ SOURCE=.\gamex\xCam.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\gamex\xCell.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\gamex\xCell.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\gamex\xColMesh.cpp
 # End Source File
 # Begin Source File

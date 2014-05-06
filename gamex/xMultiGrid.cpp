@@ -3,8 +3,48 @@
 #include <math.h>
 
 #include "xMultiGrid.h"
-#include "xCell.h"
 #include "xActor.h"
+
+
+xCell* xCell::lastc  = 0;
+
+
+void 
+xCell::addToLast(void) {	if (lastc != 0) lastc->next = this;lastc = this;	}
+
+void 
+xCell::at2(void) 	{	if (num <= 0) return;	if (lastc != 0) lastc->next = this;	lastc = this;	}
+	
+void 
+xCell::setAsLast(void) {	lastc = this;	next = 0;	}
+	
+void 
+xCell::addActor(xActor * a)
+	{
+		if (a->cell == this) return; //already in this cell
+		if (a->cell != 0) a->cell->remActor(a); //was in another cell, remove it
+		if (num == 0) //empty cell -- (same as check for first == 0 i guess)
+		{  //add as only element
+			first = a;	last = a;	a->next = 0;	a->prev = 0;	}
+		else 
+		{	//add as last element
+			a->prev = last;	a->next = 0;	last->next = a;	last = a;
+		}//endif
+		a->cell = this; 	num += 1;
+	}//addactor
+	
+void 
+xCell::remActor(xActor * a)
+	{
+		if (a->cell != this) {return;} //not in this cell
+		if (a->next != 0) {a->next->prev = a->prev;}	if (a->prev != 0) {a->prev->next = a->next;}
+		if (first == a) {first = a->next;}	if (last == a) {last = a->prev;}
+		a->cell = 0; //not in any cells
+		num -= 1; //one less resident in cell
+	}//remactor
+
+
+
 
 
 
@@ -42,11 +82,11 @@ public:
 
 
 public:
-  xGrid();
-  ~xGrid();
+  xGrid(void);
+  ~xGrid(void);
   
 
-  void clear();
+  void clear(void);
   void init(int xcell_, int ycell_, int shiftx_, int shifty_);
   void doQuery(float x0, float y0, float w_, float h_);
   bool putInXY(xActor * a);
@@ -60,7 +100,7 @@ public:
 
 
 
-  xMultiGrid::xMultiGrid()
+  xMultiGrid::xMultiGrid(void)
   {
     cx = 0; cz = 0;
     topCell = 0;
@@ -69,14 +109,14 @@ public:
   }//ctor
   
   
-xMultiGrid::~xMultiGrid()
+xMultiGrid::~xMultiGrid(void)
 {
   clear();
 }//dtor  
 
 
 void 
-xMultiGrid::clear()
+xMultiGrid::clear(void)
 {
   if (topCell != 0) { delete topCell; topCell = 0; }
   if (vecGrid != 0) { delete [] vecGrid; vecGrid = 0;}
@@ -190,7 +230,7 @@ void
 
 
 
- xGrid::xGrid()
+ xGrid::xGrid(void)
  {
   vecCell = 0;
   numCell = 0;
@@ -216,14 +256,14 @@ void
  
  
  
- xGrid::~xGrid()
+ xGrid::~xGrid(void)
  {
   clear();
  }//dtor
  
   
  void 
- xGrid::clear()
+ xGrid::clear(void)
  {
   if (vecCell != 0) { delete [] vecCell; vecCell = 0; }
   numCell = 0;
