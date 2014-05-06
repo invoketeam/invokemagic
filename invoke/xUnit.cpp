@@ -34,8 +34,7 @@ xUnit::init(void)
   //each unit will need its own skeleton and model
   //animation can be shared
 
-
-  mesh.loadFile("data/knight_mesh.mdx3");
+   
 //  skel.loadFile("data/knight_skel.xskb");
 //  anim.loadFile("data/knight_walk.banm");
 
@@ -45,8 +44,16 @@ xUnit::init(void)
 
   anim = game->assetMan->getBoneAnim("knight_walk");
 
+
+
+  xMdx3 * m;
+  m = game->getMdx("knight_mesh");
+  mesh.copyMesh(m); // (in theory we only need to copy the vertices, but the rest doesnt share that much data)
+  // mesh.loadFile("data/knight_mesh.mdx3");
+
+
   
-  mesh.makeVbo();
+ // mesh.makeVbo();
 
   //vel.x = 3;
   //vel.z = 2;
@@ -183,6 +190,7 @@ unsigned int xUnit::getSkin(std::string wname)
 void 
 xUnit::render2(xRender * r)
 {
+
   anim->applyFrame2(curFrame, &skel);
     skel.ori.reset();
     skel.ori.rotYaw(-(yaw-1.57f)); //note: i screwed up the models direction for this one so i need to rotate by 180 as well
@@ -195,6 +203,7 @@ xUnit::render2(xRender * r)
     mesh.updateVboVertex();
 
 
+  
     xEnt * e;
 
     e = r->addFrame(0);

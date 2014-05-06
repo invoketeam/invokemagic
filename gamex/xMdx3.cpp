@@ -148,6 +148,39 @@ xMdx3::calcMinMax(void)
 
 
 
+void
+xMdx3::copyMesh(xMdx3 * mesh)
+{
+  // if (mesh == this) { } //throw a warning maybe (for now lets assume this wont happen)
+
+  clear();
+
+  //other mesh is empty? -> we are done
+  if (mesh->numFace <= 0) { return; }
+
+  numFace = mesh->numFace;
+  numVert = mesh->numVert;
+
+  drawFace = mesh->drawFace;
+       
+  int numIndex;
+  numIndex = numFace * 3;
+  vecIndex = new int[numIndex];  
+  vecVert = new mVert[numVert];
+
+  memcpy(&(vecIndex[0]),&(mesh->vecIndex[0]), numIndex * 4);
+  memcpy(&(vecVert[0]),&(mesh->vecVert[0]), numVert * 36);  
+
+
+  rad = mesh->rad;
+
+  min = mesh->min;
+  max = mesh->max;
+  off = mesh->off;
+
+}//copymesh
+
+
 void 
 xMdx3::moveMesh(float mx, float my, float mz)
 {

@@ -46,8 +46,8 @@ public:
   bool hasVbo; //todo -- test if indexBuf != 0 instead?
 
 public:
-   xMdx3();
-  ~xMdx3();
+   xMdx3(void);
+  ~xMdx3(void);
  
  void clear(void);
 
@@ -62,6 +62,9 @@ public:
   
  void loadFile(std::string fname); 
  void readFile(FILE * file);
+
+ //warning: a copy is a deepcopy, doesnt have vbo by default (even if the copied has)
+ void copyMesh(xMdx3 * mesh); 
 
  void moveMesh(float mx, float my, float mz);
  void scaleMesh(float sx, float sy, float sz);

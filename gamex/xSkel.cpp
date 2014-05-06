@@ -155,8 +155,6 @@ xSkel::copySkel(xSkel * skel, bool deepCopy)
     memcpy(vecBone, skel->vecBone, numBone*sizeof(xBone));
 
 
-
-    //todo -- option to shallow copy skin vertices
     numVert = skel->numVert;
     
     if (deepCopy)
