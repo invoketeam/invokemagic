@@ -7,6 +7,8 @@
 #include "xTexture.h"
 #include "xStore.h"
 
+#include "xAsset.h"
+
 
 class xSprite
 {
@@ -17,20 +19,21 @@ public:
   float u0,v0, u1,v1;
   unsigned int handle;
 public:
-  xSprite();
+  xSprite(void);
 
 };//xsprite
 
+
+
 typedef std::vector  <xSprite * > tdVecSprite;
-
-
 
 
 class xSpriteMan
 {
 public:
   xStore <xSprite> storeSprite;
-  xStore <xTexture> storeSkin;
+  //xStore <xTexture> storeSkin;
+  xAssetMan * assetMan;
 
 public:
   xSpriteMan(void);
@@ -39,12 +42,13 @@ public:
   void clear(void);
 
 
-  void addSkin(xTexture * skin, std::string wname);
-  void addSkin(std::string fname, bool mip=true, bool ymir=false, bool clamp=false);
-  void addSprite(std::string fname);
+  //add xms file as sprite
+  void addSpriteXms(std::string wname);
+  
+  //add single texture as sprite
+  void addSpriteTex(std::string wname);
 
-  xTexture * getTex(std::string wname);
-  unsigned int getSkin(std::string wname);
+
   xSprite * getSprite(std::string wname);
 
   void drawSprite(xSprite * a, float ax, float ay, float ang = 0.0f);

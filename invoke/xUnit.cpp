@@ -12,8 +12,8 @@ xUnit::xUnit(void)
   skin = 0;
   color = 0xFFffFFff;
 
-  shadowMesh = 0;
-  shadowSkin = 0;
+//  shadowMesh = 0;
+//  shadowSkin = 0;
 
   cmd = 0;
 
@@ -54,8 +54,8 @@ xUnit::init(void)
 
   flags = FR_SELECTABLE;
 
-  shadowMesh = game->getMdx("shadow");
-  shadowSkin = game->getSkin("shadow");
+ // shadowMesh = game->getMdx("shadow");
+ // shadowSkin = game->getSkin("shadow");
 
   //color = game->getRand() * 32768;
 
@@ -200,7 +200,7 @@ xUnit::render2(xRender * r)
       //e->color = 1;
       //e->color.set(1,0,0);
       e->twoSide = 1;
-      e->skin = getSkin("knight_skin") ;
+      e->skin = getSkin("knight_skin2") ;
       e->useColor = 0;
       //e->skinBlend = 1;
       //e->skinBlend = 4;

@@ -7,37 +7,32 @@
 #include "xTexture.h"
 #include "xMdx3.h"
 
+#include "xAsset.h"
+
 
 xGame::xGame()
 {
 	mgrid = 0;
 
-  mx = 0.0f;
-  my = 0.0f;
+  assetMan = 0;
 
-  umx = 0.0f;
-  umy = 0.0f;
+
+  mx = 0.0f;  my = 0.0f;
+
+  umx = 0.0f;  umy = 0.0f;
 
   wmx = 0.0f;
   wmy = 0.0f;
   wmz = 0.0f;
 
-
   memset(bKeyDown, 0, 512);
-
-  mDownLeft = false;
-  mDownRight = false;
-
-
   memset(bKeyPress, 0, 512);
-  mClickLeft = 0;
-  mClickRight = 0;
 
+  mDownLeft = false;  mDownRight = false;
+  mClickLeft = 0;  mClickRight = 0;
 
-  view_x = 0;
-  view_y = 0;
-  view_width = 640;
-  view_height = 480;
+  view_x = 0;  view_y = 0;
+  view_width = 640;  view_height = 480;
 
   gameTime = 1; //rem -- gametime should always reset to 1
 

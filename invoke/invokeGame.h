@@ -6,7 +6,6 @@
 
 #include "../gamex/xGuiGame.h"
 #include "../gamex/xGameExt.h"
-#include "../gamex/xData.h"
 #include "../gamex/xHeightMap.h"
 
 #include "../gamex/xShadowTex.h"
@@ -22,16 +21,18 @@
 class invokeGame : public xGameExt
 {
 public:
-  xData myData;
+ // xData myData;
 
   xGuiGame myGui;
 
   xFont myFont;
-  xTexture myFontSkin;
+ // xTexture myFontSkin;
 
 
   xRender myRender;
   xCursor myCursor;
+
+  xSpriteMan mySprite;
   
 public:
   xCam myCam;
@@ -58,7 +59,7 @@ public:
 
 
 
-  xTexture waterSkin;
+ // xTexture waterSkin;
   xMdx3 waterDeb;
 
   xMdx3 debmesh;

@@ -18,8 +18,8 @@ public:
   float curFrame;
 
 
-  xMdx3 * shadowMesh;
-  unsigned int shadowSkin;
+//  xMdx3 * shadowMesh;
+//  unsigned int shadowSkin;
 
   
 public:

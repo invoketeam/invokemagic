@@ -6,7 +6,7 @@
 #include "pugixml/pugixml.hpp"
 
 
-xSprite::xSprite()  
+xSprite::xSprite(void)  
   { 
     x = 0.0f; y = 0.0f; 
     w= 0.0f; h = 0.0f; 
@@ -22,7 +22,7 @@ xSprite::xSprite()
 
 xSpriteMan::xSpriteMan(void) 
   {
-
+    assetMan = 0;
   }//ctor
 
 
@@ -36,17 +36,17 @@ void
 xSpriteMan::clear(void) 
   {
     storeSprite.clear();
-    storeSkin.clear();
   }//clear
 
 
 
-void 
-xSpriteMan::addSkin(xTexture * skin, std::string wname)
-{
-   xSprite * a;
- 
-   storeSkin.addData(wname, skin);
+ void 
+ xSpriteMan::addSpriteTex(std::string wname)
+ {
+  xTexture * skin;
+  xSprite * a;
+
+  skin = assetMan->getTexture(wname);
 
    a = new xSprite();
     a->wname = wname;
@@ -56,45 +56,26 @@ xSpriteMan::addSkin(xTexture * skin, std::string wname)
     a->h = (float) skin->mh;
     storeSprite.addData(wname, a);
 
-}//addskin
-
-
-void 
-xSpriteMan::addSkin(std::string fname, bool mip, bool ymir, bool clamp)
-  {
-    xTexture * skin;
-    xSprite * a;
-    std::string wname;
-
-    wname = stripName(fname);
-
-    skin = new xTexture();
-    skin->loadTex(fname, mip, ymir, clamp);
-  
-    storeSkin.addData(wname, skin);
-
-    a = new xSprite();
-    a->wname = wname;
-    a->skin = wname;
-    a->handle = skin->handle;
-    a->w = (float) skin->mw;
-    a->h = (float) skin->mh;
-    storeSprite.addData(wname, a);
-
-  }//addskin
-
-
+ }//addspritetex
 
 
  void 
- xSpriteMan::addSprite(std::string fname)
+ xSpriteMan::addSpriteXms(std::string wname)
   {
     pugi::xml_document xms;
  	  pugi::xml_node tex;
  	  pugi::xml_node img;
+    std::string fname;
     xSprite * a;
     xTexture * skin;
     unsigned int handle;
+
+    xAsset * w;
+    w = assetMan->getAsset(wname, ASSETGRP_XSPRITE);
+    if (w == 0) { printf("xSpriteMan -- asset doesnt exist %s \n", wname.c_str()); return; }
+
+    //todo -- check if file is zipped
+    fname = w->fname;
 
     //dont clear, adds new sprite
     if  (!(xms.load_file(fname.c_str(), 0) ))	{		printf("xSpriteMan: Couldn't load xms [%s] \n", fname);		return;	}//endif
@@ -112,7 +93,8 @@ xSpriteMan::addSkin(std::string fname, bool mip, bool ymir, bool clamp)
 
     handle = 0;
     picname = stripName(picname);
-    skin = storeSkin.getData(picname);
+    skin = assetMan->getTexture(picname);
+    //skin = storeSkin.getData(picname);
     if (skin == 0) { printf("xSpriteMan: image [%s] not loaded before sprites \n", picname.c_str()); }
     else { handle = skin->handle; }
     //todo -- refreshsprites instead? (go through all loaded sprites in a method or something)
@@ -141,27 +123,6 @@ xSpriteMan::addSkin(std::string fname, bool mip, bool ymir, bool clamp)
 
   }//addsprite
 
-
-
-xTexture * 
-xSpriteMan::getTex(std::string wname)
-  {
-    xTexture * a;
-    a = storeSkin.getData(wname);
-    if (a == 0) { return 0;}
-    return a;
-  }//gettex
-
-
-
-unsigned int 
-xSpriteMan::getSkin(std::string wname)
-  {
-    xTexture * a;
-    a = storeSkin.getData(wname);
-    if (a == 0) { return 0;}
-    return a->handle;
-  }//getskin
 
 
 

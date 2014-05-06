@@ -18,6 +18,8 @@ class xSprite;
 class xCam;
 class xFrame;
 
+class xAssetMan;
+
 #define XGAME_MAXKEY 512
 
 
@@ -25,6 +27,9 @@ class xGame
 {
 public:
 	xMultiGrid * mgrid;
+
+public:
+  xAssetMan * assetMan;
 
 public:
   float umx, umy;   //universal mouse pos ( 0,0 - 1,1)
@@ -120,6 +125,11 @@ public:
   virtual void setZoneTypeRect(float wx, float wz, float ww, float wh, int zt) {}
 
   virtual float getHeight(float wx, float wz) { return 0.0f; }
+
+
+public:
+  virtual int playSound(std::string wname) { return 0; }
+
 
 
 public:

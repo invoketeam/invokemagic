@@ -2,6 +2,8 @@
 
 #include "invokeMenu.h"
 
+#include "../gamex/xAsset.h"
+
 
 
 #define STATE_MAINMENU 0
@@ -32,7 +34,7 @@ invokeMenu::invokeMenu(void)
  
 invokeMenu::~invokeMenu(void) 
 {
-
+  if (assetMan != 0) { delete assetMan; assetMan = 0; } 
 }//dtor
 
 
@@ -41,23 +43,39 @@ invokeMenu::init(void)
 {
 
 
+  if (assetMan == 0)
+  {
+    assetMan = new xAssetMan(); 
+    assetMan->addDir("data",0);
+    assetMan->addDir("data/build",1);
+  }//endif
+
+
+
    myFlat.init();
 
       myFont.loadCharDef("data/atari16.xfnt");
-      myFontSkin.loadTex("data/atari16.png",true,true,true);
-      //myFontSkin.setTexEnv_Modulate();
-      myFont.handle = myFontSkin.handle;
+      //myFontSkin.loadTex("data/atari16.png",true,true,true);
+      assetMan->initTexture("atari16", true,true,true);
+      //myFont.handle = myFontSkin.handle;
+      myFont.handle = assetMan->getTexture("atari16")->handle;
+
     
 
-    myData.addSkin("data/test.png","test",true);
-    myData.addSkin("data/menu_placeholder.jpg","placeholder",true,true);
+//  myData.addSkin("data/test.png","test",true);
+//  myData.addSkin("data/menu_placeholder.jpg","placeholder",true,true);
+    assetMan->initTexture("menu_placeholder", true,true,true);
 
 
+    myGui.assetMan = assetMan;
     myGui.init();
     myGui.pfont = &myFont;
 
+    testGame.assetMan = assetMan; //important (invokeMenu is the main game class, others share the assets)
     testGame.init();
 
+    mySprite.assetMan = assetMan;
+    mySprite.addSpriteTex("test"); 
 
 
     xButton * b;
@@ -158,7 +176,7 @@ invokeMenu::render(void)
     
       //just a quick and dirty way to get the menu placeholder on screen
       xFrame * f;    
-      f = myFlat.addFrame(320,240,0,640,480, myData.getSkin("placeholder") );
+      f = myFlat.addFrame(320,240,0,640,480,  assetMan->getTexHandle("menu_placeholder") );
       f->u0 = 0.0f;
       f->u1 = 1.0f;
       f->v0 = 1.0f; //1.0f;//-(448.0f / 1024.0f);//1.0f;// 625f; //1.0f- (576.0f / 1024.0f);
@@ -229,7 +247,7 @@ invokeMenu::gotCmd(int cmd, int arg0, int arg1)
 xSprite * 
 invokeMenu::getSprite(std::string wname) 
   {
-    return myData.getSprite(wname);    
+     return mySprite.getSprite(wname);    
   }//getsprite
 
 

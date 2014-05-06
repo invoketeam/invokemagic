@@ -33,11 +33,18 @@ public:
 
   T * getData(std::string wname)
   {
-    //printf("using store %s \n", wname.c_str());
    return mapData[wname]; 
   }//getdata
 
-  //todo -- removedata
+
+  void removeData(std::string wname)
+  {
+    T * a;
+    a = mapData[wname];
+    if (a != 0) { delete a; a = 0; }
+    mapData.erase(wname);
+  }//removedata
+
 
 
 };//xstorage

@@ -38,7 +38,7 @@ xBuildTest::init(void)
   zrad = 256;
 
   mesh = game->getMdx("kunyho");
-  skin = game->getSkin("kunyho");
+  skin = game->getSkin("kunyho_textura_walpha");
 
   spectype = 100;
 

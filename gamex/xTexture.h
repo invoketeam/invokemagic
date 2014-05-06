@@ -26,7 +26,7 @@ public:
 
 
 
-  void loadTex(std::string fname, bool mip = true, bool mirv = true, bool clamp = false);
+  void loadTex(std::string fname, bool mip = true, bool mirv = false, bool clamp = false);
 
   void initEmpty(int size);
   

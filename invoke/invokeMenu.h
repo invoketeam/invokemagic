@@ -5,9 +5,9 @@
 #include "../gamex/xGameExt.h"
 
 #include "../gamex/xGuiGame.h"
-#include "../gamex/xData.h"
 #include "../gamex/xFont.h"
 #include "../gamex/xFlatRender.h"
+
 
 #include "invokeGame.h"
 
@@ -20,10 +20,11 @@ public:
   xGuiGame myGui;  
 
   xFont myFont;
-  xTexture myFontSkin;
+//  xTexture myFontSkin;
 
-  xData myData;
+//  xData myData;
 
+  xSpriteMan mySprite;
 
 public:
   int mState;

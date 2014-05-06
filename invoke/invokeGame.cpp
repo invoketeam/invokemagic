@@ -2,6 +2,9 @@
 
 #include "invokeGame.h"
 
+#include "../gamex/xAsset.h"
+
+
 #include "xInvokeCommon.h"
 
 #include "../gamex/xGLCommon.h"
@@ -117,11 +120,12 @@ invokeGame::init(void)
   myHand.init();
 
 
-    myFont.loadCharDef("data/atari16.xfnt");
-    myFontSkin.loadTex("data/atari16.png",true,true,true);
-    //myFontSkin.setTexEnv_Modulate();
-    myFont.handle = myFontSkin.handle;
+      myFont.loadCharDef("data/atari16.xfnt");
+      //myFontSkin.loadTex("data/atari16.png",true,true,true);
+      myFont.handle = assetMan->getTexHandle("atari16");
+        //myFontSkin.handle;
 
+    myGui.assetMan = assetMan;
     myGui.init();
     myGui.pfont = &myFont;
 
@@ -134,7 +138,13 @@ invokeGame::init(void)
 
 //setup ingame gui
 
-   myData.addSprite("data/button.xms","data/button.png");
+  
+  //   myData.addSprite("data/button.xms","data/button.png");
+
+  mySprite.assetMan = assetMan;
+   assetMan->initTexture("button", true,false,false); 
+   mySprite.addSpriteXms("button");
+
 
   xButton * b;
   b = myGui.addButton("btn1", "", 200, 610-36-36-36,380, 16, 32,32, getSprite("btn_move"), 1);
@@ -174,7 +184,7 @@ invokeGame::init(void)
 
 
 
-  
+ //note: heightmap textures/images are special and its not using the asset manager (for now at least) 
   //todo -- read size from tmx map
   myHeight.cw = 128;
   myHeight.ch = 128;
@@ -228,31 +238,44 @@ invokeGame::init(void)
 
   xMdx3 * mesh;
 
-  mesh = myData.addMdx("data/build/kunyho.mdx3", "kunyho");  mesh->makeVbo();
-  myData.addSkin("data/build/kunyho_textura_walpha.png", "kunyho", true, true);
+  
+  mesh = assetMan->getMesh("kunyho");  mesh->makeVbo();
+
+  assetMan->initTexture("kunyho_textura_walpha", true, true, false);
+
+  //mesh = myData.addMdx("data/build/kunyho.mdx3", "kunyho");  mesh->makeVbo();
+ // myData.addSkin("data/build/kunyho_textura_walpha.png", "kunyho", true, true);
 
 
-  mesh = myData.addMdx("data/tree.mdx3", "tree"); mesh->makeVbo();
-  myData.addSkin("data/treeskin.png", "treeskin",true,true);
+  //mesh = myData.addMdx("data/tree.mdx3", "tree"); mesh->makeVbo();
+  //myData.addSkin("data/treeskin.png", "treeskin",true,true);
 
+  mesh = assetMan->getMesh("tree");  mesh->makeVbo();
+  assetMan->initTexture("treeskin", true, true, false);
  
 
+//simple shadows are disabled for now
+/*
   mesh = new xMdx3();
   mesh->initPlane(64.0f);
   myData.addMdxFromPtr(mesh, "shadow");  mesh->makeVbo();
   myData.addSkin("data/shadlarge.png", "shadow", true,true);
-
-
+*/
 
 
 
 
 //data used for debug
   //myData.addSkin("data/knight_skin.png", "knight_skin",true,true);
-  myData.addSkin("data/knight_skin2.png", "knight_skin",true,true);
+
+  assetMan->initTexture("knight_skin2", true, true, false);
+
+ // myData.addSkin("data/knight_skin2.png", "knight_skin",true,true);
   
-  myData.addSprite("data/mysmoke.xms","data/mysmoke.png");
-  
+ // myData.addSprite("data/mysmoke.xms","data/mysmoke.png");
+  assetMan->initTexture("mysmoke", true,false,false); 
+   mySprite.addSpriteXms("mysmoke");
+
 
 
 //mesh used for debugging
@@ -260,7 +283,9 @@ invokeGame::init(void)
  
 
 //a big plane used for the water
-  waterSkin.loadTex("data/watertex.png");
+ // waterSkin.loadTex("data/watertex.png");
+  assetMan->initTexture("watertex", true, false, false);
+
   waterDeb.initPlane(32768, 0, 0, 32,32);
 
 
@@ -716,7 +741,7 @@ gamex::cMat view;
                     e->alpha = 0.25;
                     e->color = 1;
                     e->twoSide = 1;
-                    e->skin = waterSkin.handle;
+                    e->skin = assetMan->getTexHandle("watertex"); // waterSkin.handle;
                     e->blend = 2; //0 solid   1 alpha test   2 transparent   3 additive
                     e->skinBlend = 3; //0 replace   1 blend  2 decal  3 modulate
                     e->useColor = 0; ///1 use color data of mesh or 0 for the e->color of xEnt
@@ -995,20 +1020,20 @@ invokeGame::getCamPtr(void)
 xMdx3 *
 invokeGame::getMdx(std::string wname)
 {
-  return myData.getMdx(wname);
+  return assetMan->getMesh(wname);
 }//getmdx
 
 xTexture *
 invokeGame::getTex(std::string wname) 
 { 
-  return myData.getTex(wname);
+  return assetMan->getTexture(wname);
 }//gettex  
 
 
 unsigned int 
 invokeGame::getSkin(std::string wname) 
 {
- return myData.getSkin(wname);
+ return  assetMan->getTexHandle(wname);
 }//getskin
 
 
@@ -1016,7 +1041,7 @@ invokeGame::getSkin(std::string wname)
 xSprite * 
 invokeGame::getSprite(std::string wname) 
 {
- return myData.getSprite(wname);
+  return mySprite.getSprite(wname);
 }//getsprite
 
 
