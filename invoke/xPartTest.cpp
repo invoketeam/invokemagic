@@ -2,6 +2,7 @@
 
 #include "xPartTest.h"
 
+#include "xInvokeCommon.h"
 
 xPartTest::xPartTest(void) 
 {
@@ -44,6 +45,12 @@ xPartTest::init(void)
  
 
   myPart.sprAnim = &myAnim;
+
+
+  flags = FR_SELECTABLE;
+  xrad = 256+128;
+  yrad = 128;
+  zrad = 256+128;
 
 
 }//init

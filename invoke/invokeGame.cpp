@@ -220,8 +220,7 @@ invokeGame::init(void)
 
    myHeight.setBufferMesh(128*128);
     myHeight.updateMesh(0,0, 2048,2048);
-
-
+    myHeight.mesh.makeVbo();
 
 
 
@@ -583,7 +582,9 @@ invokeGame::drawShadow(void)
 
 
        //glColor4f(1,1,1, 0.9f);
-       glColor4f(0,0,0, 0.33f);
+       //glColor4f(0,0,0, 0.33f);
+       glColor4f(0.0f, 0.0f, 0.16f, 0.43f);
+
 
        glEnable(GL_BLEND);
        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -683,6 +684,7 @@ gamex::cMat view;
            //todo -- only update if box changes considerably
             //no need to check sides for difference as it seems to naturally be overestimated
             myHeight.updateMesh(viewBox.min.x, viewBox.min.z-diff, (viewBox.max.x-viewBox.min.x), (viewBox.max.z-viewBox.min.z)+diff*2.0f);
+            myHeight.mesh.updateVboVertex();
 
           //printf("updatemesh %d %d \n", gameTime, myHeight.mesh.drawFace);
         }//endif

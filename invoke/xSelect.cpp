@@ -319,6 +319,7 @@ xSelect::debRender(xGame * game)
   std::set <int> ::iterator it;
   xActor * a;
 
+  glColor3f(0,1,0);
   for (it = setId.begin(); it != setId.end(); it++)
   {
     a = game->getActor(*it);
@@ -331,7 +332,8 @@ xSelect::debRender(xGame * game)
   a = game->getActor(overId);
   if (a != 0)
   {
-    drawCube(a->pos.x-a->xrad, a->pos.y-a->yrad, a->pos.z-a->zrad,a->xrad+a->xrad,a->yrad+a->yrad,a->zrad+a->zrad);
+    glColor3f(1,1,0);
+    drawCube(a->pos.x-a->xrad-2, a->pos.y-a->yrad-2, a->pos.z-a->zrad-2,a->xrad+a->xrad+4,a->yrad+a->yrad+4,a->zrad+a->zrad+4);
   }
 
 }//debrender

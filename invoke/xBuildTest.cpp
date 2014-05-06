@@ -32,10 +32,12 @@ xBuildTest::init(void)
   //mesh.loadFile("data/build/kunyho.mdx3");
   //mesh.makeVbo();
 
+  //todo -- use an oobb for selection
+  //and use the aabb for optimising
 
-  xrad = 256;
+  xrad = 256+128;
   yrad = 128;
-  zrad = 256;
+  zrad = 256+128;
 
   mesh = game->getMdx("kunyho");
   skin = game->getSkin("kunyho_textura_walpha");
