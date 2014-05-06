@@ -10,8 +10,9 @@ class xUnit : public xActor
 {
 public:
   xMdx3 mesh;
-  xBoneAnim anim;
   xSkel skel; 
+  xBoneAnim * anim;
+
   unsigned int skin;
 
   float yaw;

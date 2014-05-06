@@ -13,18 +13,33 @@ xBone::xBone()
     id = 0; 
     depth = 0;
     spec = 0;
-  }//ctor
+   
+  }//ctorbone
 
 
  
-xSkel::xSkel(void) { scale = 1.0f; vecBone = 0; vecVert = 0; numBone = 0; numVert = 0;  }
+xSkel::xSkel(void) 
+{ 
+  scale = 1.0f; 
+  vecBone = 0; 
+  vecVert = 0; 
+  numBone = 0; 
+  numVert = 0;  
+  bCopied = false;
+}//ctorskel
+
 
 xSkel::~xSkel(void) { clear(); }
 
 void 
 xSkel::clear(void)
   { if (vecBone != 0) { delete [] vecBone; } vecBone = 0; numBone = 0;
-    if (vecVert != 0) { delete [] vecVert; } vecVert = 0; numVert = 0; 
+
+    if (bCopied == false)
+    { if (vecVert != 0) { delete [] vecVert; }  }
+    
+    vecVert = 0; numVert = 0; 
+    bCopied = false;
   }//clear
 
 
@@ -125,7 +140,7 @@ xSkel::applySkin(xMdx3 * mesh, int num)
 //(optional) for now as in the age of 2 giga rams minimum its not something to worry about (about 50kb extra per character)
 
 void 
-xSkel::copySkel(xSkel * skel)
+xSkel::copySkel(xSkel * skel, bool deepCopy)
   {
     clear();
 
@@ -140,10 +155,20 @@ xSkel::copySkel(xSkel * skel)
     memcpy(vecBone, skel->vecBone, numBone*sizeof(xBone));
 
 
+
     //todo -- option to shallow copy skin vertices
     numVert = skel->numVert;
-    vecVert = new xSkVert[numVert];
-    memcpy(vecVert, skel->vecVert, numVert*sizeof(xSkVert));
+    
+    if (deepCopy)
+    {
+      vecVert = new xSkVert[numVert];
+      memcpy(vecVert, skel->vecVert, numVert*sizeof(xSkVert));
+    }
+     else 
+    {
+      vecVert = skel->vecVert;
+      bCopied = true;
+    }//endif
 
   }//getcopy
 

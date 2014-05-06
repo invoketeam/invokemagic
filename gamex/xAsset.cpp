@@ -56,7 +56,7 @@ void
 xAssetMan::addAsset(xAsset * a, std::string wname, int grp)
 {
 
-    //printf("addasset %d  %s   \n", grp, wname.c_str() );
+  //  printf("addasset %d  %s   \n", grp, wname.c_str() );
 
     vecAsset[grp].addData(wname, a); 
 
@@ -121,8 +121,9 @@ xAssetMan::addDir(std::string dname, int scope)
      if (ext == "png") { rtype = ASSETGRP_TEXTURE; }
      else if (ext == "jpg") { rtype = ASSETGRP_TEXTURE; }
      else if (ext == "mdx3") { rtype = ASSETGRP_MESH; }
-     else if (ext == "xska") { rtype = ASSETGRP_SKEL; }
-     else if (ext == "xskb") { rtype = ASSETGRP_BONEANIM; }
+     else if (ext == "xskb") { rtype = ASSETGRP_SKEL; }
+     else if (ext == "xska") { rtype = ASSETGRP_BONEANIM; }
+     else if (ext == "banm") { rtype = ASSETGRP_BONEANIM; } //same as xska
      else if (ext == "tmx") { rtype = ASSETGRP_TMX; }
      else if (ext == "ogg") { rtype = ASSETGRP_SOUND; }
      else if (ext == "xfnt") { rtype = ASSETGRP_XFONT; }
@@ -137,7 +138,7 @@ xAssetMan::addDir(std::string dname, int scope)
       a->altName = stripName(fname);
       a->scope = scope;
 
-      //printf("asset filename %s \n", a->fname.c_str() );
+     // printf("asset filename %s \n", a->fname.c_str() );
 
      addAsset(a, a->altName, a->rtype);
 

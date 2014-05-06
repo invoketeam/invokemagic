@@ -63,8 +63,9 @@ public:
   int numVert;
 
   xBone * vecBone;
-  xSkVert * vecVert; //todo -- boolean to indicate if skin vertices are shared or should be deleted
+  xSkVert * vecVert; 
 
+  bool bCopied; //for copied xSkel vecVert is a pointer and not freed when skel is deleted
 public:
   xSkel(void);
   ~xSkel(void);
@@ -77,7 +78,7 @@ public:
   //note -- so far the animation is rigid (only 1 bone per vertex)
   void applySkin(xMdx3 * mesh, int num);
 
-  void copySkel(xSkel * skel);
+  void copySkel(xSkel * skel, bool deepCopy=true);
 
   void loadFile(std::string fname);
 
