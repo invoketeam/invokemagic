@@ -12,8 +12,7 @@ xUnit::xUnit(void)
   skin = 0;
   color = 0xFFffFFff;
 
-//  shadowMesh = 0;
-//  shadowSkin = 0;
+
 
   cmd = 0;
 
@@ -34,10 +33,6 @@ xUnit::init(void)
   //each unit will need its own skeleton and model
   //animation can be shared
 
-   
-//  skel.loadFile("data/knight_skel.xskb");
-//  anim.loadFile("data/knight_walk.banm");
-
   xSkel * ks;
   ks = game->assetMan->getSkel("knight_skel");
   skel.copySkel(ks, false); //make a shallow copy of the skeleton
@@ -49,21 +44,17 @@ xUnit::init(void)
   xMdx3 * m;
   m = game->getMdx("knight_mesh");
   mesh.copyMesh(m); // (in theory we only need to copy the vertices, but the rest doesnt share that much data)
-  // mesh.loadFile("data/knight_mesh.mdx3");
 
 
-  
- // mesh.makeVbo();
+ mesh.makeVbo();
 
-  //vel.x = 3;
-  //vel.z = 2;
+
 
   xrad = 32;
   yrad = 64;
   zrad = 32;
 
-  //vel.x = game->getRand2() * 3.0f;
-  //vel.z = game->getRand2() * 3.0f;
+
 
   yaw = game->getRand() * 6.28f;
 
@@ -76,7 +67,12 @@ xUnit::init(void)
 
   //color = game->getRand() * 32768;
 
-  teamColor.set(game->getRand(), game->getRand(), game->getRand());
+//  teamColor.set(game->getRand(), game->getRand(), game->getRand());
+
+  if (team == 1) //red
+  { teamColor.set(1, 0, 0);  }
+  else { teamColor.set(0, 0, 1); }  //blue
+
 
 }//init
 

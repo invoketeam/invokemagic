@@ -289,64 +289,64 @@ invokeGame::init(void)
 
 
 
-
-
-
-
-
-
-
-
-//todo -- in the future load units after the map
-
-
+//world size
   float wwidth, wheight;
   wwidth = myHeight.mw * myHeight.cw;
   wheight = myHeight.mh * myHeight.ch;
 
 
 
-  //testing
-  int i;
+
   xActor * a;
-  for (i = 0; i < 16; i++)
+  xTmxRect * ta;
+  tdVecTmxRect ::iterator wt;
+
+  for (wt = tmx.vecRect.begin(); wt != tmx.vecRect.end(); wt++)
   {
-    a = new xUnit();
-    a->pos.set(getRand()*1024,0, getRand()*1024);
+    ta = (*wt);  
+
+    a = 0;
+    if (ta->type == "tree")
+    {
+      a = new xTree();
+    }
+    else if (ta->type == "knight")
+    {
+      a = new xUnit();
+    
+      if (ta->name == "red")
+      { a->team = 1; }
+      else { a->team = 2;}
+
+    }
+    else if (ta->type == "farm")
+    {
+      a = new xBuildTest();
+    }
+    else if (ta->type == "smoke")
+    {
+      a = new xPartTest();
+    }
+    else if (ta->type == "camstart")
+    {
+      camPos.set(ta->cx*4.0f, 2024, ta->cy*4.0f);
+    }
+    else { printf("unknown actor type %s \n", ta->type.c_str());  } //warn about unknown actor
+
+
+    if (a != 0)
+    {
+      //tmx map is in 32x32,  but the heightmap works in 128x128 tiles
+      a->pos.set(ta->cx*4.0f, 0, ta->cy*4.0f);
       addActor(a);
-  }//nexti
+    }
+
+  }//nextwt
 
 
 
-//todo -- frustum cull units (and trees)
-
-  for (i = 0; i < 256; i++)
-  {
-    a = new xTree(); 
-     a->pos.set(getRand()*wwidth, 0, getRand()*wheight);
-    addActor(a);
-
-    //todo -- align trees to grid    
-  }//nexti
 
 
-  for (i = 0; i < 16; i++)
-  {
-    a = new xBuildTest(); 
-     a->pos.set(getRand()*wwidth, 0, getRand()*wheight);
-    addActor(a);
-
-    //todo -- align trees to grid    
-  }//nexti
-
-
-
-  a = new xPartTest();
-  a->pos.set(512+2512,64,512+2512);
-    addActor(a);
-
-    
-    
     
   //todo -- make minimap part of xHand (needs to be used to send units after all)
 

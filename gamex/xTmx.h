@@ -10,9 +10,15 @@ class xTmxRect
 public:
   std::string name;
   std::string type;
-  float cx, cy, cw, ch;
+  float rx, ry, rw, rh;
+  float cx, cy;
+
+  
+
 public:
-  xTmxRect() {}
+  //xTmxRect(void) {}
+
+  //todo -- properties
 
 };//tmxrect
 

@@ -161,10 +161,14 @@ xTmx::loadFile(std::string fname)
       a->name = m.attribute("name").value();  
       a->type = m.attribute("type").value();  
 
-      a->cx = m.attribute("x").as_float();
-      a->cy = m.attribute("y").as_float();
-      a->cw = m.attribute("width").as_float();
-      a->ch = m.attribute("height").as_float();
+      a->rx = m.attribute("x").as_float();
+      a->ry = m.attribute("y").as_float();
+      a->rw = m.attribute("width").as_float();
+      a->rh = m.attribute("height").as_float();
+
+      a->cx = (a->rx + a->rw*0.5f);
+      a->cy = (a->ry + a->rh*0.5f);
+
 
       vecRect.push_back(a);
       mapRect[a->name] = a;
