@@ -48,5 +48,10 @@ public:
 
 public:
   virtual void gotMsg(int msg, int arg0, int arg1, int arg2);
+
+
+public:
+  virtual xActor * getTarget(xMultiGrid * mgrid, float ax, float az, float aw, float ah);
+
   
 };//xunit

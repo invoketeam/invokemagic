@@ -4,6 +4,8 @@
 
 #include "xInvokeCommon.h"
 
+#include "../gamex/xGLCommon.h"
+
 
 xUnit::xUnit(void) 
 {
@@ -91,6 +93,54 @@ static float getAng(float dy, float dx)
 
 
 
+//find closest target to attack
+xActor * 
+xUnit::getTarget(xMultiGrid * m, float ax, float az, float aw, float ah)
+{
+	xCell * c;
+	xActor * a;
+  float x1, z1;
+  float dist;
+  float mdist;
+  xActor * ret;
+
+	c = m->doQuery(ax, az, aw, ah);
+			
+  x1 = ax + aw;
+  z1 = az + ah;
+			
+  mdist = 99999999.0f; //todo -- use float max or something
+  ret = 0;
+
+	for (c; c != 0; c= c->next )
+	{
+		for (a = c->first; a != 0; a = a->next)
+		{
+			if (a == this) { continue; }
+			if (a->dead) { continue; }
+      if (a->team == team) { continue; }  //ally
+      if (a->team == 0) { continue; }  //neutral
+					
+				if (a->pos.x + a->xrad < ax) { continue; } 
+				if (a->pos.x - a->xrad > x1) { continue; }
+				if (a->pos.z + a->zrad < az) { continue; }
+				if (a->pos.z - a->zrad > z1) { continue; }
+
+
+      dist = abs(a->pos.x - pos.x) + abs(a->pos.z - pos.z);
+      if (mdist < dist) { continue;}
+        mdist = dist;
+        ret = a;
+					
+		}//nexta
+	}//nextc
+
+return ret;
+}//gettarget
+
+
+
+
 void 
 xUnit::update(void)
 {
@@ -99,6 +149,8 @@ xUnit::update(void)
 
     curFrame += 0.5f * fr;
     if (curFrame >= anim->numFrame) { curFrame = 0.0f; } 
+
+
 
 
     if (cmd > 0)
@@ -120,6 +172,81 @@ xUnit::update(void)
 
       if (abs(vel.x) < ms && abs(vel.z) < ms) { cmd = -1; vel = 0;}
     }//endif
+
+
+
+
+    
+
+
+    xActor * a;
+    float dx, dz;
+    a = 0;
+    if (targid > 0)  {  a = game->getActor(targid);  }
+    else
+    {
+      if (workb < game->gameTime ) { workb = game->gameTime + 10; 
+        a = getTarget(game->mgrid, pos.x-1024, pos.z-1024, 2048, 2048);
+        if (a != 0) {targid = a->id; }
+        else { targid = 0; }
+      }
+    } //endif   
+
+    if (cmd == 1) {  a = 0; targid = 0; workb = game->gameTime + 5;   } //move -- ignore targets (retreat)
+
+    if (cmd <= 0)
+    if (a == 0) {   vel.x = 0; vel.z = 0; }
+
+    if (a != 0)
+    {
+      dx = a->pos.x - pos.x; if (dx < 0) { dx = -dx; }
+      dz = a->pos.z - pos.z; if (dz < 0) { dz = -dz; }
+
+      //only start attacking when got closer than range
+      //start moving again when out of range
+
+      if (dx < 100.0f && dz < 100.0f) { worka = 1;}
+      if (dx > 128.0f && dz > 128.0f) { worka = 0;  }
+    }//endif
+
+    if (a != 0) 
+    if (worka == 0)
+    {
+
+      vel.x = a->pos.x - pos.x;
+      vel.z = a->pos.z - pos.z;
+
+      if (vel.x != 0 && vel.z != 0)      {    yaw = getAng(vel.z, vel.x);  }
+
+      float ms;
+      ms = 4.0f;
+      if (vel.x > ms) { vel.x = ms; }      if (vel.x < -ms) { vel.x = -ms; }
+      if (vel.z > ms) { vel.z = ms; }      if (vel.z < -ms) { vel.z = -ms; }
+
+    }//endif
+
+
+    if (worka == 1)
+    {
+      if (a == 0) { worka = 0; vel.x = 0; vel.y = 0; targid = 0; return;}
+      
+      vel.x = a->pos.x - pos.x;
+      vel.z = a->pos.z - pos.z;
+      if (vel.x != 0 && vel.z != 0)      {    yaw = getAng(vel.z, vel.x);  }
+
+      vel.x = 0; vel.z = 0;
+
+      
+      if (reload < game->gameTime) { a->gotHit(16, 1, 0,0,0); reload = game->gameTime + 20; }
+      
+    }//endif
+
+
+
+
+
+
+
 
     pos.x += vel.x;
     pos.z += vel.z;
@@ -170,6 +297,21 @@ xUnit::gotMsg(int msg, int arg0, int arg1, int arg2)
 void 
 xUnit::render(void) 
 {
+    xActor * t;
+
+    glColor3f(0,1,0);
+
+    if (targid != 0)
+    {
+      t = game->getActor(targid);
+      if (t != 0)
+      {
+        glBegin(GL_LINES);
+          glVertex3f(pos.x,pos.y, pos.z);
+          glVertex3f(t->pos.x, t->pos.y, t->pos.z);
+        glEnd();
+      }
+    }//endif
 
 }//render
 

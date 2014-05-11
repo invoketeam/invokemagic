@@ -804,6 +804,12 @@ glDisable(GL_TEXTURE_2D);
   // testSelect.debRender(this);
   myHand.mySelect.debRender(this);
  
+
+//unit debug render
+  myWorld.render();
+
+
+
       //debug -- draw aabb around units
    //     glEnable(GL_DEPTH_TEST);
    //        glDisable(GL_TEXTURE_2D); debugDraw();

@@ -30,6 +30,8 @@ xTree::init(void)
   yrad = 64;
   zrad = 48;
 
+  team = 0; //neutral
+
 
 flags = FR_SELECTABLE;
 
