@@ -523,6 +523,8 @@ invokeGame::makeShadow(void)
    
       glEnable(GL_POLYGON_OFFSET_FILL);
       glPolygonOffset(1.0f, 4.0f);
+ 
+
          glEnable(GL_DEPTH_TEST);
          glDepthFunc(GL_LEQUAL);
             glEnable(GL_CULL_FACE);
@@ -553,11 +555,11 @@ invokeGame::drawShadow(void)
 
      glDisable(GL_POLYGON_OFFSET_FILL);
      glEnable(GL_TEXTURE_2D);
-    //  glBindTexture(GL_TEXTURE_2D, shadTex.handle);
+     //glBindTexture(GL_TEXTURE_2D, shadTex.handle);
       glBindTexture(GL_TEXTURE_2D, shadTex.depth);
 
       glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND );  //important
-
+  
  
       static float row0[4];
       static float row1[4];
@@ -600,10 +602,9 @@ invokeGame::drawShadow(void)
 
 
 
-
-       //glColor4f(1,1,1, 0.9f);
+      // glColor4f(1,1,1, 0.9f); //useful for testing
        //glColor4f(0,0,0, 0.33f);
-       glColor4f(0.0f, 0.0f, 0.16f, 0.43f);
+       glColor4f(0.0f, 0.0f, 0.16f, 0.45f);
 
 
        glEnable(GL_BLEND);
@@ -621,6 +622,7 @@ invokeGame::drawShadow(void)
       //(at least for now)
        //glEnable(GL_ALPHA_TEST);
      //  glAlphaFunc(GL_LEQUAL, 0.99f);
+
 
            myRender.simpRender(4);
 

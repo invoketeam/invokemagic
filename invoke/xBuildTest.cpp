@@ -78,7 +78,7 @@ xBuildTest::render2(xRender * r)
       e->twoSide = 0;
       e->skin = skin ;
       e->flags = 2 + 4; //cast shadow
-
+      e->ori.rotYaw(3.1415f*-0.2f);
 
   //todo -- render rally point
 
