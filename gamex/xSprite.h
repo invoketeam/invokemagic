@@ -24,6 +24,22 @@ public:
 };//xsprite
 
 
+class xAnim
+{
+public:
+  std::string wname;
+  std::vector <std::string> vecFrame;
+  float speed;
+  float repframe;
+  int repeat;
+
+public:
+  xAnim(void);
+  void setFrames(std::string frames);
+
+};//xanim
+
+
 
 typedef std::vector  <xSprite * > tdVecSprite;
 
@@ -32,6 +48,8 @@ class xSpriteMan
 {
 public:
   xStore <xSprite> storeSprite;
+  xStore <xAnim> storeAnim;
+
   //xStore <xTexture> storeSkin;
   xAssetMan * assetMan;
 
@@ -48,8 +66,12 @@ public:
   //add single texture as sprite
   void addSpriteTex(std::string wname);
 
+  //add xma animation
+  void addAnimXma(std::string wname);
+
 
   xSprite * getSprite(std::string wname);
+  xAnim * getAnim(std::string wname);
 
   void drawSprite(xSprite * a, float ax, float ay, float ang = 0.0f);
   void drawImage(xSprite * a, float ax, float ay);

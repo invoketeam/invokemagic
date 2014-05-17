@@ -56,7 +56,7 @@ void
 xAssetMan::addAsset(xAsset * a, std::string wname, int grp)
 {
 
-  //  printf("addasset %d  %s   \n", grp, wname.c_str() );
+    printf("addasset %d  %s   \n", grp, wname.c_str() );
 
     vecAsset[grp].addData(wname, a); 
 
@@ -114,20 +114,20 @@ xAssetMan::addDir(std::string dname, int scope)
    while ((ent = readdir (dir)) != NULL)
    {
      fname = ent->d_name;
-     ext = getExt(fname); //todo -- turn extension string to lowercase
+     ext = getExt(fname);
 
      rtype = -1; 
 
      if (ext == "png") { rtype = ASSETGRP_TEXTURE; }
-     else if (ext == "jpg") { rtype = ASSETGRP_TEXTURE; }
      else if (ext == "mdx3") { rtype = ASSETGRP_MESH; }
-     else if (ext == "xskb") { rtype = ASSETGRP_SKEL; }
-     else if (ext == "xska") { rtype = ASSETGRP_BONEANIM; }
-     else if (ext == "banm") { rtype = ASSETGRP_BONEANIM; } //same as xska
+     else if (ext == "xska") { rtype = ASSETGRP_XBONEANIM; }
+     else if (ext == "banm") { rtype = ASSETGRP_XBONEANIM; }
+     else if (ext == "xskb") { rtype = ASSETGRP_XSKEL; }
      else if (ext == "tmx") { rtype = ASSETGRP_TMX; }
      else if (ext == "ogg") { rtype = ASSETGRP_SOUND; }
      else if (ext == "xfnt") { rtype = ASSETGRP_XFONT; }
      else if (ext == "xms") { rtype = ASSETGRP_XSPRITE; }
+     else if (ext == "xma") { rtype = ASSETGRP_XANIM; }
 
 
      if (rtype < 0) { continue; }
@@ -138,7 +138,7 @@ xAssetMan::addDir(std::string dname, int scope)
       a->altName = stripName(fname);
       a->scope = scope;
 
-     // printf("asset filename %s \n", a->fname.c_str() );
+      printf("asset filename %s \n", a->fname.c_str() );
 
      addAsset(a, a->altName, a->rtype);
 
@@ -206,7 +206,7 @@ xAsset::loadData(void)
   {
     case ASSETGRP_TEXTURE: 
       texture = new xTexture();
-      texture->loadTex(fname, true, true, false); 
+      texture->loadTex(fname, true, false, false); 
     break;
 
     case ASSETGRP_MESH:
@@ -214,12 +214,12 @@ xAsset::loadData(void)
       mesh->loadFile(fname);
     break;
 
-    case ASSETGRP_SKEL:
+    case ASSETGRP_XSKEL:
       skel = new xSkel();
       skel->loadFile(fname);
     break;
 
-    case ASSETGRP_BONEANIM:
+    case ASSETGRP_XBONEANIM:
       boneanim = new xBoneAnim();
       boneanim->loadFile(fname);
     break;
@@ -284,7 +284,7 @@ xSkel *
 xAssetMan::getSkel(std::string wname)
 {
   xAsset * a;
-  a = vecAsset[ASSETGRP_SKEL].getData(wname);
+  a = vecAsset[ASSETGRP_XSKEL].getData(wname);
   if (a == 0) { return 0; }
   if (a->loaded <= 0) { a->loadData(); }
 
@@ -297,7 +297,7 @@ xBoneAnim *
 xAssetMan::getBoneAnim(std::string wname)
 {
    xAsset * a;
-  a = vecAsset[ASSETGRP_BONEANIM].getData(wname);
+  a = vecAsset[ASSETGRP_XBONEANIM].getData(wname);
   if (a == 0) { return 0; }
   if (a->loaded <= 0) { a->loadData(); }
 

@@ -17,6 +17,72 @@ xSprite::xSprite(void)
 
 
 
+xAnim::xAnim(void)
+{
+  speed = 1.0f;
+  repeat = 0;
+  repframe = 0.0f;
+}//ctor
+
+
+void 
+xAnim::setFrames(std::string frames)
+{
+  vecFrame.clear();
+
+  std::string tmp;
+
+
+  int f;
+  int i;
+  int num;
+  int e;
+
+  num = frames.length();
+      
+  for (i = 0; i < num; i++)
+  {
+    if (frames[i] == ' ') { continue; }
+    f = frames.find_first_of(',', i);
+    
+    if (f == -1) { f = num; } 
+  
+    tmp = frames.substr(i, f - i);
+
+    //remove spaces from end
+      e = tmp.find_first_of(' ', 0);
+      tmp = tmp.substr(0, e);
+
+
+    //printf("Found frame: [%s] \n", tmp.c_str() );
+    vecFrame.push_back(tmp);
+
+    i = f;        
+     
+  }//nexti 
+
+}//setframes
+
+/*
+ 
+    public function makeFrame(arrFrame:String):Vector.<String>
+    {   
+      var vec:Array;      var str:String;      var i:int;      var num:int;     
+      vec = arrFrame.split(",");
+      num = vec.length;
+      for (i = 0; i < num; i++)
+      {
+            str = vec[i] as String;           
+            while (str.search(" ") > -1)   {str = str.replace(" ", ""); } //take out spaces       
+            while (str.search("/n") > -1)  {str = str.replace("/n", ""); } //take out enter
+            vec[i] = str;
+      }//nexti
+      
+      return Vector.<String>(vec);
+    }//makeframe
+    
+
+*/
 
 
 
@@ -36,6 +102,7 @@ void
 xSpriteMan::clear(void) 
   {
     storeSprite.clear();
+    storeAnim.clear();
   }//clear
 
 
@@ -124,12 +191,63 @@ xSpriteMan::clear(void)
   }//addsprite
 
 
+void 
+xSpriteMan::addAnimXma(std::string wname)
+{
+  pugi::xml_document xma;
+ 	pugi::xml_node dat;
+ 	pugi::xml_node anm;
+  std::string fname;
+  xAnim * a;
+  std::string frames;
+
+  xAsset * w;
+  w = assetMan->getAsset(wname, ASSETGRP_XANIM);
+  if (w == 0) { printf("xSpriteMan -- asset doesnt exist %s \n", wname.c_str()); return; }
+
+  fname = w->fname;
+
+  //dont clear, adds new sprite
+  if  (!(xma.load_file(fname.c_str(), 0) ))	{		printf("xSpriteMan: Couldn't load xma [%s] \n", fname);		return;	}//endif
+
+  
+  dat = xma.child("data");
+	  if (dat.empty() ) { return; } //todo error invalid file
+
+
+  for (anm = dat.child("anim"); anm; anm = anm.next_sibling("anim")) 
+  {
+    a = new xAnim();
+
+    a->wname = anm.attribute("name").value();
+    a->speed = anm.attribute("speed").as_float();
+    a->repeat =  anm.attribute("repeat").as_int();
+    a->repframe = 0.0f; //todo -- read from xma
+
+    frames = anm.attribute("frames").value();
+    a->setFrames(frames);
+
+
+    storeAnim.addData(a->wname, a);
+
+
+  }//nextanim
+
+}//addanim
+
 
 
 xSprite * 
 xSpriteMan::getSprite(std::string wname) 
   {
     return storeSprite.getData(wname);
+  }//getsprite
+
+
+xAnim * 
+xSpriteMan::getAnim(std::string wname) 
+  {
+    return storeAnim.getData(wname);
   }//getsprite
 
 

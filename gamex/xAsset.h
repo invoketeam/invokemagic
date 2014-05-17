@@ -56,12 +56,13 @@ public:
 #define ASSETGRP_INVALID -1
 #define ASSETGRP_TEXTURE 0
 #define ASSETGRP_MESH 1
-#define ASSETGRP_SKEL 2
-#define ASSETGRP_BONEANIM 3
+#define ASSETGRP_XSKEL 2
+#define ASSETGRP_XBONEANIM 3
 #define ASSETGRP_TMX 4      //only storing filename for now
 #define ASSETGRP_SOUND 5    //not handled by xasset yet
 #define ASSETGRP_XFONT 6    //not handled by xasset yet
 #define ASSETGRP_XSPRITE 7  
+#define ASSETGRP_XANIM 8    //only storing filename
  
 //problem is keeping track of xsprite as it has texture associated with it
 //also same for xfont
