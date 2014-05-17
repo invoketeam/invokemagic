@@ -42,43 +42,41 @@ float
 xColMesh::lineTest(gamex::cVec3f &start, gamex::cVec3f &end, float rad)
   {
   
-    int i;
-    xTri * a;
-    xTri * c;
-    float t;
-    float dist;
-
-    float ax,ay,az;
-    float bx,by,bz;
-
-    ax = start.x; 
-    ay = start.y; 
-    az = start.z;
-    bx = end.x;
-    by = end.y; 
-    bz = end.z;
-
+    int i;    xTri * a;    xTri * c;
+    float t; float dist;    float ax,ay,az;    float bx,by,bz;
+    ax = start.x;     ay = start.y;     az = start.z;
+    bx = end.x;    by = end.y;     bz = end.z;
     c = 0; t = -999;
-
     //printf("numtri %d \n", numTri);
-
     for (i = 0; i < numTri; i++)
     {
-      a = &(vecTri[i]);
-      
+      a = &(vecTri[i]);    
       dist = a->lineTest(ax, ay, az, bx, by, bz, rad);
       if (dist == -999.0f) { continue; }
-
-      if (c == 0) { t = dist; c = a; continue; }
-        
+      if (c == 0) { t = dist; c = a; continue; }       
       if (dist < t) { t = dist; c = a; }
-
       //printf(" t %0.2f \n ", t);
     }//nexti
-
     return t;
   }//linetest
 */
+
+
+void 
+xColMesh::uvRender(void)
+{
+  xTri * a;    
+  tdVecTri ::iterator it;
+  for (it = vecTri.begin(); it != vecTri.end(); it++)
+  {
+    glBegin(GL_TRIANGLES);
+      a = (*it);
+      glVertex2f(a->u0, a->v0);
+      glVertex2f(a->u1, a->v1);
+      glVertex2f(a->u2, a->v2);
+    glEnd();
+  }//nextit
+}//uvrender
 
 
 //note: only meant for debugging
@@ -108,6 +106,9 @@ xColMesh::render(void)
     //rect.render(64);
 
   }//render
+
+
+
 
 
 void 
@@ -141,6 +142,8 @@ xColRect::render(float yc)
  }//render 
 
 
+//todo -- paremeter -- which uv use?
+// special id to use?
 void 
 xColMesh::addMesh(xMdx3 * mdx, int maxd)
   {
@@ -165,6 +168,15 @@ xColMesh::addMesh(xMdx3 * mdx, int maxd)
         a->setValue(&(vecVert[vecIndex[i]].pos),&(vecVert[vecIndex[i+1]].pos),&(vecVert[vecIndex[i+2]].pos));
         a->calcNormal();
 
+        //new -- uv coordinates
+          a->u0 = vecVert[vecIndex[i]].u2;
+          a->v0 = vecVert[vecIndex[i]].v2;
+          a->u1 = vecVert[vecIndex[i+1]].u2;
+          a->v1 = vecVert[vecIndex[i+1]].v2;
+          a->u2 = vecVert[vecIndex[i+2]].u2;
+          a->v2 = vecVert[vecIndex[i+2]].v2;
+
+
         b = rect.addTri(a, maxd);
 
         if (b == false) { numLeft += 1; }
@@ -184,7 +196,9 @@ xColMesh::initRect(float ax, float ay, float aw, float ah)
     
   }//initrect
 
- 
+
+
+//todo -- replace innards with an initrect-addmesh combo 
 void 
 xColMesh::initMesh(xMdx3 * mdx, int maxd)
   {
@@ -220,6 +234,14 @@ xColMesh::initMesh(xMdx3 * mdx, int maxd)
         a->setValue(&(vecVert[vecIndex[i]].pos),&(vecVert[vecIndex[i+1]].pos),&(vecVert[vecIndex[i+2]].pos));
         a->calcNormal(); //important
 
+          //new -- uv coordinates
+          a->u0 = vecVert[vecIndex[i]].u2;
+          a->v0 = vecVert[vecIndex[i]].v2;
+          a->u1 = vecVert[vecIndex[i+1]].u2;
+          a->v1 = vecVert[vecIndex[i+1]].v2;
+          a->u2 = vecVert[vecIndex[i+2]].u2;
+          a->v2 = vecVert[vecIndex[i+2]].v2;
+
         //todo -- maxdepth based on triangle size
         b = rect.addTri(a, maxd); //(todo -- add triangles as new objects instead and dont keep them all in xcolmesh)
 
@@ -233,95 +255,236 @@ xColMesh::initMesh(xMdx3 * mdx, int maxd)
 
 
 
-/*
-void 
-xColMesh::addTileMap(xTileMap * tmap)
+
+class xCutter
 {
-  //clear();
+public:
+  xTri ret1, ret2;
 
-  xMdx3 temp;
-  xTri * a;
+  //int num;
 
+  gamex::cVec3f pos;
+  gamex::cVec3f norm;
+
+public:
+  int cutTri(xTri * tri);
+
+};//cutplane
+
+
+int
+xCutter::cutTri(xTri * tri)
+{
+  static gamex::cVec3f vecOut[4];
+  static gamex::cVec3f vecUv[4];
+  static gamex::cVec3f vert[3];
+  static gamex::cVec3f uv[3];
+
+  int it, i;
+  float ad, bd, cd;
+  float t;
+  float da, ds;
+  gamex::cVec3f * va;
+  gamex::cVec3f * vs;
+  gamex::cVec3f * ua;
+  gamex::cVec3f * ub;
+     
+      //test all 3 points against plane
+        ad = (tri->x0 - pos.x) * norm.x +  (tri->y0 - pos.y) * norm.y +(tri->z0 - pos.z) * norm.z;
+        bd = (tri->x1 - pos.x) * norm.x +  (tri->y1 - pos.y) * norm.y +(tri->z1 - pos.z) * norm.z;
+        cd = (tri->x2 - pos.x) * norm.x +  (tri->y2 - pos.y) * norm.y +(tri->z2 - pos.z) * norm.z;
+      
+        if (ad >= 0 && bd >= 0 && cd >= 0) { return 0; } //front of plane
+        if (ad < 0 && bd < 0 && cd < 0) { return -1; } //behind plane
+      
+    
+      it = 0;	 
+
+
+      
+    //based on somewhat
+	  //http://code.google.com/p/papervision3d/source/browse/trunk/as3/trunk/src/org/papervision3d/core/math/util/TriangleUtil.as
+	  
+	  //problem is that for multiple cuts there seems to be an uv error (?)
+
+
+    vert[0].set(tri->x0, tri->y0, tri->z0);
+    vert[1].set(tri->x1, tri->y1, tri->z1);
+    vert[2].set(tri->x2, tri->y2, tri->z2);
+
+    uv[0].set(tri->u0, tri->v0, 0);
+    uv[1].set(tri->u1, tri->v1, 0);
+    uv[2].set(tri->u2, tri->v2, 0);
+
+
+    
+    for (i = 0; i < 3; i++)
+    {
+        if (i == 0) 
+        { va = &vert[0]; vs = &vert[2]; da = ad; ds = cd; ua = &uv[0]; ub = &uv[2]; }
+        else if (i == 1)
+        { va = &vert[1]; vs = &vert[0]; da = bd; ds = ad; ua = &uv[1]; ub = &uv[0]; }
+        else
+        { va = &vert[2]; vs = &vert[1]; da = cd; ds = bd; ua = &uv[2]; ub = &uv[1]; }
+  
+        if (da > 0 && ds > 0)
+            {  vecOut[it] = *va;  vecUv[it] = *ua; it += 1;   }
+            else if (da > 0 || ds > 0)
+            {
+              
+              t = da / (norm.x * (va->x - vs->x) + norm.y * (va->y - vs->y) +  norm.z * (va->z - vs->z) );
+
+              vecOut[it].x = va->x + (vs->x - va->x) * t;
+              vecOut[it].y = va->y + (vs->y - va->y) * t;
+              vecOut[it].z = va->z + (vs->z - va->z) * t;
+				
+              vecUv[it].x = ua->x + (ub->x - ua->x) * t;
+              vecUv[it].y = ua->y + (ub->y - ua->y) * t;
+
+              it += 1; 
+                       
+              if (ds < 0)
+              {              
+                vecOut[it] = *va; vecUv[it] = *ua; it += 1;
+              }
+            }//endif
+
+    }//nexti
+
+      if (it < 3) { return -1;}
+      
+        ret1.x0 = vecOut[0].x;      ret1.y0 = vecOut[0].y;      ret1.z0 = vecOut[0].z;
+        ret1.u0 = vecUv[0].x;       ret1.v0 = vecUv[0].y;
+
+        ret1.x1 = vecOut[1].x;      ret1.y1 = vecOut[1].y;      ret1.z1 = vecOut[1].z;
+        ret1.u1 = vecUv[1].x;       ret1.v1 = vecUv[1].y;
+
+        ret1.x2 = vecOut[2].x;      ret1.y2 = vecOut[2].y;      ret1.z2 = vecOut[2].z;
+        ret1.u2 = vecUv[2].x;       ret1.v2 = vecUv[2].y;
+
+      if (it == 3) { return 1; }
+      
+        ret2.x0 = vecOut[0].x;      ret2.y0 = vecOut[0].y;      ret2.z0 = vecOut[0].z;
+        ret2.u0 = vecUv[0].x;       ret2.v0 = vecUv[0].y;
+
+        ret2.x1 = vecOut[2].x;      ret2.y1 = vecOut[2].y;      ret2.z1 = vecOut[2].z;
+        ret2.u1 = vecUv[2].x;       ret2.v1 = vecUv[2].y;
+
+        ret2.x2 = vecOut[3].x;      ret2.y2 = vecOut[3].y;      ret2.z2 = vecOut[3].z;
+        ret2.u2 = vecUv[3].x;       ret2.v2 = vecUv[3].y;
+    
+      return 2;
+}//cuttri
+
+
+//todo -- put static stuff in its own object?
+
+static void putTri(xTri * tri, xMdx3 * mesh)
+{
+  if (mesh->drawFace >= mesh->numFace) { return; }
+
+  int i;
+  i = mesh->drawFace * 3;
+  mesh->vecVert[i].pos.set(tri->x0, tri->y0, tri->z0);
+  mesh->vecVert[i].u = tri->u0;
+  mesh->vecVert[i].v = tri->v0;
+
+  mesh->vecVert[i+1].pos.set(tri->x1, tri->y1, tri->z1);
+  mesh->vecVert[i+1].u = tri->u1;
+  mesh->vecVert[i+1].v = tri->v1;
+  
+  mesh->vecVert[i+2].pos.set(tri->x2, tri->y2, tri->z2);
+  mesh->vecVert[i+2].u = tri->u2;
+  mesh->vecVert[i+2].v = tri->v2;
+
+  mesh->drawFace += 1;
+}//puttri
+
+static xCutter vecCut[6];
+
+static void getCut(xTri * tri, int d, xMdx3 * mesh)
+{
+  if (d >= 6)
+  { putTri(tri, mesh); return; }
+
+  int num;
+  xCutter * cut;
+  cut = &(vecCut[d]);
+
+  num = cut->cutTri(tri);
+  if (num < 0) { return; }
+  if (num == 0) { getCut(tri, d+1, mesh); return; } 
+  
+  getCut(&(cut->ret1), d+1, mesh);
+
+  if (num > 1) { getCut(&(cut->ret2), d+1,mesh); }
+
+}//getcut
+
+
+
+
+void 
+xColRect::getDecalMesh(gamex::cVec3f smin, gamex::cVec3f smax, gamex::cVec3f norm, xMdx3 * mesh)
+{
+
+  //check if rectangle overlaps smin smax
+  // float rx, ry, rw, rh; 
+  //note -- ry is actually rz (for now)
+
+  if (smax.z < ry) { return; }
+  if (smax.x < rx) { return; }
+  if (smin.z > ry+rh) { return; }
+  if (smin.x > rx+rw) { return; }
+
+
+  if (d == 0)
+  {
+    //set cut planes (only do it in the root rectangle)
+    vecCut[0].pos = smin;    vecCut[0].norm.set(1,0,0);
+    vecCut[1].pos = smax;    vecCut[1].norm.set(-1,0,0);
+    vecCut[2].pos = smin;    vecCut[2].norm.set(0,1,0);
+    vecCut[3].pos = smax;    vecCut[3].norm.set(0,-1,0);
+    vecCut[4].pos = smin;    vecCut[4].norm.set(0,0,1);
+    vecCut[5].pos = smax;    vecCut[5].norm.set(0,0,-1);
+
+  }//endif
 
   
+  tdVecTri ::iterator it;
+  xTri * t;
+  float dot;
+  for (it = vecTri.begin(); it != vecTri.end(); it++)
+  {
+    t = (*it);
 
-  //note -- min max need to be calculated beforehand
-  rect.clear();
-  rect.rx = -16.0f;
-  rect.ry = -16.0f;
-  rect.rw = (tmap->mwidth * tmap->cw)+32.0f;
-  rect.rh = (tmap->mheight * tmap->ch )+32.0f;
-
- 
- 
-//  numTri = tmap->getNumTri(0,0,tmap->mwidth, tmap->mheight);
- // printf("numtri needed %d \n", numTri);
-  //vecTri = new xTri[numTri];
-
-    int i, k, yt;
-    int mw, mh;
-    int cellw, cellh;
-    int numRect;
-
-    cellw = 8; cellh = 8;
-
-    mw = (int) ceil((float)tmap->mwidth / (float) cellw);
-    mh = (int) ceil((float)tmap->mheight / (float) cellh);
+    //dot product triangle normal with norm
     
-    numRect = mw * mh;
-    printf("numrect %d \n", numRect);
+     dot = (t->nx * norm.x) + (t->ny * norm.y) + (t->nz * norm.z);
+   //   printf("dot %0.2f  (%0.2f %0.2f %0.2f) [%0.2f %0.2f %0.2f] \n", dot,
+   //    t->nx, t->ny, t->nz,  norm.x, norm.y, norm.z);
+     if (dot > 0) {      continue; }
 
-    int maxd;   maxd = 4;
+    //check if triangle is in aabb
 
-    int * vecIndex;
-    mVert * vecVert;
-    int f;
-    int num;
-    int t;
-    bool b;
+    //add triangle to mesh
 
-    int numLeft;
-   
-    t = 0;
-    numLeft = 0;   
-    for (i = 0; i < mh; i+=1)
-    {
-      yt = i * mw;
-      for (k = 0; k < mw; k+=1)
-      {
-          tmap->makeMesh(&temp,k*cellw,i*cellh,cellw,cellh);
-         //a->mesh.calcMinMax(); //no need - tilemap already calculated them
-   
-           vecIndex = temp.vecIndex;
-           vecVert = temp.vecVert;
-           num = temp.numFace * 3;
-    
+      getCut(t, 0, mesh);
+  }//nextit
 
-            for (f = 0; f < num; f+= 3)
-            {
-              //a = &(vecTri[t]); t += 1;
-			  a = new xTri();
-			  vecTri.push_back(a);
 
-              a->setValue(&(vecVert[vecIndex[f]].pos),&(vecVert[vecIndex[f+1]].pos),&(vecVert[vecIndex[f+2]].pos));
-              a->calcNormal(); //important
+  if (child0 != 0)
+  {
+    child0->getDecalMesh(smin, smax, norm, mesh);
+    child1->getDecalMesh(smin, smax, norm, mesh);
+    child2->getDecalMesh(smin, smax, norm, mesh);
+    child3->getDecalMesh(smin, smax, norm, mesh);      
+  }//endif
 
-              b = rect.addTri(a, maxd); //(todo -- add triangles as new objects instead and dont keep them all in xcolmesh)
+}//getdecalmesh
 
-              if (b == false) { numLeft += 1; }
-            }//nextf
-            
 
-      }//nextk
-    }//nexti
-  if (numLeft > 0) { printf("xColMesh:: warning  triangles were left out  %d  \n", numLeft); }
 
-   // printf(" inittilemap finished %d/%d \n", t,numTri);
-
-    temp.clear(); //would happen anyway but whatever
-}//initfromtmap
-
-*/
 
 
 
@@ -753,6 +916,48 @@ xTri::getDist(float wx, float wy, float wz, gamex::cVec3f * ret)
 }//isinside
 
 
+
+
+void
+xTri::getUv(gamex::cVec3f p, float * ret_u, float * ret_v)
+{
+
+ // ref
+ // http://www.blackpawn.com/texts/pointinpoly/default.html
+
+  gamex::cVec3f e0;
+  gamex::cVec3f e1;
+  gamex::cVec3f e2;
+  float dot00, dot01, dot02, dot11, dot12;
+  float bu, bv, bw;
+  float invDenom;
+
+  e0.set(x2-x0, y2-y0, z2-z0);
+  e1.set(x1-x0, y1-y0, z1-z0);
+  e2.set(p.x-x0, p.y-y0, p.z-z0);
+
+  dot00 = gamex::cVec3f::dot(e0, e0);
+  dot01 = gamex::cVec3f::dot(e0, e1);
+  dot02 = gamex::cVec3f::dot(e0, e2);
+  dot11 = gamex::cVec3f::dot(e1, e1);
+  dot12 = gamex::cVec3f::dot(e1, e2);
+ 
+  invDenom = 1.0f / (dot00 * dot11 - dot01 * dot01);
+  bu = (dot11 * dot02 - dot01 * dot12) * invDenom;
+  bv = (dot00 * dot12 - dot01 * dot02) * invDenom;
+  bw = 1.0f - (bu + bv);   
+
+
+  //make sure the edge operation matches 
+  // e0.set(x2-x0, y2-y0, z2-z0);
+  // e1.set(x1-x0, y1-y0, z1-z0);
+
+  *ret_u = u0 + (u2-u0)*bu + (u1-u0) * bv;
+  *ret_v = v0 + (v2-v0)*bu + (v1-v0) * bv;
+
+
+
+}//getuv
 
 
 
