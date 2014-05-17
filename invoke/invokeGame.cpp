@@ -285,7 +285,7 @@ invokeGame::init(void)
  // waterSkin.loadTex("data/watertex.png");
   assetMan->initTexture("watertex", true, false, false);
 
-  waterDeb.initPlane(32768, 0, 0, 32,32);
+  waterDeb.initPlaneXZ(32768, 0, 0, 32,32);
 
 
 

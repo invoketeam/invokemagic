@@ -269,11 +269,71 @@ xMdx3::render(void)
 
 
 
+void 
+xMdx3::initEmpty(int num)
+{
+  clear();
 
+  numFace = num;  drawFace = 0;
+  numVert = num * 3;
+
+  vecIndex = new int[numFace * 3];
+  vecVert = new mVert[numVert];
+
+  int i;  int numind;
+  numind = numFace * 3;
+  for (i = 0; i < numind; i++)  {    vecIndex[i] = i;  }
+
+}//initempty
 
 
 void 
-xMdx3::initPlane(float scale, float u0, float v0, float u1, float v1)
+xMdx3::planarUvXZ(gamex::cVec3f smin, gamex::cVec3f smax, int maxv, float * mat)
+{
+  int i;
+
+  float w, d, h;
+  float rx, rz;
+  float ax, ay, az;
+
+  w = smax.x - smin.x;
+  h = smax.y - smin.y;
+  d = smax.z - smin.z;
+
+  if (maxv > numVert) { maxv = numVert; }
+
+    //idea from
+   // http://devmaster.net/posts/21409/uvw-unwrap-algorithms
+
+  for (i = 0; i < maxv; i++)
+  {
+    if (mat == 0)
+    { rx = vecVert[i].pos.x - smin.x;   rz = vecVert[i].pos.z - smin.z; }
+    else
+    {
+      ax = vecVert[i].pos.x - smin.x - w*0.5f;
+      ay = vecVert[i].pos.y - smin.y - h*0.5f;
+      az = vecVert[i].pos.z - smin.z - d*0.5f;
+
+      rx = ax * mat[0] + ay * mat[4] + az * mat[8] + mat[12];
+      rz = ax * mat[1] + ay * mat[5] + az * mat[9] + mat[13];
+        
+      rx += w*0.5f;
+      rz += d*0.5f;
+    }//endif
+
+   // vecVert[i].u = (vecVert[i].pos.x - smin.x) / w;
+   // vecVert[i].v = (vecVert[i].pos.z - smin.z) / d;
+    vecVert[i].u = (rx) / w;
+    vecVert[i].v = (rz) / d;
+
+  }//nexti
+
+}//planaruv
+
+
+void 
+xMdx3::initPlaneXZ(float scale, float u0, float v0, float u1, float v1)
 {
   clear();
 
@@ -290,22 +350,52 @@ xMdx3::initPlane(float scale, float u0, float v0, float u1, float v1)
     vecIndex = new int[numFace * 3];
     vecVert = new mVert[numVert];
 
-    vecIndex[0] = 1;
-    vecIndex[1] = 0;
-    vecIndex[2] = 2;
-    vecIndex[3] = 1;
-    vecIndex[4] = 2;
-    vecIndex[5] = 3;
+    vecIndex[0] = 1;    vecIndex[1] = 0;    vecIndex[2] = 2;
+    vecIndex[3] = 1;    vecIndex[4] = 2;    vecIndex[5] = 3;
 
-
-    int i;
-    i = 0;
+    int i;    i = 0;
     vecVert[i].pos.set(neg, 0.0f, neg);    vecVert[i].u = u1;    vecVert[i].v = v0; ++i;
     vecVert[i].pos.set(pos, 0.0f, neg);    vecVert[i].u = u0;    vecVert[i].v = v0; ++i;
     vecVert[i].pos.set(neg, 0.0f, pos);    vecVert[i].u = u1;    vecVert[i].v = v1; ++i;
     vecVert[i].pos.set(pos, 0.0f, pos);    vecVert[i].u = u0;    vecVert[i].v = v1; ++i;
 
-}//initplane
+}//initplanexy
+
+
+
+void 
+xMdx3::initPlaneXY(float scale, float u0, float v0, float u1, float v1)
+{
+  clear();
+
+    float neg;
+    float pos;
+
+    neg = -0.5f * scale;
+    pos = 0.5f * scale;
+
+    numFace = 2; drawFace = numFace;
+		numVert = 4;
+
+
+    vecIndex = new int[numFace * 3];
+    vecVert = new mVert[numVert];
+
+//    vecIndex[0] = 1;    vecIndex[1] = 0;    vecIndex[2] = 2;
+//    vecIndex[3] = 1;    vecIndex[4] = 2;    vecIndex[5] = 3;
+    vecIndex[0] = 0;    vecIndex[1] = 1;    vecIndex[2] = 2;
+    vecIndex[3] = 2;    vecIndex[4] = 1;    vecIndex[5] = 3;
+
+
+    int i;    i = 0;
+    vecVert[i].pos.set(neg, neg, 0.0f);    vecVert[i].u = u0;    vecVert[i].v = v1; ++i;
+    vecVert[i].pos.set(pos, neg, 0.0f);    vecVert[i].u = u1;    vecVert[i].v = v1; ++i;
+    vecVert[i].pos.set(neg, pos, 0.0f);    vecVert[i].u = u0;    vecVert[i].v = v0; ++i;
+    vecVert[i].pos.set(pos, pos, 0.0f);    vecVert[i].u = u1;    vecVert[i].v = v0; ++i;
+
+}//initplanexz
+
+
 
 
 

@@ -46,8 +46,8 @@ public:
   bool hasVbo; //todo -- test if indexBuf != 0 instead?
 
 public:
-   xMdx3(void);
-  ~xMdx3(void);
+   xMdx3();
+  ~xMdx3();
  
  void clear(void);
 
@@ -57,8 +57,11 @@ public:
  void render(void); //debug render
 
 
+ void initEmpty(int num); //empty mesh with num faces (3 vert per face)
  void initBox(float scale = 1.0f);
- void initPlane(float scale = 1.0f, float u0=0.0f, float v0=0.0f, float u1=1.0f, float v1=1.0f);
+ void initPlaneXZ(float scale = 1.0f, float u0=0.0f, float v0=0.0f, float u1=1.0f, float v1=1.0f);
+ void initPlaneXY(float scale = 1.0f, float u0=0.0f, float v0=0.0f, float u1=1.0f, float v1=1.0f);
+
   
  void loadFile(std::string fname); 
  void readFile(FILE * file);
@@ -68,7 +71,10 @@ public:
 
  void moveMesh(float mx, float my, float mz);
  void scaleMesh(float sx, float sy, float sz);
- 
+ //todo -- apply matrix to mesh (vertices and/or uv)
+
+ void planarUvXZ(gamex::cVec3f smin, gamex::cVec3f smax, int maxv, float * mat = 0);
+
 
 
  void clearVbo(void);
