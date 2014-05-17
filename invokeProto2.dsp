@@ -159,6 +159,14 @@ SOURCE=.\gamex\xAsset.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\gamex\xBigPart.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\gamex\xBigPart.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\gamex\xCam.cpp
 # End Source File
 # Begin Source File
