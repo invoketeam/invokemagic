@@ -9,23 +9,17 @@
 
 #include "../gamex/xGLCommon.h"
 #include "../gamex/oglExt.h"
-
 #include "../gamex/xKey.h"
 #include "../gamex/xTmx.h"
+#include "../gamex/xMultiGrid.h"
+#include "../gamex/xDebug.h"
 
 
 #include "xUnit.h"
-
 #include "xTree.h"
-
 #include "xPartTest.h"
-
 #include "xBuildTest.h"
-
-#include "../gamex/xMultiGrid.h"
-
-#include "../gamex/xDebug.h"
-
+#include "xGroundDecal.h"
 
 
 
@@ -302,7 +296,7 @@ invokeGame::init(void)
   wheight = myHeight.mh * myHeight.ch;
 
 
-
+//todo set scalefactor from local var (its 4.0f, 4.0f right now)
 
   xActor * a;
   xTmxRect * ta;
@@ -337,6 +331,13 @@ invokeGame::init(void)
     else if (ta->type == "camstart")
     {
       camPos.set(ta->cx*4.0f, 2024, ta->cy*4.0f);
+    }
+    else if (ta->type == "decal")
+    {
+      a = new xGroundDecal();
+      a->xrad = ta->rw * 4 * 0.5f;
+      a->zrad = ta->rh * 4 * 0.5f;
+      //todo -- read texture name   
     }
     else { printf("unknown actor type %s \n", ta->type.c_str());  } //warn about unknown actor
 
@@ -1026,6 +1027,15 @@ invokeGame::addPart(std::string wname)
 {
   return myPart.addPart(wname);
 }//addpart
+
+
+void 
+invokeGame::getDecal(xMdx3 * m, float x0, float y0, float w0, float h0)
+{
+
+  myHeight.setDecal(m, x0, y0, w0, h0);
+
+}//getdecal
 
 
 

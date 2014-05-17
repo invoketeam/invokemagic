@@ -64,7 +64,7 @@ xUnit::init(void)
 
   spectype = 100;
 
-  flags = FR_SELECTABLE;
+  flags = FR_SELECTABLE | FR_BLOCKMOVE;
 
  // shadowMesh = game->getMdx("shadow");
  // shadowSkin = game->getSkin("shadow");
@@ -454,9 +454,11 @@ xUnit::handCol(xActor * a)
   //(a further improvement will be to figure out positions before sending units)
   //so they dont try to arrive at the same exact spot
 
-  if (a->pos.x < pos.x) { pos.x +=0.5f; } else { pos.x -=0.5f; }
-  if (a->pos.z < pos.z) { pos.z +=0.5f; }  else { pos.z -=0.5f; }
-
+  if ( (a->flags & FR_BLOCKMOVE) > 0)
+  {
+   if (a->pos.x < pos.x) { pos.x +=0.5f; } else { pos.x -=0.5f; }
+   if (a->pos.z < pos.z) { pos.z +=0.5f; }  else { pos.z -=0.5f; }
+  }//endif
 
 
 return true;

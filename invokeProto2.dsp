@@ -451,6 +451,14 @@ SOURCE=.\invoke\xBuildTest.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\invoke\xGroundDecal.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\invoke\xGroundDecal.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\invoke\xHand.cpp
 # End Source File
 # Begin Source File

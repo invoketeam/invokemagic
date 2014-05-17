@@ -151,7 +151,16 @@ xHeightMap::render(void)
 void
 xHeightMap::setBufferMesh(int maxQuad)
 {
-  mesh.clear();
+  initMesh(&mesh, maxQuad);
+}//setbuffer
+
+
+
+void 
+xHeightMap::initMesh(xMdx3 * m, int maxQuad)
+{
+
+ m->clear();
 
   int numQuad;
   int numVert;
@@ -162,69 +171,33 @@ xHeightMap::setBufferMesh(int maxQuad)
  // numQuad = 32 * 32;
   //numVert = numQuad * 4;
 
-  mesh.numFace = numQuad*2;
-  mesh.numVert = numVert;
-  mesh.vecIndex = new int[mesh.numFace * 3];
-  mesh.vecVert = new mVert[mesh.numVert]; 
+  m->numFace = numQuad*2;
+  m->numVert = numVert;
+  m->vecIndex = new int[m->numFace * 3];
+  m->vecVert = new mVert[m->numVert]; 
 
   int i;
   int num;
   int k;
   
-  num = mesh.numFace * 3;
+  num = m->numFace * 3;
   k = 0;
 
   for (i = 0; i < num; i+=6)
   {
-    mesh.vecIndex[i] = 0+k;
-    mesh.vecIndex[i+1] = 1+k;
-    mesh.vecIndex[i+2] = 2+k;
-    mesh.vecIndex[i+3] = 2+k;
-    mesh.vecIndex[i+4] = 1+k;
-    mesh.vecIndex[i+5] = 3+k;
+    m->vecIndex[i] = 0+k;
+    m->vecIndex[i+1] = 1+k;
+    m->vecIndex[i+2] = 2+k;
+    m->vecIndex[i+3] = 2+k;
+    m->vecIndex[i+4] = 1+k;
+    m->vecIndex[i+5] = 3+k;
   
     k += 4;
   }//nexti
 
-  //todo upload to vbo (?)
-
-}//setbuffer
-
-//todo -- precalculate normals?
-// (only needed for shaders or lighting)
-//http://www.mbsoftworks.sk/index.php?page=tutorials&series=1&tutorial=24
-
-//texturing
-//oblivion tech
-//http://stackoverflow.com/questions/11730759/texturing-opengl-terrain
-
-//water reflection
-//http://www.ohadpr.com/2001/08/opengl-terrain-engine/
-
-//interesting blending tech (using 2D texture)
-//http://3dgep.com/?p=1116
-
-//some older tech
-//https://www.cs.auckland.ac.nz/~jvan006/multitex/multitex.html
-
-//another approach: just megatexture it 
-//http://forum.unity3d.com/threads/225765-Is-high-quality-rts-terrain-possible-in-Unity
-
-//thing to experiment with: paintable decals
-//so something like this but for terrain only
-//http://blog.wolfire.com/2009/06/decals-editor-part-three/
-//http://blog.wolfire.com/2009/06/how-to-project-decals/
-//http://blog.wolfire.com/2009/05/decals-editor-part-one/
-
-//(these could be added in tiled perhaps)
-//(but i guess using a premade editor would be the best and hardest to do for it)
-//so instead of storing a second uv set for decal info
-//the decals are a second pass on the terrain
-//aka a sort of partial megatexture
+}//initmesh
 
 
-//starcraft2 tech
-//http://www.gamedev.net/topic/607426-modern-rts-style-terrains-starcraft-ii-dow2-renegade-ops/
 
 
 
@@ -234,7 +207,46 @@ xHeightMap::setBufferMesh(int maxQuad)
 void
 xHeightMap::updateMesh(float x0, float y0, float w0, float h0)
 {
-  int i, k,yt;
+ setMesh(&mesh, x0, y0, w0, h0);
+
+}//updatemesh
+
+
+
+void 
+xHeightMap::setDecal(xMdx3 * m, float x0, float y0, float w0, float h0)
+{
+  int ek, ei;  int sk, si;
+
+  sk = (int) floorf(x0 / cw);  si = (int) floorf(y0 / ch);
+  ek = sk + (int) ceilf(w0/cw);  ei = si + (int) ceilf(h0/ch);
+
+  if (sk > (mw-1)) { return; }  if (si > (mh-1)) { return; }
+  if (ek < 1) { return; }  if (ei < 1) { return; }
+
+  if (sk < 0) { sk = 0; }  if (si < 0) { si = 0; }
+  if (ek > (mw - 1)) { ek = mw-1;}  if (ei > (mh - 1)) { ei = mh-1;}
+
+  int aw, ah;
+  aw = ek - sk;
+  ah = ei - si;
+
+  //todo -- check if mesh is already this size (only if we need dynamic decals for some strange reason)
+  initMesh(m, aw*ah);
+
+    setMesh(m, x0, y0, w0, h0);  
+    
+  m->calcMinMax(); 
+  m->planarUvXZ(m->min, m->max, m->numVert);
+
+}//setdecal
+
+
+
+void 
+xHeightMap::setMesh(xMdx3 * m, float x0, float y0, float w0, float h0)
+{
+ int i, k,yt;
   int ek, ei;
   int sk, si;
 
@@ -282,27 +294,27 @@ xHeightMap::updateMesh(float x0, float y0, float w0, float h0)
       h = vecHeight[yt+k];
       c = vecColor[yt+k];
  
-      mesh.vecVert[v].pos.set(k*cw+cx, h, i*ch+cz);
-      mesh.vecVert[v].u = ht->u0; // 0.0f;
-      mesh.vecVert[v].v = ht->v0; //0.0f;
-      mesh.vecVert[v].u2 = uht->u0; // 0.0f;
-      mesh.vecVert[v].v2 = uht->v0; //0.0f;
-      //mesh.vecVert[v].u2 = (float)(k+1) / (float)mw;
-      //mesh.vecVert[v].v2 = (float)(i+1) / (float)mw;
-      mesh.vecVert[v].rgba = c;
+      m->vecVert[v].pos.set(k*cw+cx, h, i*ch+cz);
+      m->vecVert[v].u = ht->u0; // 0.0f;
+      m->vecVert[v].v = ht->v0; //0.0f;
+      m->vecVert[v].u2 = uht->u0; // 0.0f;
+      m->vecVert[v].v2 = uht->v0; //0.0f;
+      //m->vecVert[v].u2 = (float)(k+1) / (float)mw;
+      //m->vecVert[v].v2 = (float)(i+1) / (float)mw;
+      m->vecVert[v].rgba = c;
 
 
       h = vecHeight[yt+k+mw];
       c = vecColor[yt+k+mw];
 
-      mesh.vecVert[v+1].pos.set(k*cw+cx, h, i*ch+cz+ch);
-      mesh.vecVert[v+1].u = ht->u0; //0.0f;
-      mesh.vecVert[v+1].v = ht->v1; //1.0f;
-      mesh.vecVert[v+1].u2 = uht->u0; //0.0f;
-      mesh.vecVert[v+1].v2 = uht->v1; //1.0f;
-      //mesh.vecVert[v+1].u2 = (float)(k+1) / (float)mw;
-      //mesh.vecVert[v+1].v2 = (float)(i+1) / (float)mw;
-      mesh.vecVert[v+1].rgba = c;
+      m->vecVert[v+1].pos.set(k*cw+cx, h, i*ch+cz+ch);
+      m->vecVert[v+1].u = ht->u0; //0.0f;
+      m->vecVert[v+1].v = ht->v1; //1.0f;
+      m->vecVert[v+1].u2 = uht->u0; //0.0f;
+      m->vecVert[v+1].v2 = uht->v1; //1.0f;
+      //m->vecVert[v+1].u2 = (float)(k+1) / (float)mw;
+      //m->vecVert[v+1].v2 = (float)(i+1) / (float)mw;
+      m->vecVert[v+1].rgba = c;
 
 
 
@@ -310,14 +322,14 @@ xHeightMap::updateMesh(float x0, float y0, float w0, float h0)
       h = vecHeight[yt+k+1];
       c = vecColor[yt+k+1];
 
-      mesh.vecVert[v+2].pos.set(k*cw+cx+cw, h, i*ch+cz);
-      mesh.vecVert[v+2].u = ht->u1; //1.0f;
-      mesh.vecVert[v+2].v = ht->v0; //0.0f;
-      mesh.vecVert[v+2].u2 = uht->u1; //1.0f;
-      mesh.vecVert[v+2].v2 = uht->v0; //0.0f;
-      //mesh.vecVert[v+2].u2 = (float)(k+1) / (float)mw;
-      //mesh.vecVert[v+2].v2 = (float)(i+1) / (float)mw;
-      mesh.vecVert[v+2].rgba = c;
+      m->vecVert[v+2].pos.set(k*cw+cx+cw, h, i*ch+cz);
+      m->vecVert[v+2].u = ht->u1; //1.0f;
+      m->vecVert[v+2].v = ht->v0; //0.0f;
+      m->vecVert[v+2].u2 = uht->u1; //1.0f;
+      m->vecVert[v+2].v2 = uht->v0; //0.0f;
+      //m->vecVert[v+2].u2 = (float)(k+1) / (float)mw;
+      //m->vecVert[v+2].v2 = (float)(i+1) / (float)mw;
+      m->vecVert[v+2].rgba = c;
       
 
 
@@ -329,26 +341,27 @@ xHeightMap::updateMesh(float x0, float y0, float w0, float h0)
       h = vecHeight[yt+k+1+mw];
       c = vecColor[yt+k+1+mw];
 
-      mesh.vecVert[v+3].pos.set(k*cw+cx+cw, h, i*ch+cz+ch);
-      mesh.vecVert[v+3].u = ht->u1; //1.0f;
-      mesh.vecVert[v+3].v = ht->v1; //1.0f;
-      mesh.vecVert[v+3].u2 = uht->u1; //1.0f;
-      mesh.vecVert[v+3].v2 = uht->v1; //1.0f;
-      //mesh.vecVert[v+3].u2 = (float)(k+1) / (float)mw;
-      //mesh.vecVert[v+3].v2 = (float)(i+1) / (float)mw;
-      mesh.vecVert[v+3].rgba = c;
+      m->vecVert[v+3].pos.set(k*cw+cx+cw, h, i*ch+cz+ch);
+      m->vecVert[v+3].u = ht->u1; //1.0f;
+      m->vecVert[v+3].v = ht->v1; //1.0f;
+      m->vecVert[v+3].u2 = uht->u1; //1.0f;
+      m->vecVert[v+3].v2 = uht->v1; //1.0f;
+      //m->vecVert[v+3].u2 = (float)(k+1) / (float)mw;
+      //m->vecVert[v+3].v2 = (float)(i+1) / (float)mw;
+      m->vecVert[v+3].rgba = c;
 
  
       
       v += 4;
       nface += 2;
-      if (v >= mesh.numVert) { mesh.drawFace = nface; return; } //reached max
+      if (v >= m->numVert) { m->drawFace = nface; return; } //reached max
     }//nextk
   }//nexti
 
-  mesh.drawFace = nface;
+  m->drawFace = nface;
 
-}//updatemesh
+
+}//setmesh
 
 
 

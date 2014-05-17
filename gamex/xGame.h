@@ -134,7 +134,7 @@ public:
 
 public:
   virtual xBigPart * addPart(std::string wname) { return 0; }
-
+  virtual void getDecal(xMdx3 * m, float x0, float y0, float w0, float h0) { }
 
 public:
 

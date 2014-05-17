@@ -33,7 +33,7 @@ xTree::init(void)
   team = 0; //neutral
 
 
-flags = FR_SELECTABLE;
+flags = FR_SELECTABLE | FR_BLOCKMOVE;
 
  pos.y = game->getHeight(pos.x, pos.z) + yrad;
 
