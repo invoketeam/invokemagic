@@ -54,7 +54,11 @@ public:
 
   int twoSide; //2 sided (disable culling with 1)
 
-  int flags; 
+  int decal; 
+
+  int flags; //used for simple render (determine if entity is shadowed or not) 
+
+  
  
 public:
   int useTexMat;  //use texture matrix (for effects)

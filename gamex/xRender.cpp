@@ -22,6 +22,7 @@ xEnt::xEnt(void)
     twoSide = 0;
     useTexMat = 0;
     flags = 0;
+    decal = 0;
   }//ctor
 
 
@@ -106,6 +107,8 @@ xBucket::addFrame(void)
       a->scale = 1.0f;
       //position is expected to be always set (for now)
 
+      a->decal = 0;
+
     it += 1;
     if (it >= numEnt) { it = numEnt - 1; } //keep repeating last ent if out of range
     return a;
@@ -168,6 +171,7 @@ xBucket::render(void)
     int useColor;
     int twoSide;
     int texMat;
+    int decal;
 
 
     //note -- also need to set
@@ -214,6 +218,7 @@ xBucket::render(void)
     skinBlend = -1;
     skin2Blend = -1;
     texMat = -1;
+    decal = -1;
 
 /*
     glActiveTextureARB(GL_TEXTURE0);
@@ -223,6 +228,8 @@ xBucket::render(void)
     glDisable(GL_CULL_FACE);
 
 */
+
+  
 
 	  glMatrixMode(GL_MODELVIEW);
 	 
@@ -242,6 +249,12 @@ xBucket::render(void)
         if (twoSide == 1) { glDisable(GL_CULL_FACE); }  else { glEnable(GL_CULL_FACE); }
       }//endif
 
+      if (a->decal != decal)
+      {
+        decal = a->decal;
+        if (decal == 0) { glDisable(GL_POLYGON_OFFSET_FILL); } else {  glEnable(GL_POLYGON_OFFSET_FILL);   glPolygonOffset(-1.0, -1.0); }
+      }//endif
+    
 
 
       if (a->skin != skin)
@@ -558,7 +571,8 @@ xBucket::calcSort_CamDist(gamex::cVec3f cpos)
     a = vecEnt[i];
     d = cpos;
     d -= a->sortpos;
-    a->sortCode = (int) d.getMagSquared();    
+    a->sortCode = (int) (d.getMagSquared()*0.1f);
+
   }//nexti
 
  }//camdist
