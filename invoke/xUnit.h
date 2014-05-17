@@ -42,6 +42,8 @@ public:
 
   virtual unsigned int getSkin(std::string wname);
 
+  virtual void onKilled(void);
+  virtual void gotHit(float dmg, int dtype, float hx, float hy, float hz);
 
 public:
   virtual bool handCol(xActor * a);

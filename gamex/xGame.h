@@ -17,6 +17,7 @@ class xPlayer;
 class xSprite;
 class xCam;
 class xFrame;
+class xBigPart;
 
 class xAssetMan;
 
@@ -130,6 +131,9 @@ public:
 public:
   virtual int playSound(std::string wname) { return 0; }
 
+
+public:
+  virtual xBigPart * addPart(std::string wname) { return 0; }
 
 
 public:

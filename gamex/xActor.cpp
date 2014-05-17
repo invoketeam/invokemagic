@@ -99,7 +99,7 @@ xActor::gotHit(float dmg, int dtype, float hx, float hy, float hz)
 {
 	hp -= dmg;
 
-  printf("gothit %p %0.2f %d  -- %0.2f \n",this,  dmg, dtype, hp);
+  //printf("gothit %p %0.2f %d  -- %0.2f \n",this,  dmg, dtype, hp);
 
 	if (hp <= 0) { kill(); }
 

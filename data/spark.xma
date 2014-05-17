@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<data>
+
+	<anim name="spark" frames="spark0,spark1,spark2,spark3,spark4,spark5,spark6,spark7,spark8,spark9,spark10,spark11,spark12,spark13,spark14,spark15,spark16,spark17,spark18,spark19,spark20"
+	speed ="1.0" repeat="1" />
+
+
+</data>

@@ -47,12 +47,31 @@ void
 xBigPartSys::clear(void)
 {
   spriteMan.clear();
+  killAllPart();
+
 }//clear
+
+
+void 
+xBigPartSys::init(void)
+{
+  clear();
+}//init
+
+
+void
+xBigPartSys::killAllPart(void)
+{
+  int i;  int num;
+  num = XBIGPART_MAXPART;
+  for (i = 0; i < num; i++) {  vecPart[i].hp = -1;   }
+}//killall
+
 
 
 
 void 
-xBigPartSys::addSprite(std::string wname)
+xBigPartSys::loadSprite(std::string wname)
 {
   spriteMan.assetMan = assetMan;
   spriteMan.addSpriteXms(wname);
@@ -60,7 +79,7 @@ xBigPartSys::addSprite(std::string wname)
 
 
 void 
-xBigPartSys::addAnim(std::string wname)
+xBigPartSys::loadAnim(std::string wname)
 {
   spriteMan.assetMan = assetMan;
   spriteMan.addAnimXma(wname);

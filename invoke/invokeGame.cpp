@@ -130,6 +130,13 @@ invokeGame::init(void)
     myGui.pfont = &myFont;
 
 
+  myPart.assetMan = assetMan;
+  myPart.init();
+
+  myPart.loadSprite("spark");
+  myPart.loadAnim("spark");
+
+
 
  // myRand.setSeed(1); //important for gameplay
 
@@ -410,6 +417,17 @@ invokeGame::update(void)
   wmy = myCursor.coord.y;
   wmz = myCursor.coord.z;
 
+
+/*
+  xBigPart * b;
+  b = myPart.addPart("spark");
+  b->pos.set(wmx,wmy+32,wmz);
+  b->roll = getRand()*6.28f;
+  b->scale = 6;
+  b->vel.set(4*(getRand()-0.5f),4*(getRand()-0.5f),4*(getRand()-0.5f));
+*/
+
+  myPart.update();
 
   myWorld.update();
 
@@ -711,7 +729,8 @@ gamex::cMat view;
 
               drawActor(&myRender, mgrid, viewBox.min.x,  viewBox.min.z,  viewBox.size.x,viewBox.size.z);
 
-                
+              myPart.render(&myRender, myCam.ori);
+  
 
               xEnt * e;
 
@@ -999,6 +1018,12 @@ invokeGame::upCursor(void)
 
 
 
+
+xBigPart * 
+invokeGame::addPart(std::string wname)
+{
+  return myPart.addPart(wname);
+}//addpart
 
 
 

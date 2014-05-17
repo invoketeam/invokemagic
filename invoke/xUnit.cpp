@@ -7,6 +7,8 @@
 #include "../gamex/xGLCommon.h"
 
 
+
+
 xUnit::xUnit(void) 
 {
   yaw = 0.0f;
@@ -91,6 +93,44 @@ static float getAng(float dy, float dx)
 
 }//getang
 
+
+
+void 
+xUnit::gotHit(float dmg, int dtype, float hx, float hy, float hz)
+{
+	hp -= dmg;
+
+  //todo -- make spark texture full white so it can be used as any color
+  int i;
+  xBigPart * b;
+  for (i = 0; i < 4; i++)
+  {
+    b = game->addPart("spark");
+    b->pos = pos;
+    b->roll = game->getRand()*6.28f;
+    b->scale = 3;
+    b->vel.set(4*(game->getRand()-0.5f),4*(game->getRand()-0.5f),4*(game->getRand()-0.5f));
+  }//nexti
+
+  //printf("gothit %p %0.2f %d  -- %0.2f \n",this,  dmg, dtype, hp);
+
+	if (hp <= 0) { kill(); }
+
+}//gothit
+
+void 
+xUnit::onKilled(void)
+{
+
+  xBigPart * b;
+    b = game->addPart("spark");
+    b->pos = pos;
+    b->roll = game->getRand()*6.28f;
+    b->scale = 7;
+    //b->vel.set(4*(getRand()-0.5f),4*(getRand()-0.5f),4*(getRand()-0.5f));
+
+  
+}//onkilled
 
 
 //find closest target to attack

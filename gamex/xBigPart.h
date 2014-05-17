@@ -67,9 +67,11 @@ public:
   ~xBigPartSys(void);
  
   void clear(void);
+  void init(void);
+  void killAllPart(void);
  
-  void addSprite(std::string wname);
-  void addAnim(std::string wname);
+  void loadSprite(std::string wname);
+  void loadAnim(std::string wname);
   
 
   xBigPart * addPart(std::string wanim);

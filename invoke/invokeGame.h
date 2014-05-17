@@ -11,6 +11,9 @@
 #include "../gamex/xShadowTex.h"
 
 
+#include "../gamex/xBigPart.h"
+
+
 #include "xMiniMap.h"
 
 #include "xSelect.h"
@@ -34,6 +37,8 @@ public:
 
   xSpriteMan mySprite;
   
+  xBigPartSys myPart;
+
 public:
   xCam myCam;
   gamex::cVec3f camPos;
@@ -93,6 +98,9 @@ public:
 
 public:
   virtual void gotCmd(int cmd, int arg0, int arg1);
+
+public:
+  virtual xBigPart * addPart(std::string wname);
 
 
 public:
