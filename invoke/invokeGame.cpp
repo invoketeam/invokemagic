@@ -532,6 +532,8 @@ invokeGame::makeShadow(void)
 void 
 invokeGame::drawShadow(void)
 {
+
+     glDisable(GL_POLYGON_OFFSET_FILL);
      glEnable(GL_TEXTURE_2D);
     //  glBindTexture(GL_TEXTURE_2D, shadTex.handle);
       glBindTexture(GL_TEXTURE_2D, shadTex.depth);

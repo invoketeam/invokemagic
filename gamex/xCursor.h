@@ -15,8 +15,9 @@ class xCursor
 {
 public:
   gamex::cVec3f coord;
-  
+  float u, v;
 public:
+  xCursor(void);
 
   //umx and umy are the mouse coordinates 
   //need to be in  the range of [-1.0, 1.0]
@@ -24,7 +25,7 @@ public:
   
   void updateHmap(xCam * cam, float umx, float umy, xHeightMap * hmap, float planey = 0.0f );
 
-  void updateCmesh(xCam * cam, float umx, float umy, xColMesh * cmesh, float planey = 0.0f );
+  void updateCmesh(xCam * cam, float umx, float umy, xColMesh * cmesh); //, float planey = 0.0f );
 
 
 

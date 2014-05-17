@@ -249,6 +249,7 @@ xBucket::render(void)
         if (twoSide == 1) { glDisable(GL_CULL_FACE); }  else { glEnable(GL_CULL_FACE); }
       }//endif
 
+
       if (a->decal != decal)
       {
         decal = a->decal;

@@ -4,13 +4,13 @@
 #include "xMultiMdx3.h"
 
 
-xMultiMdx3::xMultiMdx3()
+xMultiMdx3::xMultiMdx3(void)
 {
   numMesh = 0;
   vecMesh = 0;
 }//ctor
 
-xMultiMdx3::~xMultiMdx3()
+xMultiMdx3::~xMultiMdx3(void)
 {
  clear();
 }//dtor

@@ -34,6 +34,15 @@ static float getHmapInter(xHeightMap * hmap, gamex::cVec3f v0, gamex::cVec3f v1)
 }//gethmapinter
 
 
+
+xCursor::xCursor(void)
+{
+  u = 0.0f;
+  v = 0.0f;
+}//ctor
+
+
+
   
 void 
 xCursor::updateHmap(xCam * cam, float umx, float umy, xHeightMap * hmap, float planey)
@@ -73,14 +82,24 @@ xCursor::updateHmap(xCam * cam, float umx, float umy, xHeightMap * hmap, float p
 
 
 
+
+
+
+
+
+
+
+
+
 void
-xCursor::updateCmesh(xCam * cam, float umx, float umy, xColMesh * cmesh, float planey)
+xCursor::updateCmesh(xCam * cam, float umx, float umy, xColMesh * cmesh) //, float planey)
   {
     gamex::cVec3f ppos;
 	  gamex::cVec3f pnorm;
 	  gamex::cVec3f p0, p1;
 	  gamex::cVec3f ret;
 	  float t;
+    bool bHitMesh;
     xFrustum frust; 
   
       frust.setPerspective(cam->fov, cam->aspect, cam->neard, cam->fard);
@@ -96,17 +115,36 @@ xCursor::updateCmesh(xCam * cam, float umx, float umy, xColMesh * cmesh, float p
 
 
       if (cmesh == 0) { t = 999.0f; }
-      else { t = cmesh->lineTest(&p0, &p1, 1); }
-
-      if (t == 999.0f)
+      else 
       {
+        t = cmesh->lineTest(&p0, &p1, 1);
+      }//endif
+
+      bHitMesh = (t >= 0.0f) && (t <= 1.0f);
+
+      /*
+      //if (t == 999.0f)
+      if (bHitMesh == false)
+      {
+
         //if didnt hit terrain -- use the infinite plane
         ppos.set(0,planey,0);
       	pnorm.set(0,1,0);
         t = frust.getPlaneInter(p0, p1, ppos, pnorm);
       }//endif
- 
-	    coord = p0 +(p1 -p0) * t;
+      */
+
+	    coord = p0 + (p1 - p0) * t;
+
+      //new -- calculate u and v from hit triangle
+      if (bHitMesh)
+      {
+        cmesh->colTri->getUv(coord, &u, &v);
+      }
+      else
+      {
+        u = -2.0f; v = -2.0f;
+      }//endif
 
   }//update
 

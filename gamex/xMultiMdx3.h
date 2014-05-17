@@ -10,8 +10,8 @@ public:
   xMdx3 * vecMesh;
   
 public:
-   xMultiMdx3();
-  ~xMultiMdx3();
+   xMultiMdx3(void);
+  ~xMultiMdx3(void);
  
  void clear(void);
  void loadFile(std::string fname); 
