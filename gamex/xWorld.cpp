@@ -54,6 +54,7 @@ xWorld::render()
   
   for (it = vecActor.begin(); it != vecActor.end(); it++)
   {
+    if ((*it)->visible == false) { continue; }
     (*it)->render();
   }//nexti
 }//render
@@ -67,6 +68,7 @@ xWorld::render2(xRender * r)
   
   for (it = vecActor.begin(); it != vecActor.end(); it++)
   {
+    if ((*it)->visible == false) { continue; }
     (*it)->render2(r);
   }//nexti
 }//render2
@@ -79,6 +81,7 @@ xWorld::frameRender(xFlatRender * r)
   
   for (it = vecActor.begin(); it != vecActor.end(); it++)
   {
+    if ((*it)->visible == false) { continue; }
     (*it)->frameRender(r);
   }//nexti
 }//render2

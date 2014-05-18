@@ -43,6 +43,8 @@ public:
  // virtual void render(void);
   virtual void frameRender(xFlatRender * render);
 
+  virtual void setSprite(xSprite * s);
+
 };//xbutton
 
 

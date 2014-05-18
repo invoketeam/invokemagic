@@ -56,6 +56,8 @@ public:
     //size: characters will be drawn in this size regardless of fontsize
     void printStr(float size, float cx, float cy, const char* str, ...);
 
+    void printStrFrame(xFlatRender * render, unsigned int skin, float size, float cx, float cy, float cz, const char* str, ...);
+
     void writeStr(float cx, float cy, std::string str, float scale=1.0f);
 
     void writeStrFrame(xFlatRender * render, unsigned int skin, float cx, float cy, float cz, std::string str, float scale);

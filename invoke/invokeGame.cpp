@@ -147,34 +147,60 @@ invokeGame::init(void)
    mySprite.addSpriteXms("button");
 
 
+
   xButton * b;
+  int bi;
+  bi = 0;
+
   b = myGui.addButton("btn1", "", 200, 610-36-36-36,380, 16, 32,32, getSprite("btn_move"), 1);
+  vecBtn[bi++] = b;
 
   b = myGui.addButton("btn2", "", 201, 610-36-36, 380, 16, 32,32, getSprite("btn_stop"), 1);
+  vecBtn[bi++] = b;
 
   b = myGui.addButton("btn3", "", 202, 610-36, 380, 16, 32,32, getSprite("btn_attack"), 0);
+  vecBtn[bi++] = b;
 
   //rest of buttons are just for alignment for now
   b = myGui.addButton("btn4", "", 1, 610, 380, 16, 32,32, getSprite("button64x64"), 0);
+  vecBtn[bi++] = b;
 
 
   b = myGui.addButton("btn5", "", 1, 610-36*3, 380+36, 16, 32,32, getSprite("button64x64"), 0);
+  vecBtn[bi++] = b;
+
   b = myGui.addButton("btn6", "", 1, 610-36*2, 380+36, 16, 32,32, getSprite("button64x64"), 0);
+  vecBtn[bi++] = b;
+
   b = myGui.addButton("btn7", "", 1, 610-36, 380+36, 16, 32,32, getSprite("button64x64"), 0);
+  vecBtn[bi++] = b;
+
   b = myGui.addButton("btn8", "", 1, 610, 380+36, 16, 32,32, getSprite("button64x64"), 0);
+  vecBtn[bi++] = b;
 
 
 
   b = myGui.addButton("btn9", "", 1, 610-36*3, 380+36+36, 16, 32,32, getSprite("button64x64"), 0);
+  vecBtn[bi++] = b;
+
   b = myGui.addButton("btn10", "", 1, 610-36*2, 380+36+36, 16, 32,32, getSprite("button64x64"), 0);
+  vecBtn[bi++] = b;
+
   b = myGui.addButton("btn11", "", 1, 610-36, 380+36+36, 16, 32,32, getSprite("button64x64"), 0);
+  vecBtn[bi++] = b;
+  
   b = myGui.addButton("btn12", "", 1, 610, 380+36+36, 16, 32,32, getSprite("button64x64"), 0);
+  vecBtn[bi++] = b;
+
+  setBtnLayout("hidden");
+
 
 
   //testing -- a button for the minimap (probably not the best way to go about this)
      b = myGui.addButton("btn_mini", "minimap", 500, 64+4, 480-64-8, 16, 128,128, getSprite("button64x64"), 1);
      b->drawMode = -1; //make button hidden but usable
      b->btnMode = 1; //make button react when you hold down the button on it
+
 
 
 
@@ -871,9 +897,16 @@ glDisable(GL_TEXTURE_2D);
            f = flat->addFrame( 64+8,64+8, 350, 128,128, shadTex.handle);
            //f = flat->addFrame( 64+8,64+8, 350, 128,128, shadTex.depth);
 
+         myFont.printStrFrame(flat, myFont.handle, 8, mx, my, 1000, "%d", myHand.curMode);
+
+
 
          flat->render(true);
-   
+
+
+          
+         
+
 
           //draw outline for buttons
          glDisable(GL_TEXTURE_2D); myGui.debugDraw(); 
@@ -888,7 +921,33 @@ glDisable(GL_TEXTURE_2D);
 
 
 
+void 
+invokeGame::setBtnLayout(std::string wname)
+{
+  int i;
+  xButton * a;
+  
+  for (i = 0; i < NUM_HUDBUTTON; i++)
+  {
+    a = vecBtn[i];
+    a->visible = false;
+  }//nexti
 
+
+  vecBtn[0]->setSprite(getSprite("btn_move"));
+  vecBtn[0]->visible = true;
+
+  vecBtn[1]->setSprite(getSprite("btn_stop"));
+  vecBtn[1]->visible = true;
+
+  vecBtn[2]->setSprite(getSprite("btn_attack"));
+  vecBtn[2]->visible = true;
+
+  //vecBtn[3]->setSprite(getSprite("button64x64"));
+ // vecBtn[3]->visible = true;
+
+
+}//btnlayout
 
 
 
@@ -904,118 +963,6 @@ invokeGame::upCursor(void)
 
   myHand.update();
 
-
-/*
-  //selecting units
-  //for now in a brute-force way (going through all and projecting them on screen)
-
-  static int se = 0; // selection started
-  static float selx = 0;
-  static float sely = 0;
-
-  if (mDownLeft)
-  {  
-    if (se == 0)
-    {
-      se = 1;
-      selx = mx;
-      sely = my;
-    }
-    else
-    {
-      glColor3f(0,1,0);
-      drawRect(selx,sely, mx-selx, my-sely);
-    }
-  }
-  else 
-  { 
-    if (se == 1)
-    {
-      if (isKeyDown(KEY_SHIFT) == false)
-      {testSelect.resetSelect(); }
-      
-     
-        //testSelect.selectOver(&myCam, mgrid, 0,0, 10000, 10000, selx<mx?selx:mx,sely<my?sely:my, abs(mx-selx), abs(my-sely));
-        
-        testSelect.appendOverToSelect();
-
-    }//endif
-
-    selx = mx;
-    sely = my;  
-    se = 0; 
-  }//mdownleft
-
-
-  //printf("clickright  %d  %d  \n ", mClickRight, gameTime);
-  //because of debugging upcursor is called in render
-  //so right click test will need to be altered later (aka fixed)
-  if (mClickRight >= (gameTime-2) )
-  {
-  
-    printf("clickright %d \n ", gameTime);
-    //check which unit the cursor is over
-    //to figure out what command to send
-
-    //todo -- build formation out of the units
-
-    //(still need to test if they attempt to reach something where another unit is standing)
-
-    testSelect.sendMsg(this, MSG_MOVE, wmx, wmz, 0);
-  
-  }//endif
-*/
-
-
-
-/*
-  gamex::cMat proj;
-  gamex::cMat view;
-
-  proj.setPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
-  view.setView(&myCam.pos, &myCam.ori);
-
-  float sx, sy;
-  sx = 0;
-  sy = 0;
-
-  get2DCoord(view.m, proj.m, &(myCursor.coord), &sx, &sy);
-
-  //todo -- this will need some work
-  drawRect(sx*320+320, 480-(sy*240+240), 4,4);
-*/
-/*
- // if (testSelect.maxSel <= 0) { testSelect.init(); }
-
-  //todo -- optimisation
-  //set viewbox, use viewbox for the size to use on mgrid
-  //testSelect.selectOver(&myCam, mgrid, 0,0, 10000, 10000, selx<mx?selx:mx,sely<my?sely:my, abs(mx-selx), abs(my-sely));
-  testSelect.selectOver(&myCam, mgrid, 0,0, myHeight.mw*myHeight.cw, myHeight.mh*myHeight.ch, selx<mx?selx:mx,sely<my?sely:my, abs(mx-selx), abs(my-sely));
-
-*/
-
-/*
-   mat = projview;
-            
-    vx = cx;            vy = cy;            vz = cz;
-            
-    sx = vx * mat[0] + vy * mat[4] + vz * mat[8] + mat[12];
-    sy = vx * mat[1] + vy * mat[5] + vz * mat[9] + mat[13];
-    w = vx * mat[3] + vy * mat[7] + vz * mat[11] + mat[15];
-     sx /= w;
-     sy /= w;
-
-  var rendw:Number; var rendh:Number;
-     rendw = 320;
-     rendh = 240;
-     
-       sx *= rendw;            sy *= -rendh;
-       sx += rendw;			sy += rendh;
-
-
-      mx = (1/w) * 240 * size;
-
-*/
 
 }//upcursor
 

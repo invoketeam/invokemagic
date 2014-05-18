@@ -165,7 +165,25 @@ xFont::printStr(float size, float cx, float cy, const char* str, ...)
 }//print
 
 
- //todo kerning (?)
+void 
+xFont::printStrFrame(xFlatRender * render, unsigned int skin, float size, float cx, float cy,float cz, const char* str, ...)
+{
+  if (size == 0.0f) { return; }
+	static char buffer[1024];
+
+	va_list params;
+	va_start(params, str);
+		_vsnprintf(buffer, sizeof(buffer), str, params);
+	va_end(params);
+
+   size = size / fontsize;
+
+   writeStrFrame(render, skin, cx, cy,cz, buffer, size);
+  
+
+
+}//printframe
+
 
 
 

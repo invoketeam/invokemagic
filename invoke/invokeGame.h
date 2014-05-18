@@ -20,19 +20,18 @@
 #include "xHand.h"
 
 
+#define NUM_HUDBUTTON 12
+
 
 class invokeGame : public xGameExt
 {
 public:
- // xData myData;
-
   xGuiGame myGui;
 
   xFont myFont;
- // xTexture myFontSkin;
-
 
   xRender myRender;
+
   xCursor myCursor;
 
   xSpriteMan mySprite;
@@ -48,7 +47,8 @@ public:
 
 
   xHand myHand; //cursor used for commands 
-  //xSelect testSelect;
+  xButton * vecBtn[NUM_HUDBUTTON]; //id for hud buttons
+
 
 public:
   int shadowMode; //0 no   1 simple   2 projection  
@@ -86,6 +86,7 @@ public:
 public:
   virtual void upCursor(void);
 
+  virtual void setBtnLayout(std::string wname);
 
 
 

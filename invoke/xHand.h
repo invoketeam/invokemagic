@@ -15,6 +15,8 @@ public:
   xSelect mySelect;
   xViewBox * viewBoxPtr;
 
+  int curMode;
+
 public:
 
   xHand(void);

@@ -117,8 +117,6 @@ xGuiCursor::frameRender(xFlatRender * render)
 
 
 
-
-
 xButton::xButton(void) 
 {
   xrad = 32;
@@ -182,6 +180,13 @@ xButton::frameRender(xFlatRender * render)
  
   game->drawStr(1, 16, pos.x, pos.y-8, pos.z+2, this->wstr.c_str());
 }//framerender
+
+
+void 
+xButton::setSprite(xSprite * s)
+{
+  curSpr = s;
+}//setsprite
 
 
 

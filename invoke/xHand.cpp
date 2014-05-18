@@ -14,6 +14,7 @@ xHand::xHand(void)
    selx = 0;
    sely = 0;
    viewBoxPtr = 0;
+   curMode = 0;
 }//ctor
 
 
