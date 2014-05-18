@@ -229,6 +229,7 @@ xBucket::render(void)
 
 */
 
+    glMatrixMode(GL_TEXTURE); glLoadIdentity();
   
 
 	  glMatrixMode(GL_MODELVIEW);
@@ -297,14 +298,15 @@ xBucket::render(void)
       }//endif
 
       //texture matrix
-      if (a->useTexMat != texMat)
+      if (a->useTexMat != texMat || a->useTexMat == 1)
       {
+
         glMatrixMode(GL_TEXTURE);
         texMat = a->useTexMat;
-        if (texMat == 0)  { glLoadIdentity(); }
-        else { glLoadMatrixf(a->texMat.m); }
+        if (texMat == 0)   { glLoadIdentity(); }
+         else    { glLoadMatrixf(a->texMat.m); }
 
-        //restore to modelview matrix mode
+         //restore to modelview matrix mode
          glMatrixMode(GL_MODELVIEW);
 
       }//endif
@@ -440,6 +442,9 @@ xBucket::render(void)
       glPopMatrix();
     }//nexti
 
+
+    glMatrixMode(GL_TEXTURE); glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
 
     //reset vertex array/pointer settings to default
     

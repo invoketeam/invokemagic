@@ -2,6 +2,8 @@
 
 #include "xTmx.h"
 
+#include <math.h>
+
 
 //todo -- miniz might be used in more than one classes (for example storing stuff in .zip)
 //is there a .h .c  version?
@@ -153,6 +155,8 @@ xTmx::loadFile(std::string fname)
      setName = tset.attribute("name").value(); 
 
 
+  float rx, ry, rw, rh;
+
   for (og = map.child("objectgroup"); og; og = og.next_sibling("objectgroup")) 
   {
     for (m = og.child("object"); m; m = m.next_sibling("object"))
@@ -168,6 +172,21 @@ xTmx::loadFile(std::string fname)
 
       a->cx = (a->rx + a->rw*0.5f);
       a->cy = (a->ry + a->rh*0.5f);
+
+      a->ang = m.attribute("rotation").as_float()  * (3.1415f/180.0f); //convert rotation to radians
+      
+  
+     //todo -- need to rotate to get real position
+     //problem: for rectangles tiled uses the upper left corner
+     //even when the rectangle is rotated
+     if (a->ang != 0)
+     {
+       rw = a->rw * 0.5f; rh = a->rh * 0.5f;
+       rx = cos(a->ang) * rw - sin(a->ang) * rh;
+       ry = sin(a->ang) * rw + cos(a->ang) * rh;
+       a->cx += rx-rw;  a->cy += ry-rh;             
+     }//endif
+
 
 
       vecRect.push_back(a);

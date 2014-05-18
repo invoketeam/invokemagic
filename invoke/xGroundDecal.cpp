@@ -13,7 +13,19 @@ xGroundDecal::init(void)
  
 
   game->getDecal(&mesh, pos.x-xrad, pos.z - zrad, xrad+xrad, zrad+zrad); 
-  skin =  game->getSkin("crater");
+//  skin =  game->getSkin("crater");
+  
+
+  xTexture * t;
+  t = game->getTex(wstr);
+  if (t != 0)
+  {
+    t->setTexClamp(true);
+    skin = t->handle;
+  }
+  
+  
+
    
 yrad = 128;
 
@@ -53,6 +65,29 @@ xGroundDecal::render2(xRender * r)
       e->color = 1;
       e->twoSide = 0;
 
+      e->useTexMat = 1;
+
+
+     e->texMat.reset();
+     e->texMat.m[0] = cosf(ang);   e->texMat.m[4] = -sinf(ang);
+     e->texMat.m[1] = sinf(ang);   e->texMat.m[5] = cosf(ang);
+
+     //center texture for rotation
+
+         float p;
+         p = -0.5f;
+         e->texMat.m[12] = cosf(ang)* p  -sinf(ang) * p; 
+         e->texMat.m[13] = sinf(ang)* p + cosf(ang) * p;
+         e->texMat.m[12] += 0.5f;
+         e->texMat.m[13] += 0.5f;  
 
 
 }//render2
+
+
+
+
+
+
+
+

@@ -363,7 +363,9 @@ invokeGame::init(void)
       a = new xGroundDecal();
       a->xrad = ta->rw * 4 * 0.5f;
       a->zrad = ta->rh * 4 * 0.5f;
-      //todo -- read texture name   
+      a->wstr = ta->name;
+      a->ang = ta->ang;
+      printf("decal angle %0.2f \n", a->ang);
     }
     else { printf("unknown actor type %s \n", ta->type.c_str());  } //warn about unknown actor
 

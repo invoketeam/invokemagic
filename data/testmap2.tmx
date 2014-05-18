@@ -36,7 +36,7 @@
   <object name="blue" type="knight" x="1856" y="1440" width="64" height="64"/>
   <object name="blue" type="knight" x="1888" y="1536" width="64" height="64"/>
   <object name="neutral" type="farm" x="704" y="480" width="128" height="160"/>
-  <object name="neutral" type="farm" x="576" y="928" width="128" height="160"/>
+  <object name="neutral" type="farm" x="512" y="928" width="128" height="160"/>
   <object name="neutral" type="smoke" x="320" y="448" width="128" height="128"/>
   <object name="player1" type="camstart" x="1504" y="1056" width="128" height="128"/>
   <object name="tree" type="tree" x="1024" y="352" width="64" height="64"/>
@@ -79,12 +79,15 @@
   <object name="tree" type="tree" x="2624" y="1184" width="64" height="64"/>
   <object name="tree" type="tree" x="2528" y="1248" width="64" height="64"/>
   <object name="tree" type="tree" x="2432" y="1120" width="64" height="64"/>
-  <object name="decal" type="decal" x="1440" y="1088" width="256" height="256"/>
-  <object name="decal" type="decal" x="1120" y="672" width="352" height="352"/>
+  <object name="crater" type="decal" x="1440" y="1088" width="256" height="256"/>
+  <object name="crater" type="decal" x="448" y="960" width="352" height="352" rotation="22.3608"/>
   <object x="1024" y="736"/>
   <object x="1280" y="1184"/>
-  <object name="decal" type="decal" x="1696" y="448" width="128" height="128"/>
-  <object name="decal" type="decal" x="1248" y="736" width="288" height="352"/>
-  <object name="decal" type="decal" x="832" y="1472" width="1568" height="1408"/>
+  <object name="crater" type="decal" x="1696" y="448" width="128" height="128"/>
+  <object name="testsprite" type="decal" x="1664" y="64" width="288" height="352" rotation="-308.403"/>
+  <object name="crater" type="decal" x="832" y="1472" width="1568" height="1408"/>
+  <object name="testsprite" type="decal" x="2560" y="1696" width="288" height="352" rotation="-2.3487"/>
+  <object name="testsprite" type="decal" x="3188" y="1805" width="288" height="352" rotation="98.5389"/>
+  <object name="testsprite" type="decal" x="3354" y="2190" width="288" height="352" rotation="169.339"/>
  </objectgroup>
 </map>

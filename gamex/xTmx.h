@@ -12,7 +12,7 @@ public:
   std::string type;
   float rx, ry, rw, rh;
   float cx, cy;
-
+  float ang;
   
 
 public:
