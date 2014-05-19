@@ -75,8 +75,9 @@ xUnit::init(void)
 
   if (team == 1) //red
   { teamColor.set(1, 0, 0);  }
-  else { teamColor.set(0, 0, 1); }  //blue
-
+  else if (team == 2) { teamColor.set(0, 0, 1); }  //blue
+  else if (team == 0) { teamColor.set(0.5, 0.5, 0.5); } //grey (neutral?) 
+  else { teamColor.set(0,1,0); } //unknown team
 
 }//init
 
@@ -222,20 +223,20 @@ xUnit::update(void)
     xActor * a;
     float dx, dz;
     a = 0;
-    if (targid > 0)  {  a = game->getActor(targid);  }
+    if (targid > 0)  {  a = game->getActor(targid);  if (a == 0) { targid = 0; } }
     else
     {
       if (workb < game->gameTime ) { workb = game->gameTime + 10; 
         a = getTarget(game->mgrid, pos.x-1024, pos.z-1024, 2048, 2048);
-        if (a != 0) {targid = a->id; }
-        else { targid = 0; }
+        if (a != 0) {targid = a->id; }  else { targid = 0; }
       }
+      //todo -- alert others nearby when found a target(?)
     } //endif   
 
     if (cmd == 1) {  a = 0; targid = 0; workb = game->gameTime + 5;   } //move -- ignore targets (retreat)
 
     if (cmd <= 0)
-    if (a == 0) {   vel.x = 0; vel.z = 0; }
+    if (a == 0) {   vel.x = 0; vel.z = 0; targid = 0; }
 
     if (a != 0)
     {
@@ -277,7 +278,7 @@ xUnit::update(void)
       vel.x = 0; vel.z = 0;
 
       
-      if (reload < game->gameTime) { a->gotHit(16, 1, 0,0,0); reload = game->gameTime + 20; }
+      if (reload < game->gameTime) { a->gotHit(16, 1, 0,0,0); printf("en targ [%d] [%d] \n", id, a->targid); reload = game->gameTime + 20; }
       
     }//endif
 
