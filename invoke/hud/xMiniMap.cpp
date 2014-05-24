@@ -1,7 +1,7 @@
 #pragma warning (disable : 4786)
 
-#include "../gamex/xActor.h"
-#include "../gamex/xWorld.h"
+#include "../../gamex/xActor.h"
+#include "../../gamex/xWorld.h"
 
 #include "xMiniMap.h"
 

@@ -192,7 +192,7 @@ xFlatRender::render(bool bSort)
     float wx, wy;
 
     //sort frames
-    if (bSort) { }
+    if (bSort) { radixSort(vecFrame, it); }
 
 
     for (i = 0; i < it; i++)

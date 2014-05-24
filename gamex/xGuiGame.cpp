@@ -239,6 +239,8 @@ xGuiGame::childUpdate(xGame * parent)
   myWorld.update();
   cursor.update();
 
+  update();
+  
 }//childupdate
 
 
@@ -254,15 +256,18 @@ xGuiGame::childRender(xGame * parent)
 
       myFlat.resetFrame();
 
-
+   
+      render();
       myWorld.frameRender(&myFlat);
       cursor.frameRender(&myFlat);    
-
+  
      
       myFlat.render(true);
 
     glDisable(GL_TEXTURE_2D);
 
+
+    
 }//childrender
 
 

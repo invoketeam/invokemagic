@@ -13,11 +13,8 @@
 
 #include "../gamex/xBigPart.h"
 
+#include "hud/invokeHud.h"
 
-#include "xMiniMap.h"
-
-#include "xSelect.h"
-#include "xHand.h"
 
 
 #define NUM_HUDBUTTON 12
@@ -26,7 +23,7 @@
 class invokeGame : public xGameExt
 {
 public:
-  xGuiGame myGui;
+  invokeHud myHud;
 
   xFont myFont;
 
@@ -46,10 +43,6 @@ public:
   gamex::cVec3f lastPos;
 
 
-  xHand myHand; //cursor used for commands 
-  xButton * vecBtn[NUM_HUDBUTTON]; //id for hud buttons
-
-
 public:
   int shadowMode; //0 no   1 simple   2 projection  
   xShadowTex shadTex;
@@ -59,12 +52,6 @@ public:
   xTexture tileSkin;
   xHeightMap myHeight;
 
-  xMiniMap myMini;
-
-
-
-
- // xTexture waterSkin;
   xMdx3 waterDeb;
 
   xMdx3 debmesh;
@@ -81,13 +68,6 @@ public:
 
   virtual void makeShadow(void);
   virtual void drawShadow(void);
-
-
-public:
-  virtual void upCursor(void);
-
-  virtual void setBtnLayout(std::string wname);
-
 
 
 public:

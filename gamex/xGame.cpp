@@ -10,7 +10,7 @@
 #include "xAsset.h"
 
 
-xGame::xGame()
+xGame::xGame(void)
 {
 	mgrid = 0;
 
@@ -40,7 +40,7 @@ xGame::xGame()
 }//ctor
 
 
-xGame::~xGame() 
+xGame::~xGame(void) 
 {
  clear(); 
  if (mgrid != 0) { delete mgrid; mgrid = 0;}
@@ -141,6 +141,8 @@ xGame::copyControl(xGame * game)
   wmy = game->wmy;
   wmz = game->wmz;
 
+  umx = game->umx;
+  umy = game->umy;
 
   memcpy(bKeyDown, game->bKeyDown, XGAME_MAXKEY);
   memcpy(bKeyPress, game->bKeyPress, XGAME_MAXKEY*4);

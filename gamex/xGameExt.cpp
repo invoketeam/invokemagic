@@ -74,6 +74,9 @@ xGameExt::resetWorld(float w, float h)
 }//resetworld
 
 
+xWorld * 
+xGameExt::getWorldPtr(void) { return &myWorld; }
+
 float 
 xGameExt::getRand(void)
 {

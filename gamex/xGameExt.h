@@ -40,7 +40,7 @@ public:
   virtual float getRand2(void);
 
 
-
+  virtual xWorld * getWorldPtr(void);
 
   virtual void debugDraw(void);
 

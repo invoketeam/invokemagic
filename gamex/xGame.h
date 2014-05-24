@@ -65,12 +65,12 @@ public:
 	xGame();
 	virtual ~xGame();
 
-  virtual void clear() {}
+  virtual void clear(void) {}
 
-  virtual void init() {}
+  virtual void init(void) {}
 
-  virtual void update() { /*gamelogic here*/ gameTime += 1;}
-	virtual void render() {}
+  virtual void update(void) { /*gamelogic here*/ gameTime += 1;}
+	virtual void render(void) {}
 
 
 
@@ -95,8 +95,8 @@ public:
 
 public:
 
-	virtual float getRand() { return 0.0f; }
-	virtual float getRand2() { return 0.0f; }
+	virtual float getRand(void) { return 0.0f; }
+	virtual float getRand2(void) { return 0.0f; }
 
 
 public:
@@ -115,6 +115,7 @@ public:
 public:
 
   virtual xCam * getCamPtr(void) { return 0;}
+  virtual xWorld * getWorldPtr(void) { return 0; }
 
 //todo -- figure out a better way to handle fonts and drawing
   virtual void drawStr(int font, float size, float cx, float cy, float cz, const char* str, ...) {}

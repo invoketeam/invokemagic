@@ -238,6 +238,9 @@ xUnit::update(void)
     if (cmd <= 0)
     if (a == 0) {   vel.x = 0; vel.z = 0; targid = 0; }
 
+
+    //todo -- dont use the targets center position
+    //calculate the closest point to its rectangle on the XZ plane
     if (a != 0)
     {
       dx = a->pos.x - pos.x; if (dx < 0) { dx = -dx; }
@@ -277,8 +280,11 @@ xUnit::update(void)
 
       vel.x = 0; vel.z = 0;
 
-      
-      if (reload < game->gameTime) { a->gotHit(16, 1, 0,0,0); printf("en targ [%d] [%d] \n", id, a->targid); reload = game->gameTime + 20; }
+      //attack enemy (meele)  
+      if (reload < game->gameTime) 
+      { a->gotHit(16, 1, 0,0,0);
+        // printf("en targ [%d] [%d] \n", id, a->targid);
+       reload = game->gameTime + 20; }
       
     }//endif
 

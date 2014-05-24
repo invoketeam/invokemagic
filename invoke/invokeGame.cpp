@@ -27,39 +27,13 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 invokeGame::invokeGame(void) 
 {
   shadowMode = 0;
 
 
-
-  //init camera
-  //myCam.moveForward(300);
-  //myCam.strafeUp(150);
-
   myCam.pos.set(16*64, 1024, 16*64);
-
   camPos.set(16*64, 1024, 16*64);
-
-//  myCam.ori.rotPitch(-0.8f);
   myCam.ori.rotPitch(-0.98f);
 
   //use the war3 angle by default
@@ -104,24 +78,15 @@ invokeGame::init(void)
 //todo -- load tilemap before world reset (so we know the maps size)
   resetWorld(256*128,256*128);
 
-  //gameTime = 0; //done in resetworld
-
   myRender.init(16384);
 
 
-  myHand.viewBoxPtr = &viewBox;
-  myHand.game = this;
-  myHand.init();
+    myFont.loadCharDef("data/atari16.xfnt");
+    myFont.handle = assetMan->getTexHandle("atari16");
 
-
-      myFont.loadCharDef("data/atari16.xfnt");
-      //myFontSkin.loadTex("data/atari16.png",true,true,true);
-      myFont.handle = assetMan->getTexHandle("atari16");
-        //myFontSkin.handle;
-
-    myGui.assetMan = assetMan;
-    myGui.init();
-    myGui.pfont = &myFont;
+    myHud.assetMan = assetMan;
+    myHud.init();
+    myHud.pfont = &myFont;
 
 
   myPart.assetMan = assetMan;
@@ -130,88 +95,13 @@ invokeGame::init(void)
   myPart.loadSprite("spark");
   myPart.loadAnim("spark");
 
-
-
- // myRand.setSeed(1); //important for gameplay
-
-
-
-
-//setup ingame gui
-
-  
-  //   myData.addSprite("data/button.xms","data/button.png");
-
   mySprite.assetMan = assetMan;
-   assetMan->initTexture("button", true,false,false); 
-   mySprite.addSpriteXms("button");
 
 
 
-  xButton * b;
-  int bi;
-  bi = 0;
-
-  b = myGui.addButton("btn1", "", 200, 610-36-36-36,380, 16, 32,32, getSprite("btn_move"), 1);
-  vecBtn[bi++] = b;
-
-  b = myGui.addButton("btn2", "", 201, 610-36-36, 380, 16, 32,32, getSprite("btn_stop"), 1);
-  vecBtn[bi++] = b;
-
-  b = myGui.addButton("btn3", "", 202, 610-36, 380, 16, 32,32, getSprite("btn_attack"), 0);
-  vecBtn[bi++] = b;
-
-  //rest of buttons are just for alignment for now
-  b = myGui.addButton("btn4", "", 1, 610, 380, 16, 32,32, getSprite("button64x64"), 0);
-  vecBtn[bi++] = b;
-
-
-  b = myGui.addButton("btn5", "", 1, 610-36*3, 380+36, 16, 32,32, getSprite("button64x64"), 0);
-  vecBtn[bi++] = b;
-
-  b = myGui.addButton("btn6", "", 1, 610-36*2, 380+36, 16, 32,32, getSprite("button64x64"), 0);
-  vecBtn[bi++] = b;
-
-  b = myGui.addButton("btn7", "", 1, 610-36, 380+36, 16, 32,32, getSprite("button64x64"), 0);
-  vecBtn[bi++] = b;
-
-  b = myGui.addButton("btn8", "", 1, 610, 380+36, 16, 32,32, getSprite("button64x64"), 0);
-  vecBtn[bi++] = b;
-
-
-
-  b = myGui.addButton("btn9", "", 1, 610-36*3, 380+36+36, 16, 32,32, getSprite("button64x64"), 0);
-  vecBtn[bi++] = b;
-
-  b = myGui.addButton("btn10", "", 1, 610-36*2, 380+36+36, 16, 32,32, getSprite("button64x64"), 0);
-  vecBtn[bi++] = b;
-
-  b = myGui.addButton("btn11", "", 1, 610-36, 380+36+36, 16, 32,32, getSprite("button64x64"), 0);
-  vecBtn[bi++] = b;
   
-  b = myGui.addButton("btn12", "", 1, 610, 380+36+36, 16, 32,32, getSprite("button64x64"), 0);
-  vecBtn[bi++] = b;
-
-  setBtnLayout("hidden");
-
-
-
-  //testing -- a button for the minimap (probably not the best way to go about this)
-     b = myGui.addButton("btn_mini", "minimap", 500, 64+4, 480-64-8, 16, 128,128, getSprite("button64x64"), 1);
-     b->drawMode = -1; //make button hidden but usable
-     b->btnMode = 1; //make button react when you hold down the button on it
-
-
-
-
-
-
-//Create a tilemap and some units for testing
-
-
-
-
- //note: heightmap textures/images are special and its not using the asset manager (for now at least) 
+  
+//note: heightmap textures/images are special and its not using the asset manager (for now at least) 
   //todo -- read size from tmx map
   myHeight.cw = 128;
   myHeight.ch = 128;
@@ -230,7 +120,6 @@ invokeGame::init(void)
            myHeight.loadColor(&hmap);
 
 
-    
 
   xTmx tmx;
   xTmxLayer * layer;
@@ -252,13 +141,7 @@ invokeGame::init(void)
 
 
 
-
-
     
-
-
-
-
 //preload all unit models and textures
 //todo -- this part will need to use an xml or something
 
@@ -268,14 +151,6 @@ invokeGame::init(void)
   mesh = assetMan->getMesh("kunyho");  mesh->makeVbo();
 
   assetMan->initTexture("kunyho_textura_walpha", true, true, false);
-
-  //mesh = myData.addMdx("data/build/kunyho.mdx3", "kunyho");  mesh->makeVbo();
- // myData.addSkin("data/build/kunyho_textura_walpha.png", "kunyho", true, true);
-
-
-  //mesh = myData.addMdx("data/tree.mdx3", "tree"); mesh->makeVbo();
-  //myData.addSkin("data/treeskin.png", "treeskin",true,true);
-
   mesh = assetMan->getMesh("tree");  mesh->makeVbo();
   assetMan->initTexture("treeskin", true, true, false);
  
@@ -289,25 +164,13 @@ invokeGame::init(void)
 */
 
 
-
-
-//data used for debug
-  //myData.addSkin("data/knight_skin.png", "knight_skin",true,true);
-
   assetMan->initTexture("knight_skin2", true, true, false);
-
- // myData.addSkin("data/knight_skin2.png", "knight_skin",true,true);
-  
- // myData.addSprite("data/mysmoke.xms","data/mysmoke.png");
   assetMan->initTexture("mysmoke", true,false,false); 
    mySprite.addSpriteXms("mysmoke");
-
-
 
 //mesh used for debugging
   debmesh.initBox(16);
  
-
 //a big plane used for the water
  // waterSkin.loadTex("data/watertex.png");
   assetMan->initTexture("watertex", true, false, false);
@@ -379,19 +242,6 @@ invokeGame::init(void)
 
   }//nextwt
 
-
-
-
-
-    
-  //todo -- make minimap part of xHand (needs to be used to send units after all)
-
-  //minimap
-  //todo -- set texture/image size based on map size
-    myMini.init();
-  
-    myMini.updateImage(&myWorld);
-
 }//init
 
 
@@ -405,8 +255,6 @@ invokeGame::update(void)
   //cam speed
   float ms;
   ms = 32.0f;
-
-
 
   if (isKeyDown(KEY_W) || isKeyDown(KEY_UP)) { camPos.z -= ms;  } 
   if (isKeyDown(KEY_S) || isKeyDown(KEY_DOWN)) { camPos.z += ms;  }
@@ -427,11 +275,16 @@ invokeGame::update(void)
 
   if (camPos.y > maxHeight) { camPos.y = maxHeight; }
   if (camPos.y < minHeight) { camPos.y = minHeight; }
-  //also check map limits
+ 
+ //todo check map limits
 
 
-//todo -- move this fransformation into xCursor
+
+
+
+
   //transforming the universal mouse coordinates (0,1) to  (-1,1)
+//todo -- move this fransformation into xCursor
   float kx, ky;
   kx =  ((umx*2)-1)*-1;
   ky =  ((umy*2)-1)*-1;
@@ -446,21 +299,14 @@ invokeGame::update(void)
   wmy = myCursor.coord.y;
   wmz = myCursor.coord.z;
 
-
-/*
-  xBigPart * b;
-  b = myPart.addPart("spark");
-  b->pos.set(wmx,wmy+32,wmz);
-  b->roll = getRand()*6.28f;
-  b->scale = 6;
-  b->vel.set(4*(getRand()-0.5f),4*(getRand()-0.5f),4*(getRand()-0.5f));
-*/
-
+  
   myPart.update();
 
   myWorld.update();
 
-  myGui.childUpdate(this);
+  myHud.viewMin = viewBox.min;
+  myHud.viewMax = viewBox.max;
+    myHud.childUpdate(this);
 
 
     xFrustum frust;
@@ -468,8 +314,7 @@ invokeGame::update(void)
 	    frust.setPoints(myCam.pos, myCam.ori, 0, 0);
       viewBox.genBox(&frust, 0,0,0, 0, 1, 0);
 
-  if ((gameTime % 30) == 0)  { myMini.updateImage(&myWorld); }
-
+      
   gameTime += 1;
 }//update
 
@@ -681,29 +526,9 @@ invokeGame::render(void)
 
 gamex::cMat view;
 
-
-
 //update camera based on camera pos
   myCam.pos = camPos;
   myCam.pos.y += myHeight.getHeight(camPos.x, camPos.z);
-
-
-/*
-  
-
-  glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-    gluPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
-
-	glMatrixMode(GL_MODELVIEW);
-
-  view.setView(&myCam.pos, &myCam.ori);
-    glLoadMatrixf(view.m);
-
-*/
-
-     
-
 
 
 //check if camera moved enough that we need to update the heightmap
@@ -854,191 +679,48 @@ glDisable(GL_TEXTURE_2D);
   glEnable(GL_DEPTH_TEST);
   glDisable(GL_TEXTURE_2D);
   // testSelect.debRender(this);
-  myHand.mySelect.debRender(this);
- 
-
+ // myHand.mySelect.debRender(this);
+    myHud.renderSelection3D();
+  
 //unit debug render
   myWorld.render();
 
 
-
-      //debug -- draw aabb around units
-   //     glEnable(GL_DEPTH_TEST);
-   //        glDisable(GL_TEXTURE_2D); debugDraw();
-
- 
-
- // myGui.childRender(this);
-
- //2D drawing - gui and minimap etc
-  
-   glMatrixMode(GL_PROJECTION);  	glLoadIdentity();       glOrtho(0,640,480,0,-3000,3000); 
-	 glMatrixMode(GL_MODELVIEW);	  glLoadIdentity();
-
-         //as a flatrenderer doesnt store anything about the things its supposed to render
-         //we might as well have a global/singleton one (?)
-         xFlatRender * flat;
-         flat = &(myGui.myFlat);
+//draw 2D hud (or ui) (or gui)
+  myHud.childRender(this);
 
 
-         flat->resetFrame();
-
-         myGui.myWorld.frameRender(flat);
-         myGui.cursor.frameRender(flat);    
-      
-
-
-        //note -- minimap is updated in update, because frameskipping makes it lose frames if updated here
-        //render minimap
-        //todo -- set update factor from some variable
-        //  if ((gameTime % 30) == 0)  { myMini.updateImage(&myWorld); }
-
-          //rem -- coordinates are the middle of the rectangle
-          xFrame * f;
-           f = flat->addFrame(64+4, 480-64-8, 300, 128,128, myMini.skin.handle);
-           f = flat->addFrame( 64+8,64+8, 350, 128,128, shadTex.handle);
-           //f = flat->addFrame( 64+8,64+8, 350, 128,128, shadTex.depth);
-
-         myFont.printStrFrame(flat, myFont.handle, 8, mx, my, 1000, "%d", myHand.curMode);
-
-
-
-         flat->render(true);
-
-
-          
-         
-
-
-          //draw outline for buttons
-         glDisable(GL_TEXTURE_2D); myGui.debugDraw(); 
-
-         //debug -- update gui buttons (move this to update)
-          upCursor();
- 
 
 }//render
 
 
 
-
-
-void 
-invokeGame::setBtnLayout(std::string wname)
-{
-  int i;
-  xButton * a;
-  
-  for (i = 0; i < NUM_HUDBUTTON; i++)
-  {
-    a = vecBtn[i];
-    a->visible = false;
-  }//nexti
-
-
-  vecBtn[0]->setSprite(getSprite("btn_move"));
-  vecBtn[0]->visible = true;
-
-  vecBtn[1]->setSprite(getSprite("btn_stop"));
-  vecBtn[1]->visible = true;
-
-  vecBtn[2]->setSprite(getSprite("btn_attack"));
-  vecBtn[2]->visible = true;
-
-  //vecBtn[3]->setSprite(getSprite("button64x64"));
- // vecBtn[3]->visible = true;
-
-
-}//btnlayout
-
-
-
-
-
-
-
-
-
-void 
-invokeGame::upCursor(void)
-{
-
-  myHand.update();
-
-
-}//upcursor
-
-
-
-
 xBigPart * 
-invokeGame::addPart(std::string wname)
-{
-  return myPart.addPart(wname);
-}//addpart
-
+invokeGame::addPart(std::string wname)  {  return myPart.addPart(wname);}
 
 void 
-invokeGame::getDecal(xMdx3 * m, float x0, float y0, float w0, float h0)
-{
-
-  myHeight.setDecal(m, x0, y0, w0, h0);
-
-}//getdecal
-
-
-
+invokeGame::getDecal(xMdx3 * m, float x0, float y0, float w0, float h0){  myHeight.setDecal(m, x0, y0, w0, h0);}
 
 float 
-invokeGame::getHeight(float wx, float wz) 
-{
- return myHeight.getHeight(wx, wz);
-}//getheight
-
-
-
-
+invokeGame::getHeight(float wx, float wz) { return myHeight.getHeight(wx, wz);}
 
 xCam * 
-invokeGame::getCamPtr(void)
-{
-  return &myCam;
-}//getcamptr
-
-
-
+invokeGame::getCamPtr(void){  return &myCam; }
 
 
 //todo -- getanim, getskel
 
-
-
 xMdx3 *
-invokeGame::getMdx(std::string wname)
-{
-  return assetMan->getMesh(wname);
-}//getmdx
+invokeGame::getMdx(std::string wname)  {  return assetMan->getMesh(wname);}//getmdx
 
 xTexture *
-invokeGame::getTex(std::string wname) 
-{ 
-  return assetMan->getTexture(wname);
-}//gettex  
-
+invokeGame::getTex(std::string wname) {   return assetMan->getTexture(wname);}//gettex  
 
 unsigned int 
-invokeGame::getSkin(std::string wname) 
-{
- return  assetMan->getTexHandle(wname);
-}//getskin
-
-
+invokeGame::getSkin(std::string wname) { return  assetMan->getTexHandle(wname);}//getskin
 
 xSprite * 
-invokeGame::getSprite(std::string wname) 
-{
-  return mySprite.getSprite(wname);
-}//getsprite
+invokeGame::getSprite(std::string wname)  {  return mySprite.getSprite(wname);}//getsprite
 
 
 
@@ -1048,8 +730,7 @@ void
 invokeGame::gotCmd(int cmd, int arg0, int arg1)
 {
 
- printf("invokegame gotcmd %d   %d %d \n", cmd, arg0, arg1);
-
+// printf("invokegame gotcmd %d   %d %d \n", cmd, arg0, arg1);
 
 //todo -- indeed we are moving the camera with the minimap
 //but dont exactly match the position on screen
@@ -1062,8 +743,6 @@ invokeGame::gotCmd(int cmd, int arg0, int arg1)
     lastPos = -1; //force update
 
  }//endif
-
-
 
 }//gotcmd
 

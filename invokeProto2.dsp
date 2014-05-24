@@ -425,6 +425,34 @@ SOURCE=.\gamex\xWorld.h
 # Begin Group "invoke"
 
 # PROP Default_Filter ""
+# Begin Group "hud"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\invoke\hud\invokeHud.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\invoke\hud\invokeHud.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\invoke\hud\xMiniMap.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\invoke\hud\xMiniMap.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\invoke\hud\xSelect.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\invoke\hud\xSelect.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\invoke\invokeGame.cpp
@@ -459,14 +487,6 @@ SOURCE=.\invoke\xGroundDecal.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\invoke\xHand.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\invoke\xHand.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\invoke\xInvActor.cpp
 # End Source File
 # Begin Source File
@@ -479,27 +499,11 @@ SOURCE=.\invoke\xInvokeCommon.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\invoke\xMiniMap.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\invoke\xMiniMap.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\invoke\xPartTest.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\invoke\xPartTest.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\invoke\xSelect.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\invoke\xSelect.h
 # End Source File
 # Begin Source File
 

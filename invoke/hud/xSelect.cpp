@@ -3,20 +3,20 @@
 
 #include "xSelect.h"
 
-#include "xInvokeCommon.h"
+#include "../xInvokeCommon.h"
 
 
-#include "../gamex/xDebug.h"
+#include "../../gamex/xDebug.h"
 
-#include "../gamex/xGLCommon.h"
+#include "../../gamex/xGLCommon.h"
 
-#include "../gamex/xGame.h"
-#include "../gamex/xMultiGrid.h"
+#include "../../gamex/xGame.h"
+#include "../../gamex/xMultiGrid.h"
 
-#include "../gamex/xActor.h"
-#include "../gamex/xCam.h"
+#include "../../gamex/xActor.h"
+#include "../../gamex/xCam.h"
 
-#include "../gamex/xFrustum.h"
+#include "../../gamex/xFrustum.h"
 
 
 
