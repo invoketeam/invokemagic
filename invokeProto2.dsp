@@ -453,6 +453,18 @@ SOURCE=.\invoke\hud\xSelect.cpp
 SOURCE=.\invoke\hud\xSelect.h
 # End Source File
 # End Group
+# Begin Group "unit"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\invoke\unit\xTower.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\invoke\unit\xTower.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\invoke\invokeGame.cpp

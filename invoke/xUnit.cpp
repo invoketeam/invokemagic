@@ -43,7 +43,7 @@ xUnit::init(void)
 
   anim = game->assetMan->getBoneAnim("knight_walk");
 
-
+  skin = getSkin("knight_skin2");
 
   xMdx3 * m;
   m = game->getMdx("knight_mesh");
@@ -110,6 +110,7 @@ xUnit::gotHit(float dmg, int dtype, float hx, float hy, float hz)
     b->pos = pos;
     b->roll = game->getRand()*6.28f;
     b->scale = 3;
+    b->rgb = teamColor;
     b->vel.set(4*(game->getRand()-0.5f),4*(game->getRand()-0.5f),4*(game->getRand()-0.5f));
   }//nexti
 
@@ -128,12 +129,13 @@ xUnit::onKilled(void)
     b->pos = pos;
     b->roll = game->getRand()*6.28f;
     b->scale = 7;
+    b->rgb = teamColor;
     //b->vel.set(4*(getRand()-0.5f),4*(getRand()-0.5f),4*(getRand()-0.5f));
 
   
 }//onkilled
 
-
+/*
 //find closest target to attack
 xActor * 
 xUnit::getTarget(xMultiGrid * m, float ax, float az, float aw, float ah)
@@ -178,7 +180,7 @@ xUnit::getTarget(xMultiGrid * m, float ax, float az, float aw, float ah)
 
 return ret;
 }//gettarget
-
+*/
 
 
 
@@ -404,7 +406,7 @@ xUnit::render2(xRender * r)
       //e->color = 1;
       //e->color.set(1,0,0);
       e->twoSide = 1;
-      e->skin = getSkin("knight_skin2") ;
+      e->skin = skin;  
       e->useColor = 0;
       //e->skinBlend = 1;
       //e->skinBlend = 4;

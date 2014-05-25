@@ -23,6 +23,7 @@
 
 
 
+#include "unit/xTower.h"
 
 
 
@@ -147,6 +148,8 @@ invokeGame::init(void)
 
   xMdx3 * mesh;
 
+
+
   
   mesh = assetMan->getMesh("kunyho");  mesh->makeVbo();
 
@@ -154,6 +157,13 @@ invokeGame::init(void)
   mesh = assetMan->getMesh("tree");  mesh->makeVbo();
   assetMan->initTexture("treeskin", true, true, false);
  
+
+  mesh = assetMan->getMesh("wraith_foepulet"); 
+  mesh->scaleMesh(4,4,4);
+  mesh->makeVbo();
+  assetMan->initTexture("wraith_foepulet", true, true, false);
+
+
 
 //simple shadows are disabled for now
 /*
@@ -204,14 +214,17 @@ invokeGame::init(void)
     {
       a = new xUnit();
     
-      if (ta->name == "red")
-      { a->team = 1; }
-      else { a->team = 2;}
+      if (ta->name == "red")      { a->team = 1; }      else { a->team = 2;}
 
     }
     else if (ta->type == "farm")
     {
       a = new xBuildTest();
+    }
+    else if (ta->type == "tower")
+    {
+      a = new xTower();
+      if (ta->name == "red")      { a->team = 1; }      else { a->team = 2;}
     }
     else if (ta->type == "smoke")
     {
@@ -375,7 +388,7 @@ invokeGame::makeShadow(void)
 
       glLoadIdentity();
         //glRotatef(45, 0, 1, 0);  //looks good but is buggy for now
-	      glRotatef(70, 1, 0, 0); //sun angle (90 is exactly down) (so far 90 works without bugs) (also try 45 and 135)
+	      glRotatef(45, 1, 0, 0); //sun angle (90 is exactly down) (so far 90 works without bugs) (also try 45 and 135)
 	      glRotatef(90, 0, 1, 0);
          glTranslatef(myCam.pos.x *-1 , 0, myCam.pos.z *-1 ); //todo -- needs tweaks
           glGetFloatv(GL_MODELVIEW_MATRIX, lightView);
