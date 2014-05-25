@@ -32,11 +32,16 @@ xGuiCursor::update(void)
   if (game->mDownLeft)
   {if (worka == 0) { worka = 1; } }
 
-
   if (game->mDownLeft == false)
-  {if (worka == 1) { worka = 2; } }
+  { if (worka == 1) { worka = 2; } }
+
+  if (game->mClickRight == game->gameTime) { worka = 3;}
+
   if (worka == 2 && target == -1) { worka = 0; }
+  if (worka == 3 && target == -1) { worka = 0; }
+
   
+
   if (worka == 0)
   {
     workz = -9999999; //reset z (choose button with highest z -- aka the one on top)
@@ -81,6 +86,15 @@ xGuiCursor::update(void)
       worka = 0;
   }//endif
 
+
+  if (worka == 3)
+  {
+    
+    if (b != 0) { game->gotCmd(b->rightCmd, pos.x-b->pos.x + b->xrad, pos.y-b->pos.y + b->yrad); }
+    worka = 0;
+  }//endif
+
+
 }//update
 
 
@@ -124,9 +138,11 @@ xButton::xButton(void)
   curSpr = 0;
   arg0 = 0; arg1 = 0;
   cmd = 0;
+  rightCmd = 0;
   spectype = 100;
   drawMode = 0;
   btnMode = 0;
+
 }//ctor
 
 

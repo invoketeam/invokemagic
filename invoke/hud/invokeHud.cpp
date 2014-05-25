@@ -65,7 +65,7 @@ invokeHud::init(void)
    b = addButton("btn_mini", "minimap", 500, 64+4, 480-64-8, 16, 128,128, getSprite("button64x64"), 1);
    b->drawMode = -1; //make button hidden but usable
    b->btnMode = 1; //make button react when you hold down the button on it
-
+   b->rightCmd = 501;
 
 
 }//init
@@ -264,6 +264,15 @@ invokeHud::gotCmd(int cmd, int arg0, int arg1)
  if (parentGame == 0) { return; } //todo -- warning 
 
  // printf("invokehud gotcmd %d   %d %d \n", cmd, arg0, arg1);
+
+   if (cmd == 501) //right click on minimap
+   {
+    //todo -- map is 128x128  and a cell is 128x128
+    //but this will change so a better handling for this is needed
+    
+      mySelect.sendMsg(parentGame, MSG_MOVE, arg0*128, arg1*128, 0);
+   }//endif
+  
 
 
   //minimap movement 
