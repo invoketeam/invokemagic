@@ -52,6 +52,8 @@ xUnit::init(void)
 
  mesh.makeVbo();
 
+   hp = 100.0f;
+
 
 
   xrad = 32;
@@ -64,7 +66,7 @@ xUnit::init(void)
 
   spectype = 100;
 
-  flags = FR_SELECTABLE | FR_BLOCKMOVE;
+  flags = FR_SELECTABLE | FR_BLOCKMOVE | FR_ATTACKABLE;
 
  // shadowMesh = game->getMdx("shadow");
  // shadowSkin = game->getSkin("shadow");

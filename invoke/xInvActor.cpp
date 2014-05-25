@@ -29,9 +29,11 @@ xInvActor::getTarget(xMultiGrid * m, float ax, float az, float aw, float ah)
 		{
 			if (a == this) { continue; }
 			if (a->dead) { continue; }
+      if ((a->flags & FR_ATTACKABLE) == 0) { continue; } //actor not attackable
       if (a->team == team) { continue; }  //ally
       if (a->team == 0) { continue; }  //neutral
-					
+      					
+
 				if (a->pos.x + a->xrad < ax) { continue; } 
 				if (a->pos.x - a->xrad > x1) { continue; }
 				if (a->pos.z + a->zrad < az) { continue; }

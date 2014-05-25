@@ -465,6 +465,18 @@ SOURCE=.\invoke\unit\xTower.cpp
 SOURCE=.\invoke\unit\xTower.h
 # End Source File
 # End Group
+# Begin Group "bullet"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\invoke\bullet\xHoming.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\invoke\bullet\xHoming.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\invoke\invokeGame.cpp

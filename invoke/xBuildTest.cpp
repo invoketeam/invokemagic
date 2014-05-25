@@ -45,7 +45,7 @@ xBuildTest::init(void)
   spectype = 100;
 
 
- flags = FR_SELECTABLE | FR_BLOCKMOVE;
+ flags = FR_SELECTABLE | FR_BLOCKMOVE | FR_ATTACKABLE;
 
  pos.y = game->getHeight(pos.x, pos.z) + yrad;
 

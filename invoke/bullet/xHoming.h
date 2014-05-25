@@ -1,27 +1,26 @@
 #pragma once
 
+
 #include "../../gamex/xActor.h"
 #include "../../gamex/xMdx3.h"
 
-#include "../xInvActor.h"
 
 
-class xTower : public xInvActor
+
+class xHoming : public xActor
 {
 public:
     xMdx3 * mesh;
-    unsigned int skin;
+  gamex::cVec3f teamColor;
 
-
+ 
 public:
-  xTower(void);
+  xHoming(void);
   
   virtual void onKilled(void);
   
   virtual void init(void);
   virtual void update(void);
   virtual void render2(xRender * r);
-
-  virtual void render(void);
 
 };//xtarget
