@@ -50,3 +50,29 @@ xInvActor::getTarget(xMultiGrid * m, float ax, float az, float aw, float ah)
 
 return ret;
 }//gettarget
+
+
+
+void
+xInvActor::getClosePointXZ(xActor * a, float * retx, float * retz)
+{
+  gamex::cVec3f ret;
+
+  float ix;
+  float iz;
+
+  if (a->pos.x - a->xrad > pos.x) { ix = a->pos.x - a->xrad; }
+  else if (a->pos.x + a->xrad < pos.x) { ix = a->pos.x + a->xrad; }
+  else { ix = pos.x; }   
+
+  if (a->pos.z - a->zrad > pos.z) { iz = a->pos.z - a->zrad; }
+  else if (a->pos.z + a->zrad < pos.z) { iz = a->pos.z + a->zrad; }
+  else { iz = pos.z; }   
+
+  *retx = ix;
+  *retz = iz;
+  
+}//getclose
+
+
+

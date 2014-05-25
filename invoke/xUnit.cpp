@@ -137,53 +137,6 @@ xUnit::onKilled(void)
   
 }//onkilled
 
-/*
-//find closest target to attack
-xActor * 
-xUnit::getTarget(xMultiGrid * m, float ax, float az, float aw, float ah)
-{
-	xCell * c;
-	xActor * a;
-  float x1, z1;
-  float dist;
-  float mdist;
-  xActor * ret;
-
-	c = m->doQuery(ax, az, aw, ah);
-			
-  x1 = ax + aw;
-  z1 = az + ah;
-			
-  mdist = 99999999.0f; //todo -- use float max or something
-  ret = 0;
-
-	for (c; c != 0; c= c->next )
-	{
-		for (a = c->first; a != 0; a = a->next)
-		{
-			if (a == this) { continue; }
-			if (a->dead) { continue; }
-      if (a->team == team) { continue; }  //ally
-      if (a->team == 0) { continue; }  //neutral
-					
-				if (a->pos.x + a->xrad < ax) { continue; } 
-				if (a->pos.x - a->xrad > x1) { continue; }
-				if (a->pos.z + a->zrad < az) { continue; }
-				if (a->pos.z - a->zrad > z1) { continue; }
-
-
-      dist = abs(a->pos.x - pos.x) + abs(a->pos.z - pos.z);
-      if (mdist < dist) { continue;}
-        mdist = dist;
-        ret = a;
-					
-		}//nexta
-	}//nextc
-
-return ret;
-}//gettarget
-*/
-
 
 
 void 
@@ -243,12 +196,16 @@ xUnit::update(void)
     if (a == 0) {   vel.x = 0; vel.z = 0; targid = 0; }
 
 
+    float apx, apz;
+
     //todo -- dont use the targets center position
     //calculate the closest point to its rectangle on the XZ plane
     if (a != 0)
     {
-      dx = a->pos.x - pos.x; if (dx < 0) { dx = -dx; }
-      dz = a->pos.z - pos.z; if (dz < 0) { dz = -dz; }
+      getClosePointXZ(a, &apx, &apz);
+
+      dx = apx - pos.x; if (dx < 0) { dx = -dx; }
+      dz = apz - pos.z; if (dz < 0) { dz = -dz; }
 
       //only start attacking when got closer than range
       //start moving again when out of range
@@ -257,12 +214,13 @@ xUnit::update(void)
       if (dx > 128.0f && dz > 128.0f) { worka = 0;  }
     }//endif
 
+    
     if (a != 0) 
     if (worka == 0)
     {
 
-      vel.x = a->pos.x - pos.x;
-      vel.z = a->pos.z - pos.z;
+      vel.x = apx - pos.x;
+      vel.z = apz - pos.z;
 
       if (vel.x != 0 && vel.z != 0)      {    yaw = getAng(vel.z, vel.x);  }
 
@@ -278,8 +236,8 @@ xUnit::update(void)
     {
       if (a == 0) { worka = 0; vel.x = 0; vel.y = 0; targid = 0; return;}
       
-      vel.x = a->pos.x - pos.x;
-      vel.z = a->pos.z - pos.z;
+      vel.x = apx - pos.x;
+      vel.z = apz - pos.z;
       if (vel.x != 0 && vel.z != 0)      {    yaw = getAng(vel.z, vel.x);  }
 
       vel.x = 0; vel.z = 0;

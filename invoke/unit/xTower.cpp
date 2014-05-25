@@ -32,7 +32,7 @@ void
 xTower::init(void)
 { 
 
- hp = 5; //very low hp for testing 
+ hp = 250; //very low hp for testing 
 
  mesh = game->getMdx("wraith_foepulet");
  skin = game->getSkin("wraith_foepulet");
