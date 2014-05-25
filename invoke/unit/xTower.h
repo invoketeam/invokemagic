@@ -12,6 +12,8 @@ public:
     xMdx3 * mesh;
     unsigned int skin;
 
+    int decalId;
+
 
 public:
   xTower(void);

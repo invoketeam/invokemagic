@@ -10,6 +10,9 @@
 
 #include "../bullet/xHoming.h"
 
+#include "../xGroundDecal.h"
+
+
 #include "../xInvokeCommon.h"
 
 
@@ -21,6 +24,8 @@
 xTower::xTower(void)
 {
   team = 0;
+
+  decalId = 0;
 }//ctor
 
 void
@@ -41,6 +46,18 @@ xTower::init(void)
 
   pos.y = game->getHeight(pos.x, pos.z) + yrad;
 
+
+  xActor * a;
+   a = new xGroundDecal();
+   a->wstr = "crater";
+   a->pos = pos; a->pos.y = 0;
+   a->xrad = 512;
+   a->zrad = 512;
+   a->ang = game->getRand()*6.28;
+  game->addActor(a);
+  decalId = a->id;
+
+
   putInGridXZ(game->mgrid);
 }//init
 
@@ -55,6 +72,15 @@ xTower::onKilled(void)
     b->scale = 32;
     b->rgb.set(0,1,0);
     //b->vel.set(4*(getRand()-0.5f),4*(getRand()-0.5f),4*(getRand()-0.5f));
+
+  //todo -- make decal fade out
+  //remove decal
+  xActor * a;
+  a = game->getActor(decalId);
+  if (a != 0)
+  {
+    a->dead = true;
+  }//endif
 
 }//onkilled
 

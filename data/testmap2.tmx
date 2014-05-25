@@ -80,7 +80,7 @@
   <object name="tree" type="tree" x="2528" y="1248" width="64" height="64"/>
   <object name="tree" type="tree" x="2432" y="1120" width="64" height="64"/>
   <object name="crater" type="decal" x="1632" y="736" width="256" height="256"/>
-  <object name="crater" type="decal" x="736" y="1216" width="352" height="352" rotation="22.3608"/>
+  <object name="crater" type="decal" x="1504" y="1536" width="352" height="352" rotation="22.3608"/>
   <object x="1024" y="736"/>
   <object x="1280" y="1184"/>
   <object name="crater" type="decal" x="1312" y="224" width="128" height="128"/>
