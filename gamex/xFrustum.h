@@ -7,81 +7,70 @@
 //sources
 //http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-extracting-the-planes/
 //http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-implementation/
-
+//http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-testing-boxes-ii/
 
 #include "xMath.h"
+
+/*
+enum
+{
+  FRUST_NEAR = 0,
+  FRUST_FAR = 1,
+  FRUST_LEFT = 2,
+  FRUST_RIGHT = 3,
+  FRUST_UP = 4,
+  FRUST_DOWN = 5
+};
+*/
 
 class xFrustum
 {
 public:
-  
-	gamex::cVec3f ftl, ftr, fbl, fbr; //front points
-	gamex::cVec3f ntl, ntr, nbl, nbr; //near points
-
-	float nearWidth, nearHeight;
+  float nearWidth, nearHeight;
 	float farWidth, farHeight;
 
 	float fov;
 	float aspect;
 	float nearDist, farDist;
-
-	//only need these for testing
-	//(rest is for show and calculating these)
-	gamex::cVec3f pa, pb, pc, pd, pe, pf;
-	gamex::cVec3f norma, normb, normc, normd, norme, normf;
-
-
-//mouse in 3D
-  gamex::cVec3f mclose;
-  gamex::cVec3f mfar;
-
-
-//frustum AABB (todo)
-  gamex::cVec3f aabb_min;
-  gamex::cVec3f aabb_max;
-
-
-public:
-  //setpoints helpers
+  
+  gamex::cVec3f farTopLeft, farTopRight;
+  gamex::cVec3f farBotLeft, farBotRight;
+  gamex::cVec3f nearTopLeft, nearTopRight;
+  gamex::cVec3f nearBotLeft, nearBotRight;
+  
   gamex::cVec3f farUp, farSide;
 	gamex::cVec3f nearUp, nearSide;
-	gamex::cVec3f fc, nc;
-
+	gamex::cVec3f farCenter, nearCenter;
+  
+  gamex::cVec3f vecPoint[6];
+  gamex::cVec3f vecNorm[6];
+  
 
 public:
-
-
-	//aspect -- e.g. 640/480
 	void setPerspective(float fov_= 60, float aspect_=1.33f, float nearDist_=1, float farDist_=300);
+  void setOrtho(float w, float h, float neard=1.0f, float fard=300.0f);
+
+  void makeFrustum(gamex::cVec3f pos, gamex::cVec3f front, gamex::cVec3f up,  gamex::cVec3f side);
+  void makeFrustum2(gamex::cVec3f pos, gamex::cQuat ori);
+  
+  bool isPointInside(gamex::cVec3f * p, float rad = 0.0f);
+  bool isBoxInside(gamex::cVec3f * bmin, gamex::cVec3f * bmax);
+  
+  void getMouseLine(float umx, float umy, gamex::cVec3f * retNear, gamex::cVec3f * retFar);
 
 
-//todo -- getplaneinter is more of a static function
-//its staying here as its mostly used with frustum related calculations
-//(maybe it should be put in xMath sometime)
+  void debRender(void);
+  
+
+	//a b  -- points of line you want to test
 //p plane position
 //n plane normal
-//a b  -- points of line you want to test
-//you get -99999 if the line is parallel to the plane
+//you get -999.0f if the line is parallel to the plane
 //or the position on the line (so the coordinate is  a +(b-a)* ret  )
   float getPlaneInter(gamex::cVec3f a, gamex::cVec3f b, gamex::cVec3f p, gamex::cVec3f n);
-
-//note: umx and umy are mouse coords
-//they are between [-1, 1]
-//so use the screen (or whatever you are rendering into) size to calculate
-//(e.g.  ((mousex/640)*2)-1
-	void setPoints(gamex::cVec3f pos, gamex::cQuat ori, float umx=0, float umy=0);
-
-  bool isPointInside(gamex::cVec3f &p, float rad = 0.0f);
-
-
-protected:
-  void setNormals();
-
-/*
-public:
-  void drawMouse(float umx, float umy);
-	void render()//debugrender;
-*/
-	
+  
 
 };//classend
+
+
+

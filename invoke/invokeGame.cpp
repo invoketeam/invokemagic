@@ -324,7 +324,7 @@ invokeGame::update(void)
 
     xFrustum frust;
       frust.setPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
-	    frust.setPoints(myCam.pos, myCam.ori, 0, 0);
+      frust.makeFrustum2(myCam.pos, myCam.ori);
       viewBox.genBox(&frust, 0,0,0, 0, 1, 0);
 
       
@@ -564,7 +564,7 @@ gamex::cMat view;
            diff *= 2.0f;
 
            frust.setPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
-	         frust.setPoints(myCam.pos, myCam.ori, 0, 0);
+           frust.makeFrustum2(myCam.pos, myCam.ori);
 
           //todo -- make viewbox use the camera as parameter(?)          
             viewBox.genBox(&frust, 0,0,0, 0, 1, 0);

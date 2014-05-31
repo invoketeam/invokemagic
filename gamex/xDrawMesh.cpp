@@ -181,7 +181,7 @@ static int debNumNodeDrawn = 0;
 void 
 xDrawTree::render(xFrustum * frust, xRender * rend, unsigned int skin)
   {
-    if (frust->isPointInside(mid, rad) == false) { return; }
+    if (frust->isPointInside(&mid, rad) == false) { return; }
 
   //  if (depth == 0) { debNumNodeDrawn = 0; }
 /*

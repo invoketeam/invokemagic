@@ -420,8 +420,10 @@ xSelect::updateOver(xCam * cam, xMultiGrid * mgrid,   float ax, float ay, float 
   xFrustum frust; 
   
       frust.setPerspective(cam->fov, cam->aspect, cam->neard, cam->fard);
-	    frust.setPoints(cam->pos, cam->ori, 0, 0);
+      frust.makeFrustum2(cam->pos, cam->ori);
+      frust.getMouseLine(kx, ky, &p0, &p1);
 
+/*
 	    p0 = frust.nc;
 	    p0 += frust.nearUp * ky;
 	    p0 += frust.nearSide * kx;
@@ -429,7 +431,7 @@ xSelect::updateOver(xCam * cam, xMultiGrid * mgrid,   float ax, float ay, float 
 	    p1 = frust.fc;
 	    p1 += frust.farUp * ky;
 	    p1 += frust.farSide * kx;
-
+*/
 
 
 

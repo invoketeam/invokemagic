@@ -55,15 +55,8 @@ xCursor::updateHmap(xCam * cam, float umx, float umy, xHeightMap * hmap, float p
     xFrustum frust; 
   
       frust.setPerspective(cam->fov, cam->aspect, cam->neard, cam->fard);
-	    frust.setPoints(cam->pos, cam->ori, 0, 0);
-
-	    p0 = frust.nc;
-	    p0 += frust.nearUp * umy;
-	    p0 += frust.nearSide * umx;
-
-	    p1 = frust.fc;
-	    p1 += frust.farUp * umy;
-	    p1 += frust.farSide * umx;
+      frust.makeFrustum2(cam->pos, cam->ori);
+	    frust.getMouseLine(umx, umy, &p0, &p1);
 
     ppos.set(0,planey,0);
     pnorm.set(0,1,0);
@@ -103,6 +96,10 @@ xCursor::updateCmesh(xCam * cam, float umx, float umy, xColMesh * cmesh) //, flo
     xFrustum frust; 
   
       frust.setPerspective(cam->fov, cam->aspect, cam->neard, cam->fard);
+      frust.makeFrustum2(cam->pos, cam->ori);
+	    frust.getMouseLine(umx, umy, &p0, &p1);
+/*
+      frust.setPerspective(cam->fov, cam->aspect, cam->neard, cam->fard);
 	    frust.setPoints(cam->pos, cam->ori, 0, 0);
 
 	    p0 = frust.nc;
@@ -112,7 +109,7 @@ xCursor::updateCmesh(xCam * cam, float umx, float umy, xColMesh * cmesh) //, flo
 	    p1 = frust.fc;
 	    p1 += frust.farUp * umy;
 	    p1 += frust.farSide * umx;
-
+*/
 
       if (cmesh == 0) { t = 999.0f; }
       else 
@@ -186,11 +183,11 @@ xViewBox::genBox(xFrustum * frust, float px, float py, float pz, float nx, float
       else if (i == 2) { umx = -1.0f;  umy = 1.0f; }
       else if (i == 3) { umx = 1.0f;  umy = 1.0f; }
 
-        p0 = frust->nc;
+        p0 = frust->nearCenter;
 	      p0 += frust->nearUp * umy;
 	      p0 += frust->nearSide * umx;
 
-	      p1 = frust->fc;
+	      p1 = frust->farCenter;
 	      p1 += frust->farUp * umy;
 	      p1 += frust->farSide * umx;
 
