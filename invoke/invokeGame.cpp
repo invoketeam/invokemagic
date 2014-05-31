@@ -497,8 +497,11 @@ invokeGame::drawShadow(void)
        glEnable(GL_BLEND);
        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-       glEnable(GL_DEPTH_TEST); glDepthMask(GL_TRUE);
+       glEnable(GL_DEPTH_TEST); 
        glDepthFunc(GL_LEQUAL); 
+
+      glDepthMask(GL_FALSE);
+
 
        glEnable(GL_CULL_FACE);
             glCullFace(GL_BACK);
@@ -510,8 +513,11 @@ invokeGame::drawShadow(void)
        //glEnable(GL_ALPHA_TEST);
      //  glAlphaFunc(GL_LEQUAL, 0.99f);
 
+     glEnable(GL_POLYGON_OFFSET_FILL);
+      glPolygonOffset(-1.0f, -1.0f);
 
            myRender.simpRender(4);
+
 
 
 //turn off texture coordinate generation
@@ -521,10 +527,14 @@ invokeGame::drawShadow(void)
       glDisable(GL_TEXTURE_GEN_T);
       glDisable(GL_TEXTURE_GEN_R);
       glDisable(GL_TEXTURE_GEN_Q);
+      
+//reset other settings
       glDepthFunc(GL_LESS);
       glDisable(GL_BLEND);
       glDisable(GL_ALPHA_TEST);
       glDisable(GL_POLYGON_OFFSET_FILL);
+      glDepthMask(GL_TRUE);
+      glDisable(GL_DEPTH_TEST);  
 
 }//drawshadow
 
@@ -655,9 +665,9 @@ if (shadowMode == 2)
 	  glMatrixMode(GL_MODELVIEW);  view.setView(&myCam.pos, &myCam.ori);   glLoadMatrixf(view.m);
  
  if (shadowMode == 2) {   glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0); }
-        // myRender.render(true);
-         myRender.renderBucket0(); 
-         //myRender.renderBucket1(); 
+         myRender.renderBucket0(); //solid
+
+         myRender.renderBucket2(); //decal
 
   //todo -- instead of extra pass use the 3rd texture channel (?)
  
@@ -669,7 +679,7 @@ if (shadowMode == 2)
     glMatrixMode(GL_PROJECTION); glLoadIdentity();  gluPerspective(myCam.fov, myCam.aspect, myCam.neard, myCam.fard);
 	  glMatrixMode(GL_MODELVIEW);  view.setView(&myCam.pos, &myCam.ori);   glLoadMatrixf(view.m);
     //render transparent
-      myRender.renderBucket1(); 
+      myRender.renderBucket1();  //transparent
 
 
 

@@ -160,8 +160,11 @@ public:
   void render(bool bSort = true);
 
   //todo -- seperated for shadow testing only
-  void renderBucket0(void);
-  void renderBucket1(void);
+  void renderBucket0(void);  //solid
+
+  void renderBucket2(void);  //decal
+
+  void renderBucket1(void);  //transparent
 
 
   void simpRender(int flag = 0xFFffFFff);

@@ -708,12 +708,25 @@ void
 
 
 void 
+xRender::renderBucket2(void)
+{
+  vecBucket[2].calcSort_CamDist(camPos);
+  vecBucket[2].sortEnt();
+  vecBucket[2].render(); 
+
+}//render3
+
+
+void 
 xRender::renderBucket1(void)
 {
   vecBucket[1].calcSort_CamDist(camPos);
   vecBucket[1].sortEnt();
   vecBucket[1].render(); 
 }//render2
+
+
+
 
 
 

@@ -46,7 +46,7 @@ xGroundDecal::render2(xRender * r)
 
     xEnt * e;
 
-    e = r->addFrame(0);
+    e = r->addFrame(2);
  
       e->pos = 0; //pos;
       e->sortpos = pos;
@@ -59,7 +59,7 @@ xGroundDecal::render2(xRender * r)
       //e->skinBlend = 2; 
       e->skinBlend = 3; 
 
-      e->flags = 4;  //receive shadow
+      //e->flags = 4;  //receive shadow
       e->decal = 1;
       e->alpha = 1.0;
       e->color = 1;
