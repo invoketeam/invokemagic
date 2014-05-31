@@ -35,8 +35,9 @@
 
 #define MSG_NONE 0
 #define MSG_MOVE 1
-#define MSG_ATTMOVE 2
-#define MSG_ATTTARG 3
+#define MSG_STOP 2
+#define MSG_ATTMOVE 3
+#define MSG_ATTTARG 4
 
 
 

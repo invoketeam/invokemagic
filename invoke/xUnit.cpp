@@ -293,6 +293,10 @@ xUnit::gotMsg(int msg, int arg0, int arg1, int arg2)
 
   printf("gotmsg %d  --  %d %d %d %d \n", id, msg, arg0, arg1, arg2);
 
+  if (msg == MSG_STOP)
+  { cmd = -1; vel.x = 0; vel.z = 0; return; }
+
+
   cmd = msg;
   dest.set(arg0, 0, arg1);
 

@@ -265,6 +265,13 @@ invokeHud::gotCmd(int cmd, int arg0, int arg1)
 
  // printf("invokehud gotcmd %d   %d %d \n", cmd, arg0, arg1);
 
+   if (cmd == 201) //stop
+   {
+     mySelect.sendMsg(parentGame, MSG_STOP, 0, 0, 0);
+     return;
+   }//endif
+
+
    if (cmd == 501) //right click on minimap
    {
     //todo -- map is 128x128  and a cell is 128x128
