@@ -6,6 +6,14 @@
 
 #include "../../gamex/xKey.h"
 #include "../../gamex/xDebug.h"
+#include "../../gamex/xGLCommon.h"
+
+#include "../unit/xTower.h"
+
+
+#define CURMODE_NONE -1
+#define CURMODE_DEFAULT 0
+#define CURMODE_BUILD 1
 
 
 invokeHud::invokeHud(void)
@@ -38,6 +46,7 @@ invokeHud::init(void)
    assetMan->initTexture("button", true,false,false); 
    mySprite.addSpriteXms("button");
    mySprite.addSpriteTex("btn_hold");
+   mySprite.addSpriteTex("btn_build");
 
 
  xButton * b;
@@ -48,9 +57,9 @@ invokeHud::init(void)
   b = addButton("btn2", "", 201, 610-36-36, 380, 16, 32,32, getSprite("btn_stop"), 1);
   b = addButton("btn3", "", 202, 610-36, 380, 16, 32,32, getSprite("btn_attack"), 0);
   b = addButton("btn4", "", 203, 610, 380, 16, 32,32, getSprite("btn_hold"), 0);
+  b = addButton("btn5", "", 204, 610-36*3, 380+36, 16, 32,32, getSprite("btn_build"), 0);
 
   //rest of buttons are just for alignment for now
-  b = addButton("btn5", "", 1, 610-36*3, 380+36, 16, 32,32, getSprite("button64x64"), 0);
   b = addButton("btn6", "", 1, 610-36*2, 380+36, 16, 32,32, getSprite("button64x64"), 0);
   b = addButton("btn7", "", 1, 610-36, 380+36, 16, 32,32, getSprite("button64x64"), 0);
   b = addButton("btn8", "", 1, 610, 380+36, 16, 32,32, getSprite("button64x64"), 0);
@@ -172,7 +181,28 @@ hudHeight = 340.0f;
   }//mdownleft
 
 
+//cancel
+  if (curMode == 1)
+  if (mClickRight >= (gameTime-2) )
+  {
+    curMode = 0;
+  }//endif
 
+
+//place building
+  if (mClickLeft >= (gameTime-2) )
+  if (curMode == 1)
+  {
+    //todo -- definetly dont do this directly (like it is now)
+    //send the parentgame a makebuilding command 
+    xActor * a;
+      a = new xTower();
+      a->team = 1;
+      a->pos.set(wmx, wmy, wmz);    
+    parentGame->addActor(a);
+
+    curMode = 0;
+  }//endif
 
 
 
@@ -220,6 +250,20 @@ void
 invokeHud::renderSelection3D(void)
 {
 
+
+ if (curMode == 1)
+  {
+   xMdx3 * mesh;
+   mesh = assetMan->getMesh("wraith_foepulet"); 
+
+   glColor3f(1,0,0);  
+   glPushMatrix();
+    glTranslatef(wmx, wmy, wmz);
+    mesh->render();
+   glPopMatrix(); 
+
+  }//endif
+
  mySelect.debRender(parentGame);
 
 }//rendersel
@@ -231,6 +275,7 @@ void
 invokeHud::render(void)
 {
  
+  
 
   glColor3f(0,1,0);
    if (selStart > 0) { drawRect(selx,sely, mx - selx, my - sely); }
@@ -276,6 +321,12 @@ invokeHud::gotCmd(int cmd, int arg0, int arg1)
    if (cmd == 203) //hold position
    {
      mySelect.sendMsg(parentGame, MSG_HOLD, 0, 0, 0);
+     return;
+   }//endif
+
+   if (cmd == 204) //make building (debug)
+   {
+     curMode = 1;
      return;
    }//endif
 
