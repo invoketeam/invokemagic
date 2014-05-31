@@ -13,6 +13,15 @@
 
 
 
+#define STATE_MAINMENU 0
+#define STATE_GAME 1
+#define STATE_LOADMENU 2
+#define STATE_SETTINGS 4
+#define STATE_PAUSEMENU 5
+#define STATE_QUITNOW -999
+
+
+
 class invokeMenu : public xGameExt
 {
 public:

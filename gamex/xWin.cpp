@@ -14,6 +14,14 @@
 namespace xwin
 {
 
+	//static WNDCLASS  gWinClass;
+	static HWND  gHwnd; //this is our window
+	static HDC   gDeviceContext;
+	static HGLRC gRenderContext;
+
+
+
+
 
 	void xwinSleep(int msec)
 	{
@@ -21,26 +29,63 @@ namespace xwin
 		Sleep(msec);
 	}//xwinsleep
 
-	unsigned int xwinGetTime()
+/*
+	unsigned int xwinGetTime(void)
 	{
 		return GetTickCount();
 	}//gettime
+*/
 
 
-	static bool bGlewOk = false;
+//a more precise time measuring thing
+
+    //http://www.angelcode.com/dev/timefps/timefps.html
+    //http://speedrunsdev.blogspot.hu/2008/05/tutorial-3-timing-and-fps.html
+
+    //float  timeAtGameStart;
+    //__int64
+    static UINT64 ticksPerSecond;
+
+    unsigned int xwinGetTime(void)
+    {
+      UINT64 ticks;
+      float time;
+
+
+      static bool first = true;
+      if (first)
+      {
+        if( !QueryPerformanceFrequency((LARGE_INTEGER *)&ticksPerSecond) )  {  ticksPerSecond = 1000; }
+        first = false;
+      }//endif
+      if( !QueryPerformanceCounter((LARGE_INTEGER *)&ticks) ) {  ticks = (UINT64)GetTickCount(); }
+
+      time = (float)(__int64)ticks/(float)(__int64)ticksPerSecond;
+
+      return (unsigned int) (time*1000);
+    }//getgametime
+
 
 
 
 
 	static int winWidth = 640;
 	static int winHeight = 480;
+
 	static int canvasWidth = 640;
 	static int canvasHeight = 480;
 
-	int xwinGetWinWidth() { return winWidth; }
-	int xwinGetWinHeight() { return winHeight; }
-	int xwinGetCanvasWidth() { return canvasWidth; }
-	int xwinGetCanvasHeight() { return canvasHeight; }
+  //static int desktopWidth = 1024;
+  //static int desktopHeight = 768;
+
+	int xwinGetWinWidth(void) { return winWidth; }
+	int xwinGetWinHeight(void) { return winHeight; }
+
+	int xwinGetCanvasWidth(void) { return canvasWidth; }
+	int xwinGetCanvasHeight(void) { return canvasHeight; }
+
+	//int xwinGetDesktopWidth(void) { return canvasWidth; }
+	//int xwinGetDesktopHeight(void) { return canvasHeight; }
 
 
 	static void windowResized(int w, int h)
@@ -81,12 +126,51 @@ namespace xwin
 	static short mousex = 0;
 	static short mousey = 0;
 
-	short getMousex() { return mousex; }
-	short getMousey() { return mousey; }
+	short getMousex(void) { return mousex; }
+	short getMousey(void) { return mousey; }
 
-	float getUnivMousex() {  return  (float)mousex/(float)canvasWidth  ; }
-	float getUnivMousey() {  return  (float)mousey/(float)canvasHeight ; }
+	float getUnivMousex(void) {  return  (float)mousex/(float)canvasWidth  ; }
+	float getUnivMousey(void) {  return  (float)mousey/(float)canvasHeight ; }
 
+  void setMouseCursorPos(int x, int y)
+  {
+      if (xwinIsMini()) { return; }
+
+      SetCursorPos(x, y);
+  }//setmousepos
+
+  void limitMousePos(int minx, int miny, int maxx, int maxy)
+  {
+     if (xwinIsMini()) { return; }
+
+    int x;    int y;
+    int dx;   int dy;
+
+    POINT mcoord;
+		GetCursorPos(&mcoord);
+
+  
+    dx = mcoord.x;
+    dy = mcoord.y;
+   
+     ScreenToClient(gHwnd, &mcoord); //Map to window coordinates
+
+    x = mcoord.x;
+    y = mcoord.y;
+    dx -= x;
+    dy -= y;
+    
+
+     //printf(" mousex mousey %d %d \n", mousex, mousey);
+
+     if (x < minx) { x += (maxx-minx);}
+     else if (x > maxx) { x -= (maxx-minx); }
+     if (y < miny) { y += (maxy-miny);}
+     else if (y > maxy) { y -= (maxy-miny); }
+
+     SetCursorPos(x+dx, y+dy);
+      
+  }//limitmouse
 
 
 	static void mouseMove(WPARAM wParam, LPARAM lParam)
@@ -152,13 +236,13 @@ namespace xwin
 
 	static bool bFullScreen = false;
 
-	bool xwinIsFullScreen() { return bFullScreen; }
+	bool xwinIsFullScreen(void) { return bFullScreen; }
 
 
 	//source
 	//http://cppkid.wordpress.com/2009/01/07/how-to-get-the-screen-resolution-in-pixels/
 	// Get the horizontal and vertical screen sizes in pixel
-	void GetDesktopResolution(int& horizontal, int& vertical)
+	static void GetDesktopResolution(int& horizontal, int& vertical)
 	{
 		RECT desktop;
 		// Get a handle to the desktop window
@@ -344,7 +428,7 @@ namespace xwin
 	}//setfull
 
 	
-	static void resetScreen()
+	static void resetScreen(void)
 	{
 		if (bFullScreen) 
 		{
@@ -385,7 +469,7 @@ namespace xwin
 	//POINT nMouseCoordinates;
 
 	static bool bMinimized = false;
-	bool xwinIsMini() { return bMinimized;}
+	bool xwinIsMini(void) { return bMinimized;}
 
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
@@ -489,9 +573,9 @@ namespace xwin
 
 		case WM_MOUSEMOVE:
       POINT nMouseCoordinates;
-			GetCursorPos(&nMouseCoordinates); // Get mouse coords for GUI
-			ScreenToClient(hWnd, &nMouseCoordinates); //Map to window coordinates
-			mouseMove(wParam, lParam);
+			  GetCursorPos(&nMouseCoordinates); // Get mouse coords for GUI
+			  ScreenToClient(hWnd, &nMouseCoordinates); //Map to window coordinates
+			  mouseMove(wParam, lParam);
 			break;
 
 		case WM_RBUTTONDOWN:
@@ -743,7 +827,7 @@ namespace xwin
 
 	static float dx = 0;
 
-	void debugDraw()
+	void debugDraw(void)
 	{
 
 		dx += 0.1f;
@@ -780,14 +864,9 @@ namespace xwin
 
 
 
-	//static WNDCLASS  gWinClass;
-	static HWND  gHwnd; //this is our window
-	static HDC   gDeviceContext;
-	static HGLRC gRenderContext;
 
 
-
-	POINT getWinCenter(void)
+	static POINT getWinCenter(void)
 	{
 		POINT pt;
 		pt.x = winWidth / 2;
@@ -800,7 +879,7 @@ namespace xwin
 
 
 
-	void xwinKillWindow()
+	void xwinKillWindow(void)
 	{
 		if (!gHwnd) { return; }
 		//deleteWindow(gHwnd);
@@ -833,7 +912,7 @@ namespace xwin
 
 
 
-	void xwinExit()
+	void xwinExit(void)
 	{
 		printf("xwinExit \n");
 
@@ -851,7 +930,7 @@ namespace xwin
 
 
 
-	void xwinUpdate()
+	void xwinUpdate(void)
 	{
 		//peek messages
 
@@ -901,7 +980,7 @@ namespace xwin
 	}//setwindow
 
 
-	void xwinSwapBuffer()
+	void xwinSwapBuffer(void)
 	{
 		SwapBuffers(gDeviceContext);
 	}//swapbuffer

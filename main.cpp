@@ -51,42 +51,10 @@ void init(void)
 
 
 
-
-//http://www.angelcode.com/dev/timefps/timefps.html
-//http://speedrunsdev.blogspot.hu/2008/05/tutorial-3-timing-and-fps.html
-
-float  timeAtGameStart;
-UINT64 ticksPerSecond;
-
 unsigned int getGameTime(void)
 {
-  UINT64 ticks;
-  float time;
-
- 
-
-  static bool first = true;
-  if (first)
-  {
-    if( !QueryPerformanceFrequency((LARGE_INTEGER *)&ticksPerSecond) )  {  ticksPerSecond = 1000; }
-    first = false;
-  }//endif
-  if( !QueryPerformanceCounter((LARGE_INTEGER *)&ticks) ) {  ticks = (UINT64)GetTickCount(); }
-
-  time = (float)(__int64)ticks/(float)(__int64)ticksPerSecond;
-
- // printf("Ticks: %0.2f \n ",((float)(__int64)ticks) );
- // printf("Tickspersec: %0.2f \n ",(float)(__int64)ticksPerSecond );
- //  printf("Time: %0.2f   \n", time*1000   );   
- //  printf("gtic: %d \n",GetTickCount());   
-
-  return (unsigned int) (time*1000);
-  //return time;
+  return xwin::xwinGetTime();
 }//getgametime
-
-
-
-
 
 
 
@@ -325,7 +293,6 @@ int main(int argc, char**argv)
 	while (bRunGame)
 	{
 
-		//startTime = GetTickCount();
     startTime = getGameTime();
 
 		xwin::xwinUpdate();
@@ -345,14 +312,9 @@ int main(int argc, char**argv)
         skipAvg += diff;
         frate = skipAvg / skipn;
         if (skipn >= 120) { skipn = 1; skipAvg = frate; }
-//        skipFrame =  ceil( frate / (( 16.0f)/2.0f));  //16 = 1000/60  (60fps)
-        skipFrame = (int) ceil( frate / ( 16.0f) ); 
+        skipFrame = (int) ceil( frate / ( 16.0f) );  //16 = 1000/60  (60fps)
         if (skipFrame > 6) { skipFrame = 6; }
         if (skipFrame < 1) { skipFrame = 1; }
-        //seems we dont have to do the crazy things needed in flash to keep framerate consistent
-        //if (skipFrame > prevSkip) { prevSkip = skipFrame; fastCount = 0; }
-        //else  {  fastCount += 1;  if (fastCount >= 80) { prevSkip = skipFrame; fastCount = 0; } }
-        //skipFrame = prevSkip;
       }//endif
 
       frame += 1;
@@ -367,17 +329,16 @@ int main(int argc, char**argv)
 		}
 
 
-	//	diff = GetTickCount() - startTime ;
   	diff = getGameTime() - startTime ;
   
 
-		//if (diff < 0)  {diff = 0; }
+		if (diff < 0)  { diff = 0; } //not likely to happen
 		if (diff < 16) { Sleep(16 - diff); }
 
   
     measureFps();
 
-    if (testGame.gameState == -999) { bRunGame = false; break; }
+    if (testGame.gameState == STATE_QUITNOW) { bRunGame = false; break; }
 
 	}//wend
 
