@@ -22,6 +22,8 @@ xUnit::xUnit(void)
 
   anim = 0;
 
+  dontMove = 0;
+
 }//ctor
 
 
@@ -98,6 +100,7 @@ static float getAng(float dy, float dx)
 
 
 
+//todo -- add attackerid parameter (check if its the same as targid, check if its on same team etc)
 void 
 xUnit::gotHit(float dmg, int dtype, float hx, float hy, float hz)
 {
@@ -145,12 +148,13 @@ xUnit::update(void)
   float fr;
     fr = 1.0f;
 
+    //animate (temporary)
     curFrame += 0.5f * fr;
     if (curFrame >= anim->numFrame) { curFrame = 0.0f; } 
 
 
 
-
+    //move command
     if (cmd > 0)
     {
       vel.x = dest.x - pos.x;
@@ -180,18 +184,27 @@ xUnit::update(void)
     xActor * a;
     float dx, dz;
     a = 0;
-    if (targid > 0)  {  a = game->getActor(targid);  if (a == 0) { targid = 0; } }
-    else
-    {
-      if (workb < game->gameTime ) { workb = game->gameTime + 10; 
-        a = getTarget(game->mgrid, pos.x-1024, pos.z-1024, 2048, 2048);
-        if (a != 0) {targid = a->id; }  else { targid = 0; }
-      }
-      //todo -- alert others nearby when found a target(?)
-    } //endif   
 
-    if (cmd == 1) {  a = 0; targid = 0; workb = game->gameTime + 5;   } //move -- ignore targets (retreat)
 
+    //turn targetid to an actor pointer or 
+    //if targetid doesnt refer to anyone (zero)
+    //try to find a nearby target (but not every frame)
+      if (targid > 0)  {  a = game->getActor(targid);  if (a == 0) { targid = 0; } }
+      else
+      {
+        if (workb < game->gameTime ) { workb = game->gameTime + 10; 
+          a = getTarget(game->mgrid, pos.x-1024, pos.z-1024, 2048, 2048);
+          if (a != 0) {targid = a->id; }  else { targid = 0; }
+        }
+        //todo -- alert others nearby when found a target(?)
+      } //endif   
+
+
+    //command to move -- ignore nearby targets (move is same as retreat)
+    if (cmd == 1) {  a = 0; targid = 0; workb = game->gameTime + 5;   } 
+
+
+    //no command and no enemy in sight -> stay put, reset targetid
     if (cmd <= 0)
     if (a == 0) {   vel.x = 0; vel.z = 0; targid = 0; }
 
@@ -215,10 +228,11 @@ xUnit::update(void)
     }//endif
 
     
+    //follow target
     if (a != 0) 
     if (worka == 0)
     {
-
+     
       vel.x = apx - pos.x;
       vel.z = apz - pos.z;
 
@@ -229,9 +243,13 @@ xUnit::update(void)
       if (vel.x > ms) { vel.x = ms; }      if (vel.x < -ms) { vel.x = -ms; }
       if (vel.z > ms) { vel.z = ms; }      if (vel.z < -ms) { vel.z = -ms; }
 
+      //hold position
+      if (dontMove == 1) { vel.x = 0; vel.z = 0;}
+
     }//endif
 
 
+    //attack target
     if (worka == 1)
     {
       if (a == 0) { worka = 0; vel.x = 0; vel.y = 0; targid = 0; return;}
@@ -293,9 +311,17 @@ xUnit::gotMsg(int msg, int arg0, int arg1, int arg2)
 
   printf("gotmsg %d  --  %d %d %d %d \n", id, msg, arg0, arg1, arg2);
 
+  //stop moving and attack (todo -- also stop self issued commands?)
   if (msg == MSG_STOP)
-  { cmd = -1; vel.x = 0; vel.z = 0; return; }
+  { cmd = -1; vel.x = 0; vel.z = 0; targid = 0; return; }
 
+  //hold position
+  if (msg == MSG_HOLD)
+  { cmd = -1; vel.x = 0; vel.z = 0; targid = 0; dontMove = 1; return; }
+
+
+  //any command for moving should let the unit move again
+  dontMove = 0;
 
   cmd = msg;
   dest.set(arg0, 0, arg1);

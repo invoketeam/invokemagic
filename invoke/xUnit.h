@@ -28,6 +28,7 @@ public:
 
   gamex::cVec3f dest;
   int cmd;
+  int dontMove; //0 move  1 dontmove (maybe should be called movemode)
 
 public:
   xUnit(void);

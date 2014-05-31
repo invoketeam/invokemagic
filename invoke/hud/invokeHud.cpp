@@ -37,6 +37,7 @@ invokeHud::init(void)
   mySprite.assetMan = assetMan;
    assetMan->initTexture("button", true,false,false); 
    mySprite.addSpriteXms("button");
+   mySprite.addSpriteTex("btn_hold");
 
 
  xButton * b;
@@ -46,9 +47,9 @@ invokeHud::init(void)
   b = addButton("btn1", "", 200, 610-36-36-36,380, 16, 32,32, getSprite("btn_move"), 1);
   b = addButton("btn2", "", 201, 610-36-36, 380, 16, 32,32, getSprite("btn_stop"), 1);
   b = addButton("btn3", "", 202, 610-36, 380, 16, 32,32, getSprite("btn_attack"), 0);
+  b = addButton("btn4", "", 203, 610, 380, 16, 32,32, getSprite("btn_hold"), 0);
 
   //rest of buttons are just for alignment for now
-  b = addButton("btn4", "", 1, 610, 380, 16, 32,32, getSprite("button64x64"), 0);
   b = addButton("btn5", "", 1, 610-36*3, 380+36, 16, 32,32, getSprite("button64x64"), 0);
   b = addButton("btn6", "", 1, 610-36*2, 380+36, 16, 32,32, getSprite("button64x64"), 0);
   b = addButton("btn7", "", 1, 610-36, 380+36, 16, 32,32, getSprite("button64x64"), 0);
@@ -268,6 +269,13 @@ invokeHud::gotCmd(int cmd, int arg0, int arg1)
    if (cmd == 201) //stop
    {
      mySelect.sendMsg(parentGame, MSG_STOP, 0, 0, 0);
+     return;
+   }//endif
+
+
+   if (cmd == 203) //hold position
+   {
+     mySelect.sendMsg(parentGame, MSG_HOLD, 0, 0, 0);
      return;
    }//endif
 
