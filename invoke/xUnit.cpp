@@ -99,6 +99,20 @@ static float getAng(float dy, float dx)
 
 }//getang
 
+/*
+static gamex::cVec3f getVel(gamex::cVec3f * start, gamex::cVec3f * end, float maxLength)
+{
+  gamex::cVec3f ret;
+  ret = *end;
+  ret -= *start;
+  if (ret.getMagSquared() > maxLength*maxLength)
+  {
+    ret.normPrec();
+    ret *= maxLength;
+  }
+  return ret;
+}//getvel
+*/
 
 
 //todo -- add attackerid parameter (check if its the same as targid, check if its on same team etc)
@@ -169,12 +183,18 @@ xUnit::update(void)
       float ms;
       ms = 4.0f;
 
-      if (vel.x > ms) { vel.x = ms; }
-      if (vel.x < -ms) { vel.x = -ms; }
-      if (vel.z > ms) { vel.z = ms; }
-      if (vel.z < -ms) { vel.z = -ms; }
+      if (abs(vel.x) <= ms && abs(vel.z) <= ms) { cmd = -1; vel = 0;  printf("arrived \n"); }
+      else
+      {
+        vel.x = cos(yaw) * ms;
+        vel.z = sin(yaw) * ms;
 
-      if (abs(vel.x) < ms && abs(vel.z) < ms) { cmd = -1; vel = 0;}
+       // if (vel.x > ms) { vel.x = ms; }
+      //  if (vel.x < -ms) { vel.x = -ms; }
+      //  if (vel.z > ms) { vel.z = ms; }
+      //  if (vel.z < -ms) { vel.z = -ms; }
+      }
+  
     }//endif
 
 
@@ -246,10 +266,15 @@ xUnit::update(void)
 
       if (vel.x != 0 && vel.z != 0)      {    yaw = getAng(vel.z, vel.x);  }
 
+
       float ms;
-      ms = 4.0f;
-      if (vel.x > ms) { vel.x = ms; }      if (vel.x < -ms) { vel.x = -ms; }
-      if (vel.z > ms) { vel.z = ms; }      if (vel.z < -ms) { vel.z = -ms; }
+        ms = 4.0f;
+     
+      vel.x = cos(yaw) * ms;
+      vel.z = sin(yaw) * ms;
+
+      //if (vel.x > ms) { vel.x = ms; }      if (vel.x < -ms) { vel.x = -ms; }
+      //if (vel.z > ms) { vel.z = ms; }      if (vel.z < -ms) { vel.z = -ms; }
 
       //hold position
       if (dontMove == 1) { vel.x = 0; vel.z = 0;}
