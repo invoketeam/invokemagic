@@ -73,6 +73,7 @@ public:
   virtual void childUpdate(xGame * parent);
   virtual void childRender(xGame * parent);
 
+  //font is ignored now (there is only 1)
   virtual void drawStr(int font, float size, float cx, float cy, float cz, const char* str, ...);
 
 

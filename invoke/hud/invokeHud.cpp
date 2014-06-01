@@ -328,6 +328,26 @@ invokeHud::render(void)
   f = myFlat.addFrame(0+320, 480-140 + 70, 1, 640,140, hudBack);
   f->alpha = 0.5f;
 
+  //drawStr(0, 16, 16, 16, 32, "Testing ");
+
+  if (curMode == CURMODE_BUILD)
+  {
+    drawStr(0, 12, 16, 16, 32, "Left click: place building ");
+    drawStr(0, 12, 16, 16+16, 32, "Right click: cancel ");
+  }
+
+  if (curMode == CURMODE_ATTACK)
+  {
+    drawStr(0, 12, 16, 16, 32, "Left click: attack location or unit ");
+    drawStr(0, 12, 16, 16+16, 32, "Right click: cancel ");
+  }
+
+  if (curMode == CURMODE_MOVE)
+  {
+    drawStr(0, 12, 16, 16, 32, "Left click: move or retreat to location ");
+    drawStr(0, 12, 16, 16+16, 32, "Right click: cancel ");
+  }
+
 }//render
 
 
