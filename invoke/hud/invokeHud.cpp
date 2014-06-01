@@ -217,8 +217,8 @@ hudHeight = 340.0f;
     {
       if (mySelect.overId != 0) //cursor is over something
       { mySelect.sendMsg(parentGame, MSG_ATTACK_TARG, mySelect.overId, 0, 0); }
-     
-      mySelect.sendMsg(parentGame, MSG_ATTACK_MOVE, wmx, wmz, 0);
+      else 
+      { mySelect.sendMsg(parentGame, MSG_ATTACK_MOVE, wmx, wmz, 0); }
 
     }//move
 
@@ -226,10 +226,6 @@ hudHeight = 340.0f;
     curMode = 0;
   }//endif
 
-
-  //printf("clickright  %d  %d  \n ", mClickRight, gameTime);
-  //because of debugging upcursor is called in render
-  //so right click test will need to be altered later (aka fixed)
 
  //todo -- check if mouse is over minimap
   if (my < hudHeight)
@@ -244,9 +240,25 @@ hudHeight = 340.0f;
 
     //(still need to test if they attempt to reach something where another unit is standing)
 
-
-   
-    mySelect.sendMsg(parentGame, MSG_MOVE, wmx, wmz, 0);
+    if (mySelect.overId != 0) //cursor is over something
+    {
+      //this is tricky as we dont have a player class yet (maybe a player team variable would be enough hough)
+      
+      int playerTeam;  //temp value (make it a member or something)
+      playerTeam = 1;
+      xActor * a;
+      a = parentGame->getActor(mySelect.overId);
+     // if (a->team != playerTeam)
+     // {   mySelect.sendMsg(parentGame, MSG_ATTACK_TARG, mySelect.overId, 0, 0);  }
+     // else
+     // {   mySelect.sendMsg(parentGame, MSG_PROTECT_TARG, mySelect.overId, 0, 0);   }
+      //for testing attack everything you right click on
+      mySelect.sendMsg(parentGame, MSG_ATTACK_TARG, mySelect.overId, 0, 0);
+    }//endif
+    else
+    {
+      mySelect.sendMsg(parentGame, MSG_MOVE, wmx, wmz, 0);
+    }
 
   }//endif
 
@@ -272,7 +284,7 @@ invokeHud::renderSelection3D(void)
 {
 
 
- if (curMode == 1)
+ if (curMode == CURMODE_BUILD)
   {
    xMdx3 * mesh;
    mesh = assetMan->getMesh("wraith_foepulet"); 

@@ -39,7 +39,9 @@
 #define MSG_HOLD 3
 #define MSG_ATTACK_MOVE 4
 #define MSG_ATTACK_TARG 5
-#define MSG_PROTECT 6 
+#define MSG_PROTECT_POINT 6 
+#define MSG_PROTECT_TARG 7
+#define MSG_PATROL 8 
 
 
 

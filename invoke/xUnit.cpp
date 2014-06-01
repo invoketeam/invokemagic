@@ -168,6 +168,7 @@ xUnit::update(void)
 
       float ms;
       ms = 4.0f;
+
       if (vel.x > ms) { vel.x = ms; }
       if (vel.x < -ms) { vel.x = -ms; }
       if (vel.z > ms) { vel.z = ms; }
@@ -187,6 +188,13 @@ xUnit::update(void)
     a = 0;
 
 
+    if (cmd == 3)  //attack (hunt down) target
+    {
+      targid = cmdTarg;
+      a = game->getActor(targid);  if (a == 0) { targid = 0; cmdTarg = 0; cmd = 0; } 
+    }
+
+
     //turn targetid to an actor pointer or 
     //if targetid doesnt refer to anyone (zero)
     //try to find a nearby target (but not every frame)
@@ -199,7 +207,6 @@ xUnit::update(void)
         }
         //todo -- alert others nearby when found a target(?)
       } //endif   
-
 
     //command to move -- ignore nearby targets (move is same as retreat)
     if (cmd == 1) {  a = 0; targid = 0; workb = game->gameTime + 5;   } 
@@ -310,7 +317,7 @@ void
 xUnit::gotMsg(int msg, int arg0, int arg1, int arg2)
 {
 
-  printf("gotmsg %d  --  %d %d %d %d \n", id, msg, arg0, arg1, arg2);
+  printf("gotmsg  id %d msg %d  -- %d %d %d \n", id, msg, arg0, arg1, arg2);
 
   //stop moving and attack (todo -- also stop self issued commands?)
   if (msg == MSG_STOP)
@@ -324,17 +331,31 @@ xUnit::gotMsg(int msg, int arg0, int arg1, int arg2)
   //any command for moving should let the unit move again
   dontMove = 0;
 
+  if (msg == MSG_MOVE)
+  {  cmd = 1;    dest.set(arg0, 0, arg1); return; }
+
 
   if (msg == MSG_ATTACK_MOVE)
   { cmd = 2; dest.set(arg0, 0, arg1);  return; }
 
 
+  if (msg == MSG_ATTACK_TARG)
+  { 
+    xActor * a;
+     cmdTarg = arg0;
+     a = game->getActor(cmdTarg);
+     if (a == 0) {  } //todo -- error message because this shouldnt happen
+     cmd = 3;
+    return;
+  }//endif
 
-  cmd = msg;
-  dest.set(arg0, 0, arg1);
-
-
-
+  if (msg == MSG_PROTECT_TARG)
+  {
+    printf("[actor %d ]: i dont know how to protect yet :( \n", id);
+  }//endif
+  
+  //all unimplemented commands are ignored for now
+ 
 }//gotmsg
 
 
