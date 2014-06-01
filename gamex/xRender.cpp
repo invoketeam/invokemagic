@@ -330,7 +330,7 @@ xBucket::render(void)
           else { glDisable(GL_ALPHA_TEST); } //turn off alpha test
 
         }
-        else
+        else 
         {
          /// glDepthMask(GL_FALSE);
          //// glEnable(GL_BLEND);
@@ -340,8 +340,10 @@ xBucket::render(void)
           //turn off alpha test
           glDepthMask(GL_FALSE);
           glEnable(GL_BLEND);
-          if (blend == 2) { glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); } //set blending func to alpha blending
-          else { glBlendFunc(GL_SRC_ALPHA, GL_ONE); } //set blending to additive
+          if (blend == 2) 
+          { glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); } //set blending func to alpha blending
+          else 
+          { glBlendFunc(GL_SRC_ALPHA, GL_ONE); } //set blending to additive
         } 
       }//endif
 

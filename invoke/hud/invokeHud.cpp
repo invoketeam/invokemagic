@@ -13,7 +13,10 @@
 
 #define CURMODE_NONE -1
 #define CURMODE_DEFAULT 0
-#define CURMODE_BUILD 1
+#define CURMODE_MOVE 1
+#define CURMODE_ATTACK 2
+#define CURMODE_BUILD 3
+
 
 
 invokeHud::invokeHud(void)
@@ -182,28 +185,46 @@ hudHeight = 340.0f;
 
 
 //cancel
-  if (curMode == 1)
+  if (curMode > 0)  //== CURMODE_BUILD)
   if (mClickRight >= (gameTime-2) )
   {
     curMode = 0;
   }//endif
 
 
-//place building
   if (mClickLeft >= (gameTime-2) )
-  if (curMode == 1)
   {
-    //todo -- definetly dont do this directly (like it is now)
-    //send the parentgame a makebuilding command 
-    xActor * a;
-      a = new xTower();
-      a->team = 1;
-      a->pos.set(wmx, wmy, wmz);    
-    parentGame->addActor(a);
+    //place building
+    if (curMode == CURMODE_BUILD)
+    {
+      //todo -- definetly dont do this directly (like it is now)
+      //send the parentgame a makebuilding command 
+      xActor * a;
+        a = new xTower();
+        a->team = 1;
+        a->pos.set(wmx, wmy, wmz);    
+      parentGame->addActor(a);
+    }//endif
 
+
+    if (curMode == CURMODE_MOVE)
+    {
+      mySelect.sendMsg(parentGame, MSG_MOVE, wmx, wmz, 0);
+    }//move
+
+
+    if (curMode == CURMODE_ATTACK)
+    {
+      if (mySelect.overId != 0) //cursor is over something
+      { mySelect.sendMsg(parentGame, MSG_ATTACK_TARG, mySelect.overId, 0, 0); }
+     
+      mySelect.sendMsg(parentGame, MSG_ATTACK_MOVE, wmx, wmz, 0);
+
+    }//move
+
+  //reset cursor mode
     curMode = 0;
   }//endif
-
 
 
   //printf("clickright  %d  %d  \n ", mClickRight, gameTime);
@@ -258,11 +279,16 @@ invokeHud::renderSelection3D(void)
 
    glColor3f(1,0,0);  
    glPushMatrix();
-    glTranslatef(wmx, wmy, wmz);
+    float ax, az;
+    ax = floor(wmx / 128.0f) * 128.0f;
+    az = floor(wmz / 128.0f) * 128.0f;
+    glTranslatef(ax, wmy, az);
     mesh->render();
    glPopMatrix(); 
 
   }//endif
+
+
 
  mySelect.debRender(parentGame);
 
@@ -311,6 +337,20 @@ invokeHud::gotCmd(int cmd, int arg0, int arg1)
 
  // printf("invokehud gotcmd %d   %d %d \n", cmd, arg0, arg1);
 
+
+   if (cmd == 200 ) //move
+   {
+      curMode = CURMODE_MOVE;
+      return;
+   }
+
+   if (cmd == 202 ) //attack
+   {
+      curMode = CURMODE_ATTACK;
+      return;
+   }
+
+
    if (cmd == 201) //stop
    {
      mySelect.sendMsg(parentGame, MSG_STOP, 0, 0, 0);
@@ -326,7 +366,7 @@ invokeHud::gotCmd(int cmd, int arg0, int arg1)
 
    if (cmd == 204) //make building (debug)
    {
-     curMode = 1;
+     curMode = CURMODE_BUILD;
      return;
    }//endif
 

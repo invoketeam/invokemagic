@@ -69,7 +69,7 @@ xHoming::render2(xRender * r)
     b->scale = 3;
     b->rgb = teamColor;
     b->vel.set(4*(game->getRand()-0.5f),4*(game->getRand()-0.5f),4*(game->getRand()-0.5f));
-
+    b->fade = 0.02f;
 
 /*
     xEnt * e;

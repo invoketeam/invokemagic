@@ -247,13 +247,13 @@ xBigPartSys::render(xRender * rend, gamex::cQuat camori)
     
     e = rend->addFrame(1);
      e->sortpos = a->pos;
-     e->blend = 2; //2;
+     e->blend = 3; 
 
      e->vmesh = &(a->mesh);
      e->fmesh = &(a->mesh);
 
      e->skin = a->skin;
-     e->skinBlend = 3; //3;
+     e->skinBlend =  3;
      e->color = a->rgb;
      e->alpha = a->alpha;
 

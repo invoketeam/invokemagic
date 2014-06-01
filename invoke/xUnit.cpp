@@ -19,6 +19,7 @@ xUnit::xUnit(void)
 
 
   cmd = 0;
+  cmdTarg = 0;
 
   anim = 0;
 
@@ -154,8 +155,8 @@ xUnit::update(void)
 
 
 
-    //move command
-    if (cmd > 0)
+    //move command (or attack and no target)
+    if (cmd == 1 || (cmd == 2 && targid == 0) )
     {
       vel.x = dest.x - pos.x;
       vel.z = dest.z - pos.z;
@@ -322,6 +323,12 @@ xUnit::gotMsg(int msg, int arg0, int arg1, int arg2)
 
   //any command for moving should let the unit move again
   dontMove = 0;
+
+
+  if (msg == MSG_ATTACK_MOVE)
+  { cmd = 2; dest.set(arg0, 0, arg1);  return; }
+
+
 
   cmd = msg;
   dest.set(arg0, 0, arg1);
