@@ -302,7 +302,8 @@ void saveFont(std::string fontFile, std::string xmName, std::string skinName, in
     ch->chcode = i;
     stbtt_GetCodepointHMetrics(&font, (char)i, &advance, &lsb);
     ch->addx = (float) advance * scale;
-    ch->addx += addspace;  
+    //ch->addx += addspace;
+    //nah -- dont bake the extra space
   }//nexti
 
   int imgSize;
@@ -346,7 +347,7 @@ void saveFont(std::string fontFile, std::string xmName, std::string skinName, in
   std::ofstream myfile;
 	  myfile.open (xmName.c_str());
 	  myfile << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-    myfile << "<xfont image=\"" << skinName << "\"  w=\""<< size << "\" h=\"" << size << "\"  size=\""<<s<<"\"  ascent=\""<< ascent <<  "\" descent=\""<<descent<<"\" linegap=\""<<linegap<<"\" >\n";
+    myfile << "<xfont image=\"" << skinName << "\"  w=\""<< size << "\" h=\"" << size << "\"  size=\""<<s << "\"  extraspace=\""<< addspace  <<  "\"  ascent=\""<< ascent <<  "\" descent=\""<<descent<<"\" linegap=\""<<linegap<<"\" >\n";
 
   for (i = start; i < end; i++)
   {

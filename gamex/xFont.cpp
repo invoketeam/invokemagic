@@ -30,6 +30,8 @@ xFont::xFont(void)
    descent = 0.0f;
    linegap = 0.0f;    
 
+    extraSpace = 0.0f;
+
     handle = 0;
  }//ctor
 
@@ -86,6 +88,8 @@ void
 
 
          fontsize = root.attribute("size").as_float();
+
+         extraSpace = root.attribute("extraspace").as_float();
 
       
          chwidth = fontsize  /2;
@@ -212,7 +216,7 @@ xFont::writeStrFrame(xFlatRender * render, unsigned int skin, float cx, float cy
         {
            c = str[i];
            if (c == '\n') { dx = cx; dy += addy; continue;}   //end of line
-           if (c == 32) { dx += (chwidth/2)*scale; continue; } //space
+           if (c == 32) { dx += (extraSpace + chwidth/2)*scale; continue; } //space
          
            a = &vecChar[c];
            if (a->valid <= 0) { dx += chwidth*scale;  continue; }  //invalid character is replaced with space
@@ -288,7 +292,7 @@ xFont::writeStrFrame(xFlatRender * render, unsigned int skin, float cx, float cy
         {
            c = str[i];
            if (c == '\n') { dx = cx; dy += addy; continue;}   //end of line
-           if (c == 32) { dx += (chwidth/2)*scale; continue; } //space
+           if (c == 32) { dx += (extraSpace+ chwidth/2)*scale; continue; } //space
          
            a = &vecChar[c];
            if (a->valid <= 0) { dx += chwidth*scale;  continue; }  //invalid character is replaced with space
@@ -352,11 +356,11 @@ xFont::getXcoordFromCharPos(std::string &str, int pos, float scale)
      if (c == 32) { dx += (chwidth/2)*scale; continue; } //space
    
      a = &vecChar[c];
-     if (a->valid <= 0) { dx += chwidth*scale;  continue; }  //invalid character is replaced with space
+     if (a->valid <= 0) { dx +=  chwidth*scale;  continue; }  //invalid character is replaced with space
 
      dx += a->addx *scale;
   }//nexti
-  if (i >= (int) str.size()) { dx -= a->addx; dx += (chwidth / 2); }
+  if (i >= (int) str.size()) { dx -= a->addx; dx += (extraSpace+chwidth / 2); }
   return dx;
 }//getxfromcharpos
 
@@ -379,7 +383,7 @@ xFont::getCharPos(std::string &str, float xcoord, float scale, unsigned char * c
   {
      c = str[i];
      if (c == '\n') { return -1; }   //end of line -- treated as not found
-     if (c == 32) { dx += (chwidth/2)*scale; continue; } //space
+     if (c == 32) { dx += (extraSpace+chwidth/2)*scale; continue; } //space
    
      a = &vecChar[c];
      if (a->valid <= 0) { dx += chwidth*scale;  continue; }  //invalid character is replaced with space
@@ -428,7 +432,7 @@ xFont::getWidth(std::string &str, float scale)
         {
            c = str[i];
            if (c == '\n') { dx = 0; dy += addy; continue;}   //end of line
-           if (c == 32) { dx += (chwidth/2)*scale; continue; } //space
+           if (c == 32) { dx += (extraSpace+chwidth/2)*scale; continue; } //space
          
            a = &vecChar[c];
            if (a->valid <= 0) { dx += chwidth*scale;  continue; }  //invalid character is replaced with space

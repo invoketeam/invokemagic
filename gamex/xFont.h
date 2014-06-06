@@ -40,6 +40,8 @@ public:
     float descent;
     float linegap;
 
+    float extraSpace;
+
     unsigned int handle;
 
 public:
