@@ -46,6 +46,9 @@ xTower::init(void)
 
   pos.y = game->getHeight(pos.x, pos.z) + yrad;
 
+  //todo -- zonetype values (2 is for buildings .. or walls)
+  game->setZoneTypeRect(pos.x-xrad,pos.z-zrad,xrad+xrad,zrad+zrad, 2);
+
 
   xActor * a;
    a = new xGroundDecal();
@@ -81,6 +84,9 @@ xTower::onKilled(void)
   {
     a->dead = true;
   }//endif
+
+  //remove self from zones
+   game->setZoneTypeRect(pos.x-xrad,pos.z-zrad,xrad+xrad,zrad+zrad, 0);
 
 }//onkilled
 

@@ -7,6 +7,7 @@
 #include "../gamex/xGuiGame.h"
 #include "../gamex/xGameExt.h"
 #include "../gamex/xHeightMap.h"
+#include "../gamex/xTileMap.h"
 
 #include "../gamex/xShadowTex.h"
 
@@ -51,6 +52,7 @@ public:
 
   xTexture tileSkin;
   xHeightMap myHeight;
+  xTileMap myTile;
 
   xMdx3 waterDeb;
 
@@ -74,7 +76,6 @@ public:
 
   virtual float getHeight(float wx, float wz);
 
-
   virtual xCam * getCamPtr(void);
 
 public:
@@ -91,6 +92,12 @@ public:
   virtual unsigned int getSkin(std::string wname);
   virtual xSprite * getSprite(std::string wname);
 
+
+
+public:
+  virtual bool canBuildRect(float wx, float wz, float ww, float wh);
+  virtual void setZoneType(float wx, float wz, int zt);
+  virtual void setZoneTypeRect(float wx, float wz, float ww, float wh, int zt);
 
 
 };//invokemenu

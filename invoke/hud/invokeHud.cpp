@@ -197,15 +197,23 @@ hudHeight = 340.0f;
     //place building
     if (curMode == CURMODE_BUILD)
     {
-      //todo -- definetly dont do this directly (like it is now)
-      //send the parentgame a makebuilding command 
-      xActor * a;
-        a = new xTower();
-        a->team = 1;
-        a->pos.set(wmx, wmy, wmz);    
-      parentGame->addActor(a);
-    }//endif
-
+      //todo -- ax az should be member variables as well (always calc the current grid position of wmx wmz)
+     float ax, az;
+        ax = floor(wmx / 128.0f) * 128.0f;
+        az = floor(wmz / 128.0f) * 128.0f;
+      //todo -- test a larger rectangle than the actual building needs (add 1 tile wide border)
+      if (parentGame->canBuildRect(ax,az, 64,64) == true) //only if you are allowed to build here
+      {
+        //todo -- definetly dont do this directly (like it is now)
+        //send the parentgame a makebuilding command 
+        xActor * a;
+          a = new xTower();
+          a->team = 1;
+          a->pos.set(ax, wmy, az);    
+        parentGame->addActor(a);
+      }
+      else { return; } //todo -- put click test in a function
+    }//endif 
 
     if (curMode == CURMODE_MOVE)
     {
@@ -290,10 +298,19 @@ invokeHud::renderSelection3D(void)
    mesh = assetMan->getMesh("wraith_foepulet"); 
 
    glColor3f(1,0,0);  
+
+
    glPushMatrix();
     float ax, az;
     ax = floor(wmx / 128.0f) * 128.0f;
     az = floor(wmz / 128.0f) * 128.0f;
+
+      //todo -- store size of building to be built
+    if (parentGame->canBuildRect(ax,az, 64,64) == false)
+    {  glColor3f(1,0,0);     }
+    else {   glColor3f(0,1,0);  } 
+
+
     glTranslatef(ax, wmy, az);
     mesh->render();
    glPopMatrix(); 

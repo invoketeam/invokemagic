@@ -134,7 +134,8 @@ xTileMap::setZoneRect(int ax, int ay, int aw, int ah, int zt)
 	for (i = ay; i < ey; i++) 
 	{ 
 		yt = i * mw;	
-		for (k = ax; k < ex; k++) {	vecZone[yt+k] = zt; }
+		for (k = ax; k < ex; k++)
+     {	vecZone[yt+k] = zt; }
 	} 
 }//setrect
  
@@ -151,6 +152,37 @@ xTileMap::setZoneRectWorld(float wx, float wy, float ww, float wh, int zt)
   setZoneRect(ax, ay, aw, ah, zt);
 
 }//setrectworld
+
+
+
+bool 
+xTileMap::hasRectZone(float wx, float wy, float ww, float wh, int zt)
+{
+  int ax, ay, aw, ah;
+  int ex, ey;	int i;	int k;	int yt;
+
+  ax = (int) floorf(wx/cw);  ay = (int) floorf(wy/cw);
+  aw = (int) ceilf(ww/cw);  ah = (int) ceilf(wh/cw);
+
+
+	ex = ax + aw;   	ey = ay + ah;
+           
+	if (ax < 0) { ax = 0;  }     	if (ay < 0) { ay = 0;  }  
+	if (ex > mw) { ex = mw;   }    if (ey > mh) { ey = mh;    }   
+	if (ax >= mw) { return false;  }    	if (ay >= mh){ return false;  }   
+	if (ex < 0) { return false;  }  if (ey < 0) { return false;  }
+
+	for (i = ay; i < ey; i++) 
+	{ 
+		yt = i * mw;	
+		for (k = ax; k < ex; k++)
+     {	if (vecZone[yt+k] == zt) { return true; } }
+	} 
+
+ return false;
+}//haszone
+
+
 
 
 xTile *

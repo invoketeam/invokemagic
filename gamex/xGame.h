@@ -126,6 +126,8 @@ public:
   virtual void setZoneType(float wx, float wz, int zt) {}
   virtual void setZoneTypeRect(float wx, float wz, float ww, float wh, int zt) {}
 
+  virtual bool canBuildRect(float wx, float wz, float ww, float wh) { return true; }
+
   virtual float getHeight(float wx, float wz) { return 0.0f; }
 
 

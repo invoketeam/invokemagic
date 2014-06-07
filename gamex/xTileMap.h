@@ -54,16 +54,29 @@ public:
   void initEmpty(int w, int h);
   void setGridFromLayer(int * vec, int w, int h);
 
+
+
   void setZoneRect(int ax, int ay, int aw, int ah, int zt);
   void setZoneRectWorld(float wx, float wy, float ww, float wh, int zt);
+
+  bool hasRectZone(float wx, float wy, float ww, float wh, int zt);
+
 
   int getZoneAt(int ax, int ay);
   int getZoneWorld(float wx, float wy);
 
+
+
   xTile * getTileAt(int ax, int ay);
   int getHeightAt(int ax, int ay);
 
+
+
+
+
+
   void initFromHeightmap(xHeightMap * hmap);
+
   
   void render(float ax, float ay, float aw, float ah);
 

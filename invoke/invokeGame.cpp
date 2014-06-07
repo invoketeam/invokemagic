@@ -140,6 +140,8 @@ invokeGame::init(void)
     myHeight.mesh.makeVbo();
 
 
+  myTile.initFromHeightmap(&myHeight);  
+
 
 
     
@@ -768,6 +770,44 @@ invokeGame::gotCmd(int cmd, int arg0, int arg1)
  }//endif
 
 }//gotcmd
+
+
+
+
+
+
+
+bool 
+invokeGame::canBuildRect(float wx, float wz, float ww, float wh)
+{
+
+  return myTile.hasRectZone(wx, wz, ww, wh, 2) == false;
+
+}//canbuildrect
+
+
+void 
+invokeGame::setZoneType(float wx, float wz, int zt)
+{
+  myTile.setZoneRectWorld(wx, wz, 1.0f, 1.0f, zt);
+}//setzonetype
+
+
+void 
+invokeGame::setZoneTypeRect(float wx, float wz, float ww, float wh, int zt)
+{
+  myTile.setZoneRectWorld(wx, wz, ww, wh, zt);
+}//setzonetyprect
+
+
+
+
+
+
+
+
+
+
 
 
 
