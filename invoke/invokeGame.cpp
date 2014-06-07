@@ -24,6 +24,7 @@
 
 
 #include "unit/xTower.h"
+#include "unit/xSlave.h"
 
 
 
@@ -218,6 +219,10 @@ invokeGame::init(void)
     
       if (ta->name == "red")      { a->team = 1; }      else { a->team = 2;}
 
+    }
+    else if (ta->type == "slave")
+    {
+      a = new xSlave();
     }
     else if (ta->type == "farm")
     {

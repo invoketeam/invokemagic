@@ -458,6 +458,14 @@ SOURCE=.\invoke\hud\xSelect.h
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\invoke\unit\xSlave.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\invoke\unit\xSlave.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\invoke\unit\xTower.cpp
 # End Source File
 # Begin Source File

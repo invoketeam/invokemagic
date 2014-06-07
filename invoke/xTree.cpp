@@ -32,8 +32,10 @@ xTree::init(void)
 
   team = 0; //neutral
 
+  hp = 30.0f;
 
-flags = FR_SELECTABLE | FR_BLOCKMOVE;
+ flags = FR_SELECTABLE | FR_BLOCKMOVE;
+ flags |= FR_HARVESTABLE;
 
  pos.y = game->getHeight(pos.x, pos.z) + yrad;
 
