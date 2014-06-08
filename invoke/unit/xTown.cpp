@@ -41,6 +41,7 @@ xTown::init(void)
 
   flags = FR_SELECTABLE | FR_BLOCKMOVE ;
   flags |= FR_RETURNGOODS;
+  flags |= FR_ATTACKABLE;
 
 
 
