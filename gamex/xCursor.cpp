@@ -30,7 +30,8 @@ static float getHmapInter(xHeightMap * hmap, gamex::cVec3f v0, gamex::cVec3f v1)
         
   }//nextu
 
-  return -999.0f;
+  return 1.0f;
+  //return -999.0f;
 }//gethmapinter
 
 
