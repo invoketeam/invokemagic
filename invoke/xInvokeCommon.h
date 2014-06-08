@@ -12,10 +12,14 @@
 //xActor flags
 
 #define FR_NONE 0
+
 #define FR_SELECTABLE 1
 #define FR_BLOCKMOVE 2
 #define FR_ATTACKABLE 4
+
 #define FR_HARVESTABLE 8
+#define FR_RETURNGOODS 16
+
 
 
 

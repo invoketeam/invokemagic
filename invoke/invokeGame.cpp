@@ -26,6 +26,7 @@
 #include "unit/xTower.h"
 #include "unit/xSlave.h"
 #include "unit/xMine.h"
+#include "unit/xTown.h"
 
 
 
@@ -220,11 +221,12 @@ invokeGame::init(void)
     }
     else if (ta->type == "slave")    {      a = new xSlave();    }
     else if (ta->type == "mine")    {      a = new xMine();    } 
+    else if (ta->type == "town")    {      a = new xTown(); if (ta->name == "red") { a->team = 1; } else { a->team = 2;}   } 
     else if (ta->type == "farm")    {      a = new xBuildTest();    }
     else if (ta->type == "tower")
     {
       a = new xTower();
-      if (ta->name == "red")      { a->team = 1; }      else { a->team = 2;}
+      if (ta->name == "red") { a->team = 1; } else { a->team = 2;}
     }
     else if (ta->type == "smoke")    {      a = new xPartTest();    }
     else if (ta->type == "camstart")

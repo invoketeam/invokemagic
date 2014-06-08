@@ -480,6 +480,14 @@ SOURCE=.\invoke\unit\xTower.cpp
 
 SOURCE=.\invoke\unit\xTower.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\invoke\unit\xTown.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\invoke\unit\xTown.h
+# End Source File
 # End Group
 # Begin Group "bullet"
 
