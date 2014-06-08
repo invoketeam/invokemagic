@@ -44,7 +44,6 @@ xMine::init(void)
  
 
 
-
   xActor * a;
    a = new xGroundDecal();
    a->wstr = "crater";

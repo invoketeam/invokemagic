@@ -58,7 +58,7 @@ xTown::init(void)
 
 
 pos.y = game->getHeight(pos.x, pos.z);
-  putInGridXZ(game->mgrid);
+ 
 
   //todo -- zonetype values (2 is for buildings .. or walls)
   game->setZoneTypeRect(pos.x-xrad,pos.z-zrad,xrad+xrad,zrad+zrad, 2);
@@ -71,6 +71,9 @@ pos.y = game->getHeight(pos.x, pos.z);
     else if (team == 2) { teamColor.set(0, 0, 1); }  //blue
     else if (team == 0) { teamColor.set(0.5, 0.5, 0.5); } //grey (neutral?) 
     else { teamColor.set(0,1,0); } //unknown team
+
+
+ putInGridXZ(game->mgrid);
 
 }//init
 

@@ -45,7 +45,10 @@ public:
   virtual void onKilled(void);
   virtual void gotMsg(int msg, int arg0, int arg1, int arg2);
 
+  //todo -- check by resource type
   virtual xActor * getHarvest(xMultiGrid * mgrid, float ax, float az, float aw, float ah);
+
+  virtual xActor * getWarehouse(xMultiGrid * mgrid, float ax, float az, float aw, float ah);
 
 public:
   virtual bool handCol(xActor * a);

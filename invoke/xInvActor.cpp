@@ -7,15 +7,23 @@
 
 
 
-//get angle of vector (without fancy trig)
-  //based on
-  //http://stackoverflow.com/questions/16542042/fastest-way-to-sort-vectors-by-angle-without-actually-computing-that-angle
+//get angle of vector
 float getAng(float dy, float dx)
 {
+  //so for some coordinates it seems to return wrong angles
+  //but atan2 works worse.. so not sure what to do about it
+  // return atan2f(dy, dx);
+
+
+ 
+//based on
+  //http://stackoverflow.com/questions/16542042/fastest-way-to-sort-vectors-by-angle-without-actually-computing-that-angle
+
+//todo  check for dy == && dx == 0
 
   float a;
   a = dx / ((dy < 0.0f ? -dy:dy)+(dx < 0.0f ? -dx:dx));
-  if (dy < 0.0f) { return (a - 1) * 1.57075f; }
+  if (dy < 0.0f) { return (a - 1.0f) * 1.57075f; }
   return (1.0f - a) * 1.57075f;
 
 }//getang
