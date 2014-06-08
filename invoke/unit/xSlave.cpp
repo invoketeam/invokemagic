@@ -64,18 +64,6 @@ xSlave::init(void)
 }//init
 
 
-//todo -- make this function part of common
-static float getAng(float dy, float dx)
-{
-
-  float a;
-  a = dx / ((dy < 0.0f ? -dy:dy)+(dx < 0.0f ? -dx:dx));
-  if (dy < 0.0f) { return (a - 1) * 1.57075f; }
-  return (1.0f - a) * 1.57075f;
-
-}//getang
-
-
 
 
 void 

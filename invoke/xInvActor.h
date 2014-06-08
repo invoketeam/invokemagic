@@ -4,6 +4,8 @@
 #include "../gamex/gamex.h"
 
 
+extern float getAng(float dy, float dx);
+
 class xInvActor : public xActor
 {
 public:

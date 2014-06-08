@@ -4,6 +4,24 @@
 
 #include "xInvokeCommon.h"
 
+
+
+
+//get angle of vector (without fancy trig)
+  //based on
+  //http://stackoverflow.com/questions/16542042/fastest-way-to-sort-vectors-by-angle-without-actually-computing-that-angle
+float getAng(float dy, float dx)
+{
+
+  float a;
+  a = dx / ((dy < 0.0f ? -dy:dy)+(dx < 0.0f ? -dx:dx));
+  if (dy < 0.0f) { return (a - 1) * 1.57075f; }
+  return (1.0f - a) * 1.57075f;
+
+}//getang
+
+
+
 //find closest target to attack
 xActor * 
 xInvActor::getTarget(xMultiGrid * m, float ax, float az, float aw, float ah)

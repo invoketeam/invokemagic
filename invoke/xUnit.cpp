@@ -87,17 +87,7 @@ xUnit::init(void)
 }//init
 
 
-  //based on
-  //http://stackoverflow.com/questions/16542042/fastest-way-to-sort-vectors-by-angle-without-actually-computing-that-angle
-static float getAng(float dy, float dx)
-{
 
-  float a;
-  a = dx / ((dy < 0.0f ? -dy:dy)+(dx < 0.0f ? -dx:dx));
-  if (dy < 0.0f) { return (a - 1) * 1.57075f; }
-  return (1.0f - a) * 1.57075f;
-
-}//getang
 
 /*
 static gamex::cVec3f getVel(gamex::cVec3f * start, gamex::cVec3f * end, float maxLength)
