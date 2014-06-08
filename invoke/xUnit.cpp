@@ -165,6 +165,8 @@ xUnit::update(void)
       vel.x = dest.x - pos.x;
       vel.z = dest.z - pos.z;
 
+       vel.z += 0.1f; //slight correction (todo -- fix up getang)
+
       if (vel.x != 0 && vel.z != 0)
       {
         yaw = getAng(vel.z, vel.x);
@@ -360,6 +362,7 @@ xUnit::gotMsg(int msg, int arg0, int arg1, int arg2)
      cmdTarg = arg0;
      a = game->getActor(cmdTarg);
      if (a == 0) {  } //todo -- error message because this shouldnt happen
+     if (a == this) { cmd = -1; vel = 0;  targid = 0; return; } //dont attack self (it looks too funny)
      cmd = 3;
     return;
   }//endif

@@ -106,7 +106,7 @@ xSlave::update(void)
         //its not a good idea to do a query on the full map
         //(even though the cpu can take it and laugh it off)
         a = getWarehouse(game->mgrid, pos.x-16384, pos.z-16384, 16384+16384, 16384+16384);
-        printf("found warehouse %p \n", a);
+        //printf("found warehouse %p \n", a);
       }
       else 
       {
@@ -166,7 +166,7 @@ xSlave::update(void)
     else if ( (a->flags & FR_RETURNGOODS) > 0)
     {
       //todo -- unload resources to player
-      printf("returned goods %d \n ", id);
+      //printf("returned goods %d \n ", id);
       load = 0;
       targid = 0;
       cmd = -1; 
