@@ -25,6 +25,7 @@
 
 #include "unit/xTower.h"
 #include "unit/xSlave.h"
+#include "unit/xMine.h"
 
 
 
@@ -209,10 +210,7 @@ invokeGame::init(void)
     ta = (*wt);  
 
     a = 0;
-    if (ta->type == "tree")
-    {
-      a = new xTree();
-    }
+    if (ta->type == "tree")    {      a = new xTree();    }
     else if (ta->type == "knight")
     {
       a = new xUnit();
@@ -220,23 +218,15 @@ invokeGame::init(void)
       if (ta->name == "red")      { a->team = 1; }      else { a->team = 2;}
 
     }
-    else if (ta->type == "slave")
-    {
-      a = new xSlave();
-    }
-    else if (ta->type == "farm")
-    {
-      a = new xBuildTest();
-    }
+    else if (ta->type == "slave")    {      a = new xSlave();    }
+    else if (ta->type == "mine")    {      a = new xMine();    } 
+    else if (ta->type == "farm")    {      a = new xBuildTest();    }
     else if (ta->type == "tower")
     {
       a = new xTower();
       if (ta->name == "red")      { a->team = 1; }      else { a->team = 2;}
     }
-    else if (ta->type == "smoke")
-    {
-      a = new xPartTest();
-    }
+    else if (ta->type == "smoke")    {      a = new xPartTest();    }
     else if (ta->type == "camstart")
     {
       camPos.set(ta->cx*4.0f, 2024, ta->cy*4.0f);

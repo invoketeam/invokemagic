@@ -95,8 +95,8 @@
   <object name="blue" type="tower" x="2048" y="1280" width="64" height="64"/>
   <object name="tree" type="tree" x="2240" y="3264" width="64" height="64"/>
   <object name="tree" type="tree" x="2144" y="3328" width="64" height="64"/>
-  <object name="tree" type="tree" x="2176" y="3456" width="64" height="64"/>
-  <object name="tree" type="tree" x="2080" y="3520" width="64" height="64"/>
+  <object name="tree" type="tree" x="1792" y="3456" width="64" height="64"/>
+  <object name="tree" type="tree" x="1696" y="3520" width="64" height="64"/>
   <object name="tree" type="tree" x="2112" y="3136" width="64" height="64"/>
   <object name="tree" type="tree" x="2240" y="3104" width="64" height="64"/>
   <object name="red" type="slave" x="2464" y="3360" width="64" height="64"/>
@@ -117,15 +117,20 @@
   <object name="tree" type="tree" x="2144" y="3936" width="64" height="64"/>
   <object name="tree" type="tree" x="2144" y="3776" width="64" height="64"/>
   <object name="tree" type="tree" x="1920" y="3296" width="64" height="64"/>
-  <object name="tree" type="tree" x="1984" y="3616" width="64" height="64"/>
-  <object name="tree" type="tree" x="1920" y="3456" width="64" height="64"/>
+  <object name="tree" type="tree" x="1600" y="3616" width="64" height="64"/>
+  <object name="tree" type="tree" x="1536" y="3456" width="64" height="64"/>
   <object name="tree" type="tree" x="1984" y="3168" width="64" height="64"/>
-  <object name="tree" type="tree" x="1856" y="3648" width="64" height="64"/>
+  <object name="tree" type="tree" x="1472" y="3648" width="64" height="64"/>
   <object name="tree" type="tree" x="2720" y="3808" width="64" height="64"/>
   <object name="tree" type="tree" x="2720" y="3968" width="64" height="64"/>
   <object name="tree" type="tree" x="2592" y="3840" width="64" height="64"/>
   <object name="tree" type="tree" x="2496" y="3936" width="64" height="64"/>
   <object name="red" type="slave" x="2624" y="3488" width="64" height="64"/>
   <object name="red" type="slave" x="2432" y="3616" width="64" height="64"/>
+  <object name="mine" type="mine" x="1984" y="3520" width="160" height="160"/>
+  <object name="mine" type="mine" x="2976" y="3104" width="160" height="160"/>
+  <object name="red" type="town" x="3360" y="3424" width="128" height="128"/>
+  <object name="red" type="town" x="1120" y="3456" width="128" height="128"/>
+  <object name="blue" type="town" x="544" y="3584" width="128" height="128"/>
  </objectgroup>
 </map>
