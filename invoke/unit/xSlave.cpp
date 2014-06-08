@@ -97,7 +97,9 @@ xSlave::update(void)
  
   if (cmd == 10)  //goto resource
   {
-      dest = a->pos;
+
+      //dest = a->pos;
+      getClosePointXZ(a, &dest.x, &dest.z);
       vel.x = dest.x - pos.x;      vel.z = dest.z - pos.z;
 
       if (vel.x != 0 && vel.z != 0)
@@ -111,6 +113,7 @@ xSlave::update(void)
   
   if (cmd == 11) //harvest
   {
+    vel = 0;
     //attack harvestable (harvest it)
     if (reload < game->gameTime) 
     {
