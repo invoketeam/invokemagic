@@ -256,7 +256,7 @@ xUnit::update(void)
       vel.x = apx - pos.x;
       vel.z = apz - pos.z;
 
-      if (vel.x != 0 && vel.z != 0)      {    yaw = getAng(vel.z, vel.x);  }
+      if ( !(vel.x == 0 && vel.z == 0))      {   yaw = getAng(vel.z, vel.x);      }
 
 
       float ms;

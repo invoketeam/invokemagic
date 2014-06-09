@@ -129,9 +129,7 @@ xSlave::update(void)
      // vel.x = apx - pos.x;      vel.z = apz - pos.z;
       vel.x = dest.x - pos.x;      vel.z = dest.z - pos.z;
 
-      vel.z += 0.1f; //slight correction
-
-      if (vel.x != 0 && vel.z != 0)      {   yaw = getAng(vel.z, vel.x);      }
+      if ( !(vel.x == 0 && vel.z == 0))      {   yaw = getAng(vel.z, vel.x);      }
 
       float ms;      ms = 7.0f;
       if (abs(vel.x) <= 32 && abs(vel.z) <= 32) { cmd = 11; vel = 0;   }
