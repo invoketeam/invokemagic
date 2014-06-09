@@ -80,7 +80,6 @@ static int get2DCoord(float * view, float * proj, gamex::cVec3f * pos, float * r
 xSelect::xSelect(void)
  {  vecOver = 0; maxSel = 0;  
     numOver = 0;
-    unitId = 0;
     overId = 0;
  }//ctor
 
@@ -95,7 +94,6 @@ xSelect::init(void)
   maxSel = 4096;
   vecOver = new int[maxSel];
   numOver = 0;
-  unitId = 0;
   overId = 0;
 }//init
 

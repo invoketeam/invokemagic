@@ -86,6 +86,7 @@ public:
 
   virtual void showButton(std::string wname);
 
+  virtual xButton * getButtonId(int id);
 
 };//classend
 

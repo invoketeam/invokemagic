@@ -8,6 +8,7 @@
 #include "xSelect.h"
 
 
+#define MAXICON 64
 
 class invokeHud : public xGuiGame
 {
@@ -27,6 +28,10 @@ public:
     gamex::cVec3f viewMax;
 
   xMiniMap myMini;
+
+
+  xButton * vecIcon[MAXICON];
+
 
 
 public:

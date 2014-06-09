@@ -77,7 +77,19 @@ xGuiCursor::update(void)
 
       //for now give back the cursor position relative to the button pos
       //(based on the top left corner of the button)
-      if (b != 0) { game->gotCmd(b->cmd, pos.x-b->pos.x + b->xrad, pos.y-b->pos.y + b->yrad); }
+
+      if (b != 0)
+      { 
+       if (b->btnMode == 1)
+       {
+         game->gotCmd(b->cmd, pos.x-b->pos.x + b->xrad, pos.y-b->pos.y + b->yrad); 
+       }
+       else
+       {
+         game->gotCmd(b->cmd, b->arg0, b->arg1);
+       }
+
+      }//endif
 
 
       //todo -- allow non buttons to have command?
@@ -344,6 +356,22 @@ xGuiGame::addButton(std::string wname, std::string disp, int cmd, float ax, floa
   return a;
 }//addbutton
 
+
+xButton * 
+xGuiGame::getButtonId(int id)
+{
+  xActor * a;
+  xButton * b;  
+  
+
+  a = myWorld.getActor(id);
+
+  if (a == 0) { return 0;}
+  if (a->spectype != 100) { return 0; } //not button
+  b = (xButton *) a;  //todo -- so far no better idea how to do this
+
+  return b;
+}//getbuttonid
 
 
 

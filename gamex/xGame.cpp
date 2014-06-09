@@ -124,11 +124,12 @@ void xGame::setMousePos(float ax, float ay)
 
 
 
+
+//function only meant to be used in guis
 void 
 xGame::copyControl(xGame * game)
 {
-  gameTime = game->gameTime; //function only meant to be used in guis
-
+  gameTime = game->gameTime; 
   mDownLeft = game->mDownLeft;
   mDownRight = game->mDownRight;
   mClickLeft = game->mClickLeft;

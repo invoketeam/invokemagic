@@ -26,6 +26,8 @@ invokeHud::invokeHud(void)
    sely = 0;
    curMode = 0;
 
+   memset(vecIcon, 0, MAXICON*4);
+
 }//ctor
 
 
@@ -73,12 +75,26 @@ invokeHud::init(void)
 
  // setBtnLayout("hidden");
 
-
+  
 //testing -- a button for the minimap (probably not the best way to go about this)
    b = addButton("btn_mini", "minimap", 500, 64+4, 480-64-8, 16, 128,128, getSprite("button64x64"), 1);
    b->drawMode = -1; //make button hidden but usable
    b->btnMode = 1; //make button react when you hold down the button on it
    b->rightCmd = 501;
+
+  int k;
+  float z_icon;
+  float bw, bh;
+  int numw;
+  numw = 16;
+  bw = 16; bh = 16;
+  z_icon = 200.0f;
+  for (k = 0; k < MAXICON; k++)
+  {
+    b = addButton("btn_icon", "", 1000, 200+(k%numw)*bw, 380+(k/numw)*bh, z_icon, bw, bh, getSprite("button64x64"), 2);
+    vecIcon[k] = b;
+    b->visible = false;
+  }//nextk
 
 
 }//init
@@ -271,20 +287,75 @@ hudHeight = 340.0f;
   }//endif
 
 
-
-
-
+//set selection
    if (selStart > 0)
    if (sw > 16 || sh > 16)
    {
     mySelect.selectOver(parentGame->getCamPtr(), parentGame->mgrid, 
     viewMin.x,  viewMin.z,  viewSize.x,  viewSize.z, sx, sy, sw, sh);
+
    }//endif
 
 
+//update minimap
   if ((gameTime % 30) == 0)  { myMini.updateImage(parentGame->getWorldPtr()); }
 
+
+
+
+///icon handling prototype (todo -- put it in its own function)
+
+//todo -- single unit selection info
+
+//todo -- optimise this a bit better (update only on change.. or dont update every frame.. something like that)
+ // std::set <int> setId; 
+ int k;
+ std::set <int> ::iterator it;
+ std::set <int> * setid;
+ setid = &(mySelect.setId);
+
+ int id;
+ xActor * a;
+
+ k = 0;
+ for (it = setid->begin(); it != setid->end(); it++)
+ {
+  
+   id =  (*it);
+   a = parentGame->getActor(id);
+   if (a == 0) { continue; } //selected unit no longer exist
+
+   vecIcon[k]->visible = true;  
+   vecIcon[k]->arg0 = id;
+
+   k += 1;
+   if (k >= MAXICON) { break; }
+ }//nextit
+
+ for (; k < MAXICON; k++) {  vecIcon[k]->visible = false; } 
+
+
+xButton * b;
+
+  //check which button the cursor is over
+    b = getButtonId(cursor.target); 
+    if (b != 0) 
+    { 
+      if (b->cmd == 1000) //icon
+      {    
+        mySelect.overId = b->arg0;
+      }//endif2
+
+    } //endif
+  
+
+ //todo -- when selection changes, sort the selected units by id (and get rid of dead units)
+
 }///update
+
+
+
+
 
 
 void 
@@ -385,6 +456,18 @@ invokeHud::gotCmd(int cmd, int arg0, int arg1)
  if (parentGame == 0) { return; } //todo -- warning 
 
  // printf("invokehud gotcmd %d   %d %d \n", cmd, arg0, arg1);
+
+
+  if (cmd == 1000 ) //icon
+  {
+    mySelect.resetSelect(); 
+    mySelect.overId = arg0;
+    mySelect.appendSingleToSelect();
+
+    //todo -- selection in selection -> only change selected group with this command
+    
+  }//endif
+
 
 
    if (cmd == 200 ) //move

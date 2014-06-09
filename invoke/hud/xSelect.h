@@ -14,7 +14,6 @@ public:
   int numOver;
   std::set <int> setId; //selected units id
 
-  int unitId; //-1 no selection  -- any other: this is a single unit selected
   int overId;
 public:
   xSelect(void);
