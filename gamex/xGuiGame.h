@@ -86,7 +86,9 @@ public:
 
   virtual void showButton(std::string wname);
 
-  virtual xButton * getButtonId(int id);
+  virtual xButton * getButtonById(int id);
+
+  virtual void cancelLeftClick(void);
 
 };//classend
 

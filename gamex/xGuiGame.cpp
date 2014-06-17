@@ -358,7 +358,7 @@ xGuiGame::addButton(std::string wname, std::string disp, int cmd, float ax, floa
 
 
 xButton * 
-xGuiGame::getButtonId(int id)
+xGuiGame::getButtonById(int id)
 {
   xActor * a;
   xButton * b;  
@@ -408,6 +408,27 @@ void xGuiGame::showButton(std::string wname)
   if (a == 0) { return; }
   a->visible = true;
 }//showbutton
+
+
+
+void 
+xGuiGame::cancelLeftClick(void)
+{
+  if (parentGame != 0)
+  {
+    parentGame->mClickLeft = 0;
+    parentGame->mDownLeft = false;
+  }//endif
+
+  mDownLeft = false;
+  mClickLeft = 0;
+  
+   cursor.worka = 0;
+
+
+}//cancelleft
+
+
 
 
 

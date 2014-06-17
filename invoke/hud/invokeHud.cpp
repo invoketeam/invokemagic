@@ -28,6 +28,8 @@ invokeHud::invokeHud(void)
 
    memset(vecIcon, 0, MAXICON*4);
 
+
+
 }//ctor
 
 
@@ -208,6 +210,7 @@ hudHeight = 340.0f;
   }//endif
 
 
+  if (isCursorOverPlayfield())
   if (mClickLeft >= (gameTime-2) )
   {
     //place building
@@ -251,9 +254,8 @@ hudHeight = 340.0f;
   }//endif
 
 
- //todo -- check if mouse is over minimap
-  if (my < hudHeight)
-  if (mClickRight >= (gameTime-2) )
+  if (isCursorOverPlayfield())
+  if (mClickRight >= (gameTime-2) ) 
   {
   
     printf("clickright %d \n ", gameTime);
@@ -338,7 +340,7 @@ hudHeight = 340.0f;
 xButton * b;
 
   //check which button the cursor is over
-    b = getButtonId(cursor.target); 
+    b = getButtonById(cursor.target); 
     if (b != 0) 
     { 
       if (b->cmd == 1000) //icon
@@ -355,7 +357,25 @@ xButton * b;
 
 
 
+bool
+invokeHud::isCursorOverMinimap(void)
+{
+  //check if the button under the cursor has minimap commands in it
 
+  //xActor * a;
+  xButton * a;
+  a = getButtonById(cursor.target);
+  if (a == 0) { return false; }
+  return (a->rightCmd == 501);
+}//isoverminimap
+
+
+
+bool 
+invokeHud::isCursorOverPlayfield(void)
+{
+  return (my < 340.0f); //todo -- add rectangle class/test  
+}//isoverplayfield
 
 
 void 
@@ -503,18 +523,47 @@ invokeHud::gotCmd(int cmd, int arg0, int arg1)
    }//endif
 
 
+
+
+//minimap commands
+int kx, ky;
+
+//todo -- map is 128x128  and a cell is 128x128
+//but this will change so a better handling for this is needed
+
+  kx = arg0 * 128;
+  ky = arg1 * 128;     
+
+
    if (cmd == 501) //right click on minimap
    {
-    //todo -- map is 128x128  and a cell is 128x128
-    //but this will change so a better handling for this is needed
-    
-      mySelect.sendMsg(parentGame, MSG_MOVE, arg0*128, arg1*128, 0);
+      mySelect.sendMsg(parentGame, MSG_MOVE, kx, ky, 0);
+      return;
    }//endif
   
 
 
   //minimap movement 
-   if (cmd == 500) {  parentGame->gotCmd(cmd, arg0, arg1); }
+   if (cmd == 500) 
+   { 
+      if (curMode == CURMODE_ATTACK)
+      {
+        mySelect.sendMsg(parentGame, MSG_ATTACK_MOVE, kx, ky, 0);
+          curMode = 0; 
+          cancelLeftClick(); //prevent scrolling to minimap location
+        return;
+      }
+      else if (curMode == CURMODE_MOVE)
+      {
+        mySelect.sendMsg(parentGame, MSG_MOVE, kx, ky, 0);
+          curMode = 0; 
+          cancelLeftClick();
+        return;
+      }//endif2
+
+      //move minimap to arg0 arg1 (todo -- use world coordinates (kx, ky)
+      parentGame->gotCmd(cmd, arg0, arg1);     
+    }//endif
   
   //todo -- send relevant commands to the parentGame (e.g. pause game)
 

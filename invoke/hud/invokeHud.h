@@ -28,7 +28,7 @@ public:
     gamex::cVec3f viewMax;
 
   xMiniMap myMini;
-
+  
 
   xButton * vecIcon[MAXICON];
 
@@ -48,6 +48,9 @@ public:
 
 
   void gotCmd(int cmd, int arg0, int arg1);
+
+  bool isCursorOverMinimap(void);
+  bool isCursorOverPlayfield(void);
 
 public:
   virtual xSprite * getSprite(std::string wname);
