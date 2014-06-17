@@ -216,6 +216,8 @@ static void saveScreenshot_test(std::string fname)
 
   shotImage.mirVert();
 
+  shotImage.makeOpaqueABGR();
+
   printf("Writing screenshot [%d][%d][%s]   \n", shotImage.mw, shotImage.mh, fname.c_str() );
   
   writePng(&shotImage, fname);

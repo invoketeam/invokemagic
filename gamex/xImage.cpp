@@ -269,6 +269,15 @@ xImage::extTemp(void)
   }//nexti
 }//temp
 
+void 
+xImage::makeOpaqueABGR(void)
+{
+  int num;    int i;   
+  num = mw * mh;
+  for (i = 0; i < num; i++)  {  dat[i] |= 0xff000000;  }
+}//makeopaque
+
+
 
 void 
 xImage::extReplaceAlpha(xImage * src)
@@ -376,6 +385,14 @@ xImage::getPixel32(int x, int y)
     return dat[x+(y*mw)];
   }//setpixel
 
+int 
+xImage::getAlpha(int x, int y)
+{
+  if (dat == 0) { return 0; }
+  if (x < 0) { return 0; } if (y < 0) { return 0; }
+  if (x>=mw) { return 0; } if (y >=mh){ return 0; }
+  return (dat[x+(y*mw)] & 0x000000FF);
+}//getalpha
 
 
 void 
@@ -386,7 +403,6 @@ xImage::fillImage(unsigned int c)
     num = mw * mh;
     for (i = 0; i < num; i++) { dat[i]=c;}
   }//fill
-
 
 
 void 
