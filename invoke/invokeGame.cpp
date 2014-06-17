@@ -268,11 +268,20 @@ invokeGame::update(void)
   float ms;
   ms = 32.0f;
 
+//not using WASD for camera movement anymore as hotkeys are introduced
+/*
   if (isKeyDown(KEY_W) || isKeyDown(KEY_UP)) { camPos.z -= ms;  } 
   if (isKeyDown(KEY_S) || isKeyDown(KEY_DOWN)) { camPos.z += ms;  }
-
   if (isKeyDown(KEY_A) || isKeyDown(KEY_LEFT)) { camPos.x -= ms; } 
   if (isKeyDown(KEY_D) || isKeyDown(KEY_RIGHT)) { camPos.x += ms; } 
+*/
+
+
+  if (isKeyDown(KEY_UP)) { camPos.z -= ms;  } 
+  if (isKeyDown(KEY_DOWN)) { camPos.z += ms;  }
+  if (isKeyDown(KEY_LEFT)) { camPos.x -= ms; } 
+  if (isKeyDown(KEY_RIGHT)) { camPos.x += ms; } 
+
 
   if (isKeyDown(KEY_R)) { camPos.y += ms; }
   if (isKeyDown(KEY_F)) { camPos.y -= ms; }

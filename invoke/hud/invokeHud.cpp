@@ -60,11 +60,15 @@ invokeHud::init(void)
   int bi;
   bi = 0;
 
-  b = addButton("btn1", "", 200, 610-36-36-36,380, 16, 32,32, getSprite("btn_move"), 1);
-  b = addButton("btn2", "", 201, 610-36-36, 380, 16, 32,32, getSprite("btn_stop"), 1);
-  b = addButton("btn3", "", 202, 610-36, 380, 16, 32,32, getSprite("btn_attack"), 0);
-  b = addButton("btn4", "", 203, 610, 380, 16, 32,32, getSprite("btn_hold"), 0);
-  b = addButton("btn5", "", 204, 610-36*3, 380+36, 16, 32,32, getSprite("btn_build"), 0);
+
+  //todo -- read keys from xml config
+  //todo -- button description
+  
+  b = addButton("btn1", "", 200, 610-36-36-36,380, 16, 32,32, getSprite("btn_move"), 1); b->hotKey = KEY_M;
+  b = addButton("btn2", "", 201, 610-36-36, 380, 16, 32,32, getSprite("btn_stop"), 1);  b->hotKey = KEY_S;
+  b = addButton("btn3", "", 202, 610-36, 380, 16, 32,32, getSprite("btn_attack"), 0); b->hotKey = KEY_A;
+  b = addButton("btn4", "", 203, 610, 380, 16, 32,32, getSprite("btn_hold"), 0);  b->hotKey = KEY_H;
+  b = addButton("btn5", "", 204, 610-36*3, 380+36, 16, 32,32, getSprite("btn_build"), 0); b->hotKey = KEY_B;
 
   //rest of buttons are just for alignment for now
   b = addButton("btn6", "", 1, 610-36*2, 380+36, 16, 32,32, getSprite("button64x64"), 0);

@@ -168,6 +168,16 @@ xButton::init(void)
 void 
 xButton::update(void)
 {
+
+  //naive hotkey implementation
+  if (hotKey > 0)
+  {
+    if (game->isKeyPress(hotKey))
+    {
+       game->gotCmd(cmd, arg0, arg1);
+    }
+  }
+
   putInGridXY(game->mgrid);
 }//update
 

@@ -35,6 +35,8 @@ public:
   int drawMode;
   int btnMode; //0 normal   1 instant (repeating)
 
+  int hotKey; 
+
 public:
   xButton(void);
   virtual void init(void);
