@@ -460,6 +460,14 @@ invokeHud::render(void)
     drawStr(0, 12, 16, 16+16, 32, "Right click: cancel ");
   }
 
+//debug info 
+//as profiling with  very sleepy   http://www.codersnotes.com/sleepy
+//proved that we spend most of the time checking for collisions
+//turns out the grid was way too small
+// drawStr(0, 8, 32, 32, 100, "Top cell actors: %d ", parentGame->mgrid->topCell->num);
+// drawStr(0, 8, 32, 32+16, 100, "Total actors: %d ", parentGame->getWorldPtr()->vecActor.size());
+
+
 }//render
 
 

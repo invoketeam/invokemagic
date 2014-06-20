@@ -150,6 +150,8 @@ xMultiGrid::clear(void)
       int i;
       int perx;
       int pery;
+
+      
       
       for (i = 0; i < numGrid; i++)
       {
@@ -301,6 +303,8 @@ void
 			
 			grid_size_x = cell_size_x * xcell;
 			grid_size_y = cell_size_y * ycell;
+
+    printf("grid init numcell %d cell [%0.2f]x[%0.2f] \n", numCell,cell_size_x, cell_size_y  );
  }//init
   
 void

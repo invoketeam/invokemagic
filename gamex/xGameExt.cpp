@@ -66,7 +66,14 @@ xGameExt::resetWorld(float w, float h)
   clear();
  
   mgrid = new xMultiGrid();
-  mgrid->init(w,h,7,7,3);  
+//  mgrid->init(w,h,7,7,3);  
+//  mgrid->init(w,h,9,9,3);  
+
+//note -- top cell size needs to be adjusted per game for good optimisation
+// 2 << 7  was too small in this case and too many actors ended up in the top cell
+//the top cell is for actors that fall on lines between grid lines
+//and are checked in every collision test
+  mgrid->init(w,h,10,10,3);  
 
    curId = 1; //start at 1
  
