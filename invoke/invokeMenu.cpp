@@ -31,6 +31,7 @@ invokeMenu::invokeMenu(void)
 invokeMenu::~invokeMenu(void) 
 {
   if (assetMan != 0) { delete assetMan; assetMan = 0; } 
+ 
 }//dtor
 
 
@@ -45,6 +46,7 @@ invokeMenu::init(void)
     assetMan->addDir("data",0);
     assetMan->addDir("data/build",1);
   }//endif
+
 
 
 
@@ -93,6 +95,11 @@ invokeMenu::init(void)
 
 
     myGui.cursor.curSpr = getSprite("test"); 
+
+
+    mySnd.init();
+
+    mySnd.startMusic("data/mus/RTSSSSS.ogg");
 
 }//init
 
@@ -144,6 +151,9 @@ invokeMenu::update(void)
 
   }
 
+
+  
+  mySnd.updateMusic();
   
    gameTime += 1;
 

@@ -8,6 +8,8 @@
 #include "../gamex/xFont.h"
 #include "../gamex/xFlatRender.h"
 
+#include "../gamex/xSound.h"
+
 
 #include "invokeGame.h"
 
@@ -34,6 +36,8 @@ public:
 //  xData myData;
 
   xSpriteMan mySprite;
+
+  xSoundMan mySnd;
 
 public:
   int mState;
