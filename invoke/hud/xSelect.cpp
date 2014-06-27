@@ -314,6 +314,8 @@ xSelect::sendMsg(xGame * game, int msg, int arg0, int arg1, int arg2)
 void 
 xSelect::debRender(xGame * game)
 {
+  if (game == 0) { return; }
+
   std::set <int> ::iterator it;
   xActor * a;
 

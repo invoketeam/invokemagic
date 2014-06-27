@@ -160,8 +160,8 @@ void render(void)
 */
 
       glColor4f(1,1,1,1);
-      debFont.printStr(16, 8, 480-32, "Fps: %0.1f ", curfps);
-      debFont.printStr(8, 8+256, 480-32, "Skipframe: %d   Diffavg: %0.1f    Diff: %d", skipFrame, frate, diff);
+      debFont.printStr(8, 8, 480-16, "Fps: %0.1f ", curfps);
+     // debFont.printStr(8, 8+256, 480-32, "Skipframe: %d   Diffavg: %0.1f    Diff: %d", skipFrame, frate, diff);
   
 
      glDisable(GL_TEXTURE_2D);

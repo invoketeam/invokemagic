@@ -69,7 +69,7 @@ public:
 
   virtual void init(void) {}
 
-  virtual void update(void) { /*gamelogic here*/ gameTime += 1;}
+  virtual void update(void) { } // gamelogic here gameTime += 1; 
 	virtual void render(void) {}
 
 

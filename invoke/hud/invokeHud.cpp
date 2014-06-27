@@ -385,7 +385,7 @@ invokeHud::isCursorOverPlayfield(void)
 void 
 invokeHud::renderSelection3D(void)
 {
-
+ if (parentGame == 0) { return; }
 
  if (curMode == CURMODE_BUILD)
   {

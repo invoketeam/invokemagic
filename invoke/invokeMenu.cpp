@@ -23,7 +23,7 @@ invokeMenu::invokeMenu(void)
   
   mState = 0;
 
-  mState = STATE_GAME; //debug
+  //mState = STATE_GAME; //debug
 
 }//ctor
 
@@ -39,12 +39,16 @@ void
 invokeMenu::init(void)
 {
 
+  resetWorld(640, 480);
+
 
   if (assetMan == 0)
   {
     assetMan = new xAssetMan(); 
     assetMan->addDir("data",0);
     assetMan->addDir("data/build",1);
+    assetMan->addDir("data/gui",0);
+
   }//endif
 
 
@@ -62,7 +66,9 @@ invokeMenu::init(void)
 
 //  myData.addSkin("data/test.png","test",true);
 //  myData.addSkin("data/menu_placeholder.jpg","placeholder",true,true);
-    assetMan->initTexture("menu_placeholder", true,true,true);
+   // assetMan->initTexture("menu_placeholder", true,true,true);
+    assetMan->initTexture("bg", true,true,true);
+
 
 
     myGui.assetMan = assetMan;
@@ -74,27 +80,45 @@ invokeMenu::init(void)
 
     mySprite.assetMan = assetMan;
     mySprite.addSpriteTex("test"); 
+    
+    mySprite.addSpriteTex("gomb"); 
+    mySprite.addSpriteXms("gomb"); 
+
 
 
     xButton * b;
+
+    float btnx;
+    float btny;
+    float btndist;
+
+    btnx = 32+72+16;
+    btny = 180;
+    btndist = 52;
    
-    b = myGui.addButton("btn1", "New Game", 101,  465, 126, 0,  128, 32, getSprite("test"),0); 
-    b->curSpr = getSprite("test");
+    b = myGui.addButton("btn1", "New Game", 101,  btnx, btny, 0,  144, 48, getSprite("gombkicsialap"),0); 
+    b->curSpr = getSprite("gombkicsialap");
 
-    b = myGui.addButton("btn2", "Load Game", 102,  512, 212, 0,  128, 32, getSprite("test"),0); 
-    b->curSpr = getSprite("test");
+    b = myGui.addButton("btn2", "Load Game", 102,  btnx, btny+btndist, 0,  144, 48, getSprite("gombkicsialap"),0); 
+    b->curSpr = getSprite("gombkicsialap");
    
-    b = myGui.addButton("btn3", "Settings", 103,  516, 300, 0,  128, 32, getSprite("test"),0);   
-    b->curSpr = getSprite("test");
+    b = myGui.addButton("btn3", "Settings", 103,  btnx, btny+btndist*2, 0,  144, 48, getSprite("gombkicsialap"),0);   
+    b->curSpr = getSprite("gombkicsialap");
 
-    b = myGui.addButton("btn4", "Credits", 104,  480, 370, 0,  128, 32, getSprite("test"),0);   
-    b->curSpr = getSprite("test");
+    b = myGui.addButton("btn4", "Credits", 104,  btnx, btny+btndist*3, 0,  144, 48, getSprite("gombkicsialap"),0);   
+    b->curSpr = getSprite("gombkicsialap");
 
-    b = myGui.addButton("btn5", "Exit Game", 105,  400, 440, 0,  128, 32, getSprite("test"),0);   
-    b->curSpr = getSprite("test");
+    b = myGui.addButton("btn5", "Exit Game", 105,  btnx, btny+btndist*4, 0,  144, 48, getSprite("gombkicsialap"),0);   
+    b->curSpr = getSprite("gombkicsialap");
 
+
+
+    b = myGui.addButton("logo", "", 105,  120, 80, 0,  413*0.5, 264*0.5, getSprite("logo_kicsi"),0);   
+    b->curSpr = getSprite("logo-kicsi");
+    b->spectype = 0; //dont consider as a button
 
     myGui.cursor.curSpr = getSprite("test"); 
+    myGui.cursor.pos.z = 1024;
 
 
     mySnd.init();
@@ -113,12 +137,7 @@ void
 invokeMenu::update(void)
 {
 
-//todo -- setstate method -- disable buttons based on layers
-  if (mState != STATE_GAME)
-  {
-    myWorld.update();
-    myGui.childUpdate(this);
-  }
+
 
 
   if (mState == STATE_MAINMENU)
@@ -152,10 +171,21 @@ invokeMenu::update(void)
   }
 
 
+
+//todo -- setstate method -- disable buttons based on layers
+  if (mState != STATE_GAME)
+  {
+    myWorld.update();
+
+    myGui.childUpdate(this);
+  }
+
   
   mySnd.updateMusic();
   
-   gameTime += 1;
+
+
+ gameTime += 1;
 
 }//update
 
@@ -182,11 +212,13 @@ invokeMenu::render(void)
     
       //just a quick and dirty way to get the menu placeholder on screen
       xFrame * f;    
-      f = myFlat.addFrame(320,240,0,640,480,  assetMan->getTexHandle("menu_placeholder") );
+      f = myFlat.addFrame(320,240,0,640,480,  assetMan->getTexHandle("bg") );
       f->u0 = 0.0f;
-      f->u1 = 1.0f;
+      //f->u1 = 1.0f;
+      f->u1 = (1680.0f / 2048.0f);
       f->v0 = 1.0f; //1.0f;//-(448.0f / 1024.0f);//1.0f;// 625f; //1.0f- (576.0f / 1024.0f);
-      f->v1 = (448.0f / 1024.0f);
+      //f->v1 = (448.0f / 1024.0f);
+      f->v1 = (1024.0f / 2048.0f);
 
 
 
@@ -203,7 +235,9 @@ invokeMenu::render(void)
 
     debugDraw();
 
-    myGui.debugDraw();
+ //   myGui.debugDraw();
+
+
 /*
     glColor4f(1,1,1,1);
      glBegin(GL_LINES);
