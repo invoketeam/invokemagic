@@ -23,6 +23,8 @@ xSlave::xSlave(void)
   curFrame = 0.0f;
 
   skin = 0;
+
+  color = 0xFFffFFff;
   
 }//ctor
 

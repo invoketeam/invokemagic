@@ -9,6 +9,7 @@
 #include "../../gamex/xGLCommon.h"
 
 #include "../unit/xTower.h"
+#include "../unit/xBuilding.h"
 
 
 #define CURMODE_NONE -1
@@ -121,10 +122,8 @@ invokeHud::update(void)
 
 
   //selection rectangle
-  float sx;
-  float sy;
-  float sw;
-  float sh;
+  float sx;  float sy;
+  float sw;  float sh;
 
 
   sx = selx < mx ? selx:mx;
@@ -206,6 +205,8 @@ hudHeight = 340.0f;
   }//mdownleft
 
 
+  
+  
 //cancel
   if (curMode > 0)  //== CURMODE_BUILD)
   if (mClickRight >= (gameTime-2) )
@@ -230,10 +231,16 @@ hudHeight = 340.0f;
         //todo -- definetly dont do this directly (like it is now)
         //send the parentgame a makebuilding command 
         xActor * a;
-          a = new xTower();
-          a->team = 1;
-          a->pos.set(ax, wmy, az);    
+          //a = new xTower();
+          a = new xBuilding();
+          a->team = 1; //use playerteam
+          a->pos.set(ax, wmy, az);   
+          a->worka = 0; //building percentage
+          a->workb = 100; //points needed to complete building
         parentGame->addActor(a);
+        
+        //send builders to build it
+        mySelect.sendMsg(parentGame, MSG_BUILD, a->id, 0, 0);
       }
       else { return; } //todo -- put click test in a function
     }//endif 
@@ -257,7 +264,9 @@ hudHeight = 340.0f;
     curMode = 0;
   }//endif
 
-
+  
+  
+//todo -- put this into its own function
   if (isCursorOverPlayfield())
   if (mClickRight >= (gameTime-2) ) 
   {
@@ -272,18 +281,32 @@ hudHeight = 340.0f;
 
     if (mySelect.overId != 0) //cursor is over something
     {
+    
       //this is tricky as we dont have a player class yet (maybe a player team variable would be enough hough)
       
       int playerTeam;  //temp value (make it a member or something)
       playerTeam = 1;
       xActor * a;
       a = parentGame->getActor(mySelect.overId);
-     // if (a->team != playerTeam)
+    
+      if (a->team == playerTeam)
+      {
+        if ((a->flags & FR_BUILDABLE) > 0)
+        {
+          //todo warriors use msg_build as msg_move
+          mySelect.sendMsg(parentGame, MSG_BUILD, mySelect.overId, 0, 0);
+          return;
+        }
+      }
+    
+    // if (a->team != playerTeam)
      // {   mySelect.sendMsg(parentGame, MSG_ATTACK_TARG, mySelect.overId, 0, 0);  }
      // else
      // {   mySelect.sendMsg(parentGame, MSG_PROTECT_TARG, mySelect.overId, 0, 0);   }
       //for testing attack everything you right click on
       mySelect.sendMsg(parentGame, MSG_ATTACK_TARG, mySelect.overId, 0, 0);
+      
+      
     }//endif
     else
     {

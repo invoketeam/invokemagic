@@ -20,6 +20,8 @@
 #define FR_HARVESTABLE 8
 #define FR_RETURNGOODS 16
 
+#define FR_BUILDABLE 32
+
 
 
 
@@ -47,6 +49,16 @@
 #define MSG_PROTECT_POINT 6 
 #define MSG_PROTECT_TARG 7
 #define MSG_PATROL 8 
+#define MSG_BUILD 9
+
+
+
+
+
+
+
+
+
 
 
 

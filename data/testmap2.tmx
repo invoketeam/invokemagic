@@ -38,7 +38,7 @@
   <object name="neutral" type="farm" x="704" y="480" width="128" height="160"/>
   <object name="neutral" type="farm" x="512" y="928" width="128" height="160"/>
   <object name="neutral" type="smoke" x="320" y="448" width="128" height="128"/>
-  <object name="player1" type="camstart" x="992" y="736" width="128" height="128"/>
+  <object name="player1" type="camstart" x="736" y="2592" width="128" height="128"/>
   <object name="tree" type="tree" x="1024" y="352" width="64" height="64"/>
   <object name="tree" type="tree" x="1120" y="288" width="64" height="64"/>
   <object name="tree" type="tree" x="928" y="224" width="64" height="64"/>
@@ -148,5 +148,9 @@
   <object name="red" type="slave" x="2720" y="3424" width="64" height="64"/>
   <object name="red" type="slave" x="2752" y="3584" width="64" height="64"/>
   <object name="red" type="slave" x="2752" y="3680" width="64" height="64"/>
+  <object name="red" type="builder" x="1056" y="2624" width="64" height="64"/>
+  <object name="red" type="builder" x="832" y="2400" width="64" height="64"/>
+  <object name="blue" type="builder" x="512" y="2624" width="64" height="64"/>
+  <object name="red" type="builder" x="704" y="2880" width="64" height="64"/>
  </objectgroup>
 </map>

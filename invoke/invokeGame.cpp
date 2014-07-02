@@ -27,6 +27,7 @@
 #include "unit/xSlave.h"
 #include "unit/xMine.h"
 #include "unit/xTown.h"
+#include "unit/xBuilder.h"
 
 
 
@@ -212,22 +213,13 @@ invokeGame::init(void)
 
     a = 0;
     if (ta->type == "tree")    {      a = new xTree();    }
-    else if (ta->type == "knight")
-    {
-      a = new xUnit();
-    
-      if (ta->name == "red")      { a->team = 1; }      else { a->team = 2;}
-
-    }
+    else if (ta->type == "knight")    {      a = new xUnit();     }
     else if (ta->type == "slave")    {      a = new xSlave();    }
+    else if (ta->type == "builder") {   a = new xBuilder();  }
     else if (ta->type == "mine")    {      a = new xMine();    } 
-    else if (ta->type == "town")    {      a = new xTown(); if (ta->name == "red") { a->team = 1; } else { a->team = 2;}   } 
+    else if (ta->type == "town")    {      a = new xTown();   } 
     else if (ta->type == "farm")    {      a = new xBuildTest();    }
-    else if (ta->type == "tower")
-    {
-      a = new xTower();
-      if (ta->name == "red") { a->team = 1; } else { a->team = 2;}
-    }
+    else if (ta->type == "tower")    {      a = new xTower();      }
     else if (ta->type == "smoke")    {      a = new xPartTest();    }
     else if (ta->type == "camstart")
     {
@@ -249,6 +241,8 @@ invokeGame::init(void)
     {
       //tmx map is in 32x32,  but the heightmap works in 128x128 tiles
       a->pos.set(ta->cx*4.0f, 0, ta->cy*4.0f);
+      if (ta->name == "red") { a->team = 1; } else { a->team = 2;}
+
       addActor(a);
     }
 

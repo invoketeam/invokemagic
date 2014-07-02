@@ -21,7 +21,7 @@
 xTown::xTown(void)
 {
   team = 0;
-
+  color = 0xFFffFFff;
   decalId = 0;
 }//ctor
 
