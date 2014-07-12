@@ -22,7 +22,4 @@ public:
 	virtual void render(void);
   virtual void render2(xRender * r);
 
-
-  virtual unsigned int getSkin(std::string wname);
-
 };//xunit

@@ -18,6 +18,7 @@ class xSprite;
 class xCam;
 class xFrame;
 class xBigPart;
+class xPartSprite;
 
 class xAssetMan;
 
@@ -145,7 +146,7 @@ public:
   virtual xTexture * getTex(std::string wname) { return 0; }  
   virtual unsigned int getSkin(std::string wname) { return 0; }
   virtual xSprite * getSprite(std::string wname) { return 0; }
-
+  virtual xPartSprite * getPartSprite(std::string wname) { return 0; }
 
 };//xgame
 

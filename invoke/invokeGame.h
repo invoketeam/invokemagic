@@ -11,7 +11,7 @@
 
 #include "../gamex/xShadowTex.h"
 
-
+#include "../gamex/xStore.h"
 #include "../gamex/xBigPart.h"
 
 #include "hud/invokeHud.h"
@@ -35,6 +35,8 @@ public:
   xSpriteMan mySprite;
   
   xBigPartSys myPart;
+  
+  xStore <xPartSprite> storePartSpr;
 
 public:
   xCam myCam;
@@ -91,7 +93,7 @@ public:
   virtual xTexture * getTex(std::string wname); 
   virtual unsigned int getSkin(std::string wname);
   virtual xSprite * getSprite(std::string wname);
-
+  virtual xPartSprite * getPartSprite(std::string wname);
 
 
 public:

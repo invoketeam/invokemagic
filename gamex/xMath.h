@@ -23,7 +23,7 @@ public:
 	 cVec3f(float x_, float y_, float z_):x(x_),y(y_),z(z_) {} //ctor2
 	 cVec3f(float f_):x(f_), y(f_), z(f_) {}//ctor3
 
-	inline float getMagSquared(void) 	{		return ((x*x) + (y*y) + (z*z));	}
+	inline float getMagSqr(void) 	{		return ((x*x) + (y*y) + (z*z));	}
 	inline float getMag(void) {	return (1.0f / invSquareRoot( (x*x) + (y*y) + (z*z) ));	} //  sqrtf((x*x) + (y*y) + (z*z)); }
 
 	inline void normalise(void) 

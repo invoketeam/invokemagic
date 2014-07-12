@@ -43,7 +43,7 @@ xHoming::update(void)
 
   vel = (a->pos - pos) * 0.2f;
 
-  if (vel.getMagSquared() < 256) 
+  if (vel.getMagSqr() < 256.0f) 
   {
     a->gotHit(4, 1, 0,0,0);
     kill();

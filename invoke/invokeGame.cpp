@@ -13,6 +13,7 @@
 #include "../gamex/xTmx.h"
 #include "../gamex/xMultiGrid.h"
 #include "../gamex/xDebug.h"
+#include "../gamex/xPartSys.h"
 
 
 #include "xUnit.h"
@@ -99,12 +100,23 @@ invokeGame::init(void)
 
   myPart.loadSprite("spark");
   myPart.loadAnim("spark");
+  
+  assetMan->initTexture("smoke",false, false, true);
+  myPart.loadSprite("smoke");
 
   mySprite.assetMan = assetMan;
 
 
-
+  //sprite anims for now are added manually 
+  xPartSprite * ps;
+  xSpriteMan * sm;
+  sm = &(myPart.spriteMan);
+  ps = new xPartSprite();
+  storePartSpr.addData("smoke", ps);
+    ps->addAnim(sm, "smoke", 0.2f, "smoke00,smoke01,smoke02,smoke03,smoke04,smoke05,smoke06,smoke07,smoke08,smoke09,smoke10,smoke11,smoke12");
+    ps->addAnim(sm, "flame", 0.2f, "flame00,flame01,flame02,flame03,flame04,flame05,flame06,flame07,flame08,flame09,flame10,flame11,flame12,flame13,flame14,flame15,flame16,flame17,flame18");
   
+
   
 //note: heightmap textures/images are special and its not using the asset manager (for now at least) 
   //todo -- read size from tmx map
@@ -736,18 +748,19 @@ invokeGame::getCamPtr(void){  return &myCam; }
 //todo -- getanim, getskel
 
 xMdx3 *
-invokeGame::getMdx(std::string wname)  {  return assetMan->getMesh(wname);}//getmdx
+invokeGame::getMdx(std::string wname)  {  return assetMan->getMesh(wname);}
 
 xTexture *
-invokeGame::getTex(std::string wname) {   return assetMan->getTexture(wname);}//gettex  
+invokeGame::getTex(std::string wname) {   return assetMan->getTexture(wname);}  
 
 unsigned int 
-invokeGame::getSkin(std::string wname) { return  assetMan->getTexHandle(wname);}//getskin
+invokeGame::getSkin(std::string wname) { return  assetMan->getTexHandle(wname);}
 
 xSprite * 
-invokeGame::getSprite(std::string wname)  {  return mySprite.getSprite(wname);}//getsprite
+invokeGame::getSprite(std::string wname)  {  return mySprite.getSprite(wname);}
 
-
+xPartSprite * 
+invokeGame::getPartSprite(std::string wname) {  return storePartSpr.getData(wname);}
 
 
 

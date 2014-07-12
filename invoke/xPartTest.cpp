@@ -22,29 +22,9 @@ void
 xPartTest::init(void)
 {
 
-  myPart.initPart(128);
-  //myPart.mesh.makeVbo();
-
-
-  myAnim.addSprite(game->getSprite("smoke00"));
-  myAnim.addSprite(game->getSprite("smoke01"));
-  myAnim.addSprite(game->getSprite("smoke02"));
-  myAnim.addSprite(game->getSprite("smoke03"));
-  myAnim.addSprite(game->getSprite("smoke04"));
-  myAnim.addSprite(game->getSprite("smoke05"));
-  myAnim.addSprite(game->getSprite("smoke06"));
-  myAnim.addSprite(game->getSprite("smoke07"));
-  myAnim.addSprite(game->getSprite("smoke08"));
-  myAnim.addSprite(game->getSprite("smoke09"));
-  myAnim.addSprite(game->getSprite("smoke10"));
-  myAnim.addSprite(game->getSprite("smoke11"));
-  myAnim.addSprite(game->getSprite("smoke12"));
-
-  skin = game->getSprite("smoke00")->handle;
-
- 
-
-  myPart.sprAnim = &myAnim;
+  myPart.initPart(256);
+  myPart.sprAnim = game->getPartSprite("smoke");
+  myPart.skin = myPart.sprAnim->skin;
 
 
   flags = FR_SELECTABLE;
@@ -96,12 +76,6 @@ xPartTest::render(void)
 }//render
 
   
-unsigned int xPartTest::getSkin(std::string wname)
-{
-  return game->getSkin(wname);
-}//getskin
-
-
 
 void 
 xPartTest::render2(xRender * r)
@@ -113,7 +87,7 @@ xPartTest::render2(xRender * r)
   mat.setView(&(cam->pos), &(cam->ori));
 
 //  game->getCamPtr()->getCamMat(mat);
- 
+   myPart.sortPart(cam->pos);
    myPart.updateMesh(mat.m);
 //    myPart.render();
 
@@ -135,7 +109,7 @@ xPartTest::render2(xRender * r)
       e->alpha = 1;
       e->color = 1;
       e->twoSide = 1;
-      e->skin = skin;
+      e->skin = myPart.skin;
       //needs 3 (modulate) for per/particle (per vertex) alpha
       e->skinBlend = 3; //1; //looks strange with 1, could be used for horror theme
       e->useColor = 1;

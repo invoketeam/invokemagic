@@ -6,10 +6,55 @@
 #include "xGLCommon.h"
 
 
-void 
+xPartSprite::xPartSprite(void)
+{
+  skin = 0;
+}//ctor
+
+void
 xPartSprite::addSprite(xSprite * a) { vecSprite.push_back(a); }
 
+xPart * 
+xPartSprite::getAnim(std::string wname) { return storeAnim.getData(wname); }
 
+xPart *
+xPartSprite::addAnim(xSpriteMan * sman, std::string wname, float speed, std::string frames)
+{
+  //based  on xSprite.cpp xAnim setFrames
+     
+  xSprite * a;
+  xPart * p;
+  std::string tmp;
+  int f;  int i;  int num;  int e;
+
+  num = (int) frames.length();
+      
+  p = new xPart();
+  storeAnim.addData(wname, p);
+  p->startFrame = (float) vecSprite.size();
+  p->curFrame = p->startFrame;
+  p->animSpeed = speed; 
+  for (i = 0; i < num; i++)
+  {
+    //skip spaces at start
+    if (frames[i] == ' ') { continue; }
+    f = (int) frames.find_first_of(',', i);
+    if (f == -1) { f = num; } 
+    tmp = frames.substr(i, f - i);
+    //remove spaces from end
+      e = (int) tmp.find_first_of(' ', 0); tmp = tmp.substr(0, e);
+    //printf("Found frame: [%s] \n", tmp.c_str() );
+    i = f;        
+    a = sman->getSprite(tmp);
+    if (a == 0) { printf("xPartSys: frame not found [%s] \n", tmp.c_str() );}
+    skin = a->handle; //also rem: only use sprites that belong to a single texture
+    vecSprite.push_back(a);
+  }//nexti 
+  p->endFrame = (float) vecSprite.size() - 1;
+
+  return p;
+}//addanim
+ 
 
 
 
@@ -18,6 +63,7 @@ xPartSprite::addSprite(xSprite * a) { vecSprite.push_back(a); }
 
 xPart::xPart(void)
   {
+   sortCode = 0;
    size = 1; hp = 1; ang = 0; image = -1;
    fade_size = 0;
    ang_speed = 0;
@@ -41,9 +87,10 @@ xPartSys::xPartSys(void)
   {
     numPart = 0;
     maxPart = 0;
-    vecPart = 0;
+    vecPart = 0; pindex = 0;
     sprAnim = 0;
     it = 0;
+    skin = 0;
   }//ctor
 
 xPartSys::~xPartSys(void) { clear(); }
@@ -53,6 +100,7 @@ xPartSys::clear(void)
   {
    mesh.clear();
     if (vecPart != 0) { delete [] vecPart; } vecPart = 0;
+    if (pindex != 0) { delete [] pindex; } pindex = 0;
     numPart = 0; maxPart = 0;
     it = 0;
     sprAnim = 0;
@@ -62,28 +110,31 @@ xPartSys::clear(void)
 
 void 
 xPartSys::initPart(int maxp)
-  {
-    clear();
-
-    maxPart = maxp;
-    mesh.numFace = maxPart * 2;
-    mesh.numVert = maxPart * 4;
-    
+  { 
     mVert * vecVert;
     int * vecIndex;
- 
+    int i;    int k;    int num;
+  
+    clear(); //does mesh.clear
+
+    maxPart = maxp;
+    if (maxPart < 16) { maxPart = 16; }
+    if (maxPart > XPART_MAXPART) { maxPart = XPART_MAXPART; }
+
+    mesh.numFace = maxPart * 2;
+    mesh.numVert = maxPart * 4;
+       
     vecVert = new mVert[mesh.numVert];
     vecIndex = new int[mesh.numFace*3];
     vecPart = new xPart[maxPart];
 
+    pindex = new xPart*[maxPart];
+    for (i = 0; i < maxPart; i++) { pindex[i] = &vecPart[i];}
+
     mesh.vecVert = vecVert;
     mesh.vecIndex = vecIndex;
-
-
-    int i;    int k;    int num;
-    
-    k = 0;
-    num = (mesh.numFace * 3);
+  
+    k = 0;    num = (mesh.numFace * 3);
     for (i = 0; i < num; i+=6)
     {
       vecIndex[i] = k+0;     vecIndex[i+1] = k+1;      vecIndex[i+2] = k+2;
@@ -116,7 +167,35 @@ xPartSys::addPart(float cx, float cy, float cz)
       it += 1; 	  if (it >= maxPart) { it = 0; }   
     return a;
   }//addpart
+ 
 
+
+xPart * 
+xPartSys:: addPart2(std::string wanim, float cx, float cy, float cz)
+  {
+    if (sprAnim == 0) { } //todo -- error/warning message
+
+    xPart * m;
+    xPart * a;
+      m = sprAnim->getAnim(wanim);
+      a = &(vecPart[it]);
+      a->image = 0;  
+
+      a->pos.set(cx, cy, cz);   
+      a->hp = m->hp;
+      a->vel = m->vel;
+      a->size = m->size;
+      a->ang = m->ang; 
+      a->animSpeed = m->animSpeed;
+      a->curFrame = m->curFrame;
+      a->startFrame = m->startFrame;
+      a->endFrame = m->endFrame;
+      a->fade_size = m->fade_size; 
+      a->ang_speed = m->ang_speed; 
+
+      it += 1; 	  if (it >= maxPart) { it = 0; }   
+    return a;
+  }//addpart2
 
 
 
@@ -170,7 +249,7 @@ xPartSys::updateMesh(float * mat)
 
     if (sprAnim != 0)
     {
-      numimg = sprAnim->vecSprite.size();
+      numimg = (int) sprAnim->vecSprite.size();
     }//endif
 
     raw0=mat[0];    raw1=mat[1];
@@ -187,7 +266,8 @@ xPartSys::updateMesh(float * mat)
  			
 		for (i = 0; i < num; i++)
 		{
-			a = &(vecPart[i]);
+			//a = &(vecPart[i]);
+      a = pindex[i];
 			if (a->hp <= 0) { continue;}
     	
       mesh.drawFace += 2;
@@ -259,7 +339,6 @@ xPartSys::updateMesh(float * mat)
 
 
 
-
 void 
 xPartSys::render(void)
   {
@@ -275,6 +354,46 @@ xPartSys::render(void)
     glDisableClientState(GL_VERTEX_ARRAY);
   }//render
 
+
+static xPart * tempVec[XPART_MAXPART];
+static int bucket[256];
+
+static void radixSort(xPart ** vec, int num)
+  {
+    int i;    int shift;
+    shift = 0;
+    while (shift < 32)
+    {      
+      //sometimes for is faster than memset, not really matters this case imho
+      memset(bucket, 0, 1024);
+
+      for (i = 0; i < num; i++) { bucket[(vec[i]->sortCode >> shift) & 0xFF]++; }
+      for (i = 1; i < 256; i++) {  bucket[i] += bucket[i - 1];  }     
+      for (i = num - 1; i >= 0; i--)   { tempVec[--bucket[(vec[i]->sortCode >> shift) & 0xFF]] = vec[i];   }
+      for (i = 0; i < num; i++) {  vec[i] = tempVec[i]; }
+
+      shift +=  8;     
+    }//wend
+  }//radixsort 
+
+void 
+xPartSys::sortPart(gamex::cVec3f p)
+{
+  int i;
+  gamex::cVec3f d;
+  xPart * a;
+  for (i = 0; i < maxPart; i++)
+  {
+      a = &(vecPart[i]);
+      if (a->hp <= 0) { continue; }
+      d = p;
+      d -= a->pos;
+      a->sortCode =  0x0FFffFF - (int) (d.getMagSqr() * 0.1f);   
+  }//next
+
+  radixSort(pindex, maxPart);
+
+}//sortpart
 
 
 

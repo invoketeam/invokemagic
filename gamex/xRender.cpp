@@ -579,7 +579,7 @@ xBucket::calcSort_CamDist(gamex::cVec3f cpos)
     a = vecEnt[i];
     d = cpos;
     d -= a->sortpos;
-    a->sortCode = 0x0FFffFF - (int) (d.getMagSquared() * 0.1f); 
+    a->sortCode = 0x0FFffFF - (int) (d.getMagSqr() * 0.1f); 
 
   }//nexti
 
