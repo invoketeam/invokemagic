@@ -291,6 +291,10 @@ void mouseUp(int btn, int x, int y)
 int main(int argc, char**argv)
 {
 
+  //trick to make Sleep work right
+  //http://msdn.microsoft.com/en-us/library/windows/desktop/dd757624(v=vs.85).aspx
+    timeBeginPeriod( 1 );
+
   //todo -- set screen size from config
 	xwin::xwinInit(800, 600);
   

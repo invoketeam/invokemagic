@@ -7,7 +7,7 @@
 
 //need to include before opengl
 #include <windows.h>
-
+#pragma comment (lib, "winmm.lib")
 //#include <GL/glut.h>   
 //#include "glext.h"
 
