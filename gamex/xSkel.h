@@ -4,6 +4,7 @@
 
 #include "xMath.h"
 #include "xMdx3.h"
+#include "xColMesh.h"
 
 //todo -- sometime in the future
 //replace all int float and whatsoever
@@ -42,11 +43,14 @@ public:
   int id;
   int depth;
   int spec;
-
+  
+  //gamex::cVec3f cmin, cmax;
+  xColMesh * colMesh; //ptr only
 public:
   xBone();
   
   void makeSkinMat(gamex::cVec3f &p, gamex::cQuat &o);
+  float lineTest(gamex::cVec3f * va, gamex::cVec3f * vb, float r);
 
 };//xbone
 
@@ -65,6 +69,8 @@ public:
   xBone * vecBone;
   xSkVert * vecVert; 
 
+
+
   bool bCopied; //for copied xSkel vecVert is a pointer and not freed when skel is deleted
 public:
   xSkel(void);
@@ -82,10 +88,17 @@ public:
 
   void loadFile(std::string fname);
 
+  void loadMem(void * mem,int i, int memsize);
+  void readMemV2(void * mem,int i, int memsize);
+  //V1 needs to be retired soon
+
   void readSkelV1(FILE * file);
   void readSkelV2(FILE * file);
 
   void debRender(void);
+  void debBone(int i); //only render bone at index
+
+  int lineTest(gamex::cVec3f *v0, gamex::cVec3f *v1, float r);
 
 };//xskel
 
@@ -123,8 +136,10 @@ public:
   void applyFrame2(float frame, xSkel * skel);
 
   void loadFile(std::string fname);
-
   void readAnim(FILE * file);
+
+  void loadMem(void * mem, int i, int memsize);
+  void readMem(void * mem, int i, int memsize);
 
 };//xboneanim
 

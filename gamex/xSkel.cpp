@@ -4,7 +4,10 @@
 
 #include "xSkel.h"
 
+#include "xDebug.h"
+
 #include "xGLCommon.h"
+
 
 xBone::xBone() 
   { 
@@ -13,7 +16,9 @@ xBone::xBone()
     id = 0; 
     depth = 0;
     spec = 0;
-   
+     //cmin = -8.0f;
+     //cmax = 8.0f;
+     colMesh = 0;
   }//ctorbone
 
 
@@ -26,6 +31,7 @@ xSkel::xSkel(void)
   numBone = 0; 
   numVert = 0;  
   bCopied = false;
+
 }//ctorskel
 
 
@@ -171,6 +177,67 @@ xSkel::copySkel(xSkel * skel, bool deepCopy)
   }//getcopy
 
 
+void 
+xSkel::loadMem(void * mem, int i, int memsize)
+{
+  clear();
+  char * ptr;
+  ptr = (char *) mem;
+
+    std::string comp = "SKELBINF002";
+    char buf[12];
+    
+   memcpy(buf, ptr, 12);
+   if (comp != buf) { printf("xskel -- Error -- invalid format (read in memory) \n");  return; } //todo error invalid format
+
+   readMemV2(mem, i+12, memsize);
+}//loadmem
+
+void 
+xSkel::readMemV2(void * mem, int i, int memsize)
+{
+  char * ptr;
+  ptr = (char *) mem;
+
+  int k;
+  xBone * a;
+    
+  clear(); //get rid of old data
+
+    memcpy(&numBone, ptr+i, 4); i += 4;
+    memcpy(&numVert, ptr+i, 4); i += 4;
+    i += 16; //skip reserved (16 bytes)
+  
+    vecBone = new xBone[numBone];
+    vecVert = new xSkVert[numVert];
+    
+    //SKIN POSE
+      for (k = 0; k < numBone; k++)
+      {
+        a = &vecBone[k];
+        memcpy(&a->id, ptr+i, 4); i+=4; 
+        memcpy(&a->parent, ptr+i, 4); i+=4; 
+        memcpy(&a->depth, ptr+i, 4); i+=4; 
+        memcpy(&a->pos, ptr+i, 12); i+=12; 
+        memcpy(&a->ori, ptr+i, 16); i+=16; 
+        i += 12; //skip scale
+        a->scale = 1.0f;     
+      }//nexti
+
+     i += 8; //skip 8 bytes "SKINPAR"+0
+
+    //VERTEX WEIGHTS
+      memcpy(vecVert, ptr+i, sizeof(xSkVert)*numVert); i+=  sizeof(xSkVert)*numVert;
+    
+    //GENERATE SKIN POSE
+    //note: if the skeleton is not valid we are gonna crash here
+      update();
+      for (k = 0; k < numBone; k++)
+      {
+        a = &vecBone[k];
+        a->makeSkinMat(a->wpos, a->wori);
+      }//nexti2
+}//readmemv2
 
 void
 xSkel::loadFile(std::string fname)
@@ -401,6 +468,37 @@ xBoneAnim::applyFrame2(float frame, xSkel * skel)
 
 
 
+
+
+void 
+xBoneAnim::loadMem(void * mem, int i, int memsize)
+{
+  readMem(mem, i, memsize);
+}//loadmem
+
+void 
+xBoneAnim::readMem(void * mem, int i, int memsize)
+{
+  int num;
+  char * ptr;
+  ptr = (char *) mem;
+
+    clear();
+
+    i += 12;  //skip identifier (for now)
+    memcpy(&numBone, ptr+i, 4); i += 4;
+    memcpy(&numFrame, ptr+i, 4); i += 4;
+    
+    i += 16; //skip reserved
+    
+    num = numBone * numFrame;
+
+    vecFrame = new xBoneFrame[num];
+    memcpy(vecFrame, ptr+i, sizeof(xBoneFrame) * num); i += sizeof(xBoneFrame) * num;
+
+}//readmem
+
+
 void 
 xBoneAnim::loadFile(std::string fname)
   {
@@ -410,8 +508,6 @@ xBoneAnim::loadFile(std::string fname)
       readAnim(file);
     fclose(file);
   }//loadanim
-
-
 
 void 
 xBoneAnim::readAnim(FILE * file)
@@ -497,6 +593,29 @@ xBone::makeSkinMat(gamex::cVec3f &p, gamex::cQuat &o)
 
 
 
+void 
+xSkel::debBone(int i)
+{ 
+  xBone * a;
+  float m[16];
+
+  //todo -- error if i is out of range
+  if (i < 0) { return; }  if (i >= numBone) { return; }
+
+  a = &vecBone[i];
+  if (a->colMesh == 0) { return; }
+
+  glPushMatrix();
+    glTranslatef(a->wpos.x, a->wpos.y, a->wpos.z);
+      a->ori.setMatrix(m);  glMultMatrixf(m);
+    //todo -- scale (?)
+          /*    glScalef(a->scale.x, a->scale.y, a->scale.z);*/
+        a->colMesh->render();
+      //drawCube(a->cmin.x, a->cmin.y,a->cmin.z,a->cmax.x-a->cmin.x,a->cmax.y-a->cmin.y,a->cmax.z-a->cmin.z);  
+        //fillCube(a->cmin.x, a->cmin.y, a->cmin.z, a->cmax.x, a->cmax.y, a->cmax.z);
+  glPopMatrix();
+}//debbone
+
 
 
 void 
@@ -505,59 +624,92 @@ xSkel::debRender(void)
     int i;
     xBone * a;
     xBone * p;
+    float m[16];
 
-      glBegin(GL_LINES);
+     
         for (i = 0; i < numBone; i++)
         {
           a = &vecBone[i];
+          
+          if (a->colMesh)
+          {
+            glPushMatrix();
+              glTranslatef(a->wpos.x, a->wpos.y, a->wpos.z);
+                a->ori.setMatrix(m);  glMultMatrixf(m);
+                a->colMesh->render();
+              //todo -- scale (?)
+                    /*    glScalef(a->scale.x, a->scale.y, a->scale.z);*/
+                  //drawCube(a->cmin.x, a->cmin.y,a->cmin.z,a->cmax.x-a->cmin.x,a->cmax.y-a->cmin.y,a->cmax.z-a->cmin.z);  
+            glPopMatrix();
+          }
+          //draw connection to parent
           if (a->depth == 0) { continue; }
           p = &vecBone[a->parent];
-
-          glVertex3f(a->wpos.x, a->wpos.y, a->wpos.z);
-          glVertex3f(p->wpos.x, p->wpos.y, p->wpos.z);
-
-        }//nexti
-      glEnd();
-
-
-      glPointSize(8);
-      glBegin(GL_POINTS);
-        for (i = 0; i < numBone; i++)
-        {
-          a = &vecBone[i];
-          //glVertex3f(a->pos.x, a->pos.y, a->pos.z);
-          glVertex3f(a->wpos.x, a->wpos.y, a->wpos.z);
+          glBegin(GL_LINES);
+           glVertex3f(a->wpos.x, a->wpos.y, a->wpos.z);
+           glVertex3f(p->wpos.x, p->wpos.y, p->wpos.z);
+          glEnd();
 
         }//nexti
-      glEnd();
-
-
-/*
-       for (i = 0; i < numBone; i++)
-        {
-          a = &vecBone[i];
-          glPushMatrix();
-            glMultMatrixf(a->transMat.m);
-            drawCube2(a->bmin.x, a->bmin.y, a->bmin.z, a->bmax.x, a->bmax.y, a->bmax.z);
-          glPopMatrix();
-        }//nexti
-*/
-
-
-   glPointSize(4);
-      glColor3f(1,0,0);
-    glBegin(GL_POINTS);
-
-      for (i = 0; i < numVert; i++)
-      {
-        glVertex3f( vecVert[i].pos.x,vecVert[i].pos.y,vecVert[i].pos.z);
-      }//nexti
-     glEnd();
 
 
 
-   glPointSize(1);
+
+    /*
+          glPointSize(8);
+          glBegin(GL_POINTS);
+            for (i = 0; i < numBone; i++)
+            {
+              a = &vecBone[i];
+              //glVertex3f(a->pos.x, a->pos.y, a->pos.z);
+              glVertex3f(a->wpos.x, a->wpos.y, a->wpos.z);
+
+            }//nexti
+          glEnd();
+    */
+
+    /*
+           for (i = 0; i < numBone; i++)
+            {
+              a = &vecBone[i];
+              glPushMatrix();
+                glMultMatrixf(a->transMat.m);
+                drawCube2(a->bmin.x, a->bmin.y, a->bmin.z, a->bmax.x, a->bmax.y, a->bmax.z);
+              glPopMatrix();
+            }//nexti
+    */
+
+    /*
+       glPointSize(4);
+          glColor3f(1,0,0);
+        glBegin(GL_POINTS);
+
+          for (i = 0; i < numVert; i++)
+          {
+            glVertex3f( vecVert[i].pos.x,vecVert[i].pos.y,vecVert[i].pos.z);
+          }//nexti
+         glEnd();
+
+    */
+
+  // glPointSize(1);
   }//render
+
+
+
+
+float 
+xBone::lineTest(gamex::cVec3f *v0, gamex::cVec3f * v1, float r)
+{
+  return 0.0f;
+}//linetest
+
+int 
+xSkel::lineTest(gamex::cVec3f *v0, gamex::cVec3f *v1, float r)
+{
+
+return 0;
+}//linetest
 
 
 

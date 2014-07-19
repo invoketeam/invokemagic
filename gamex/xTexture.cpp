@@ -51,11 +51,31 @@ xTexture::clear()
     
     
 void 
+xTexture::loadMem(std::string debname, void * mem, int memsize, bool mip, bool mirv, bool clamp)
+{
+ xImage img;
+ img.loadImage(debname, mem, memsize); 
+ if (img.mw == 0 || img.mh == 0) 
+    {     
+      img.init(32,32); img.fillImage(0xFF0000FF);
+      printf("xTexture: could not load from memory [%s] \n", debname.c_str());
+    }
+ filename = debname;
+ if (mirv) { img.mirVert(); }
+ makeTex(&img, mip, clamp);
+}//loadmem
+
+
+void 
 xTexture::loadTex(std::string fname, bool mip,  bool mirv, bool clamp )
   {
     xImage img;
-    img.loadImage(fname);
-    if (img.mw == 0 || img.mh == 0) { img.init(32,32); img.fillImage(0xFF0000FF);}
+     img.loadImage(fname);
+    if (img.mw == 0 || img.mh == 0) 
+    {     
+      img.init(32,32); img.fillImage(0xFF0000FF);
+      printf("xTexture: not found [%s] \n", fname.c_str());
+    }
     filename = fname;
     if (mirv) { img.mirVert(); }
     makeTex(&img, mip, clamp);
@@ -106,8 +126,8 @@ void
 xTexture::setTexClamp(bool clamp)
 {
   glBindTexture(GL_TEXTURE_2D, handle);
-   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clamp ? GL_CLAMP : GL_REPEAT );
-   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clamp ? GL_CLAMP : GL_REPEAT );
+   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT );
+   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT );
 }//clamp
 
 
@@ -151,33 +171,29 @@ xTexture::makeTex(xImage  * img, bool mip, bool clamp)
           glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
           glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
         }
-                
-        /*
+              
+      
         //nearest
-        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST );
-        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-        */
-  
-        /* 
+        //glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST );
+        //glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+   
+      
+      
         //bilinear
-        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST );
-        */    
+        //glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST );
+      
         
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clamp ? GL_CLAMP : GL_REPEAT );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clamp ? GL_CLAMP : GL_REPEAT );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT );
 
         if (mip)
         { buildMipMap(img->mw, img->mh,  img->dat);  }
         else
-        { glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img->mw, img->mh, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, img->dat);  }
+        { 
+          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img->mw, img->mh, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, img->dat); 
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+        }//endif
 
-       //default blending
-          glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); 
-
-
-        //todo -- set mip map max level
-
-        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 3)
 
     }//maketex
     

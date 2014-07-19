@@ -9,7 +9,7 @@
 //is there a .h .c  version?
 //if not: should there be a wrapper close for it?
 
-#define MINIZ_NO_STDIO
+//#define MINIZ_NO_STDIO
 #define MINIZ_NO_TIME
 #define MINIZ_HEADER_FILE_ONLY
 #include "stb/miniz.h"
@@ -283,13 +283,13 @@ static void remChar(char ch, std::string &str)
 //	int i;
 	int num;
 	int c;
-		num = str.size();
+		num = (int) str.size();
 
- 	c = str.find(ch);
+ 	c = (int) str.find(ch);
   while (c > -1)
 	{
 			str.erase(str.begin()+c);
-      c = str.find(ch);
+      c = (int) str.find(ch);
 	}//nexti
 }//remchar
 
@@ -314,7 +314,7 @@ static int * uncompressLayer(std::string data, int mw, int mh)
   vec = new int[numbyte];
 
   //uncompress the decoded string into vec as our layer
-   success = mz_uncompress( (Bytef*)vec, &numbyte, (const Bytef*) decoded.c_str(), decoded.size() );
+   success = mz_uncompress( (Bytef*)vec, &numbyte, (const Bytef*) decoded.c_str(), (mz_ulong) decoded.size() );
 
 	if (success == Z_OK)
   {	printf("xTmx:: uncompression succesful \n"); }
@@ -355,17 +355,17 @@ static void base64_decode(std::string &encoded, std::string &ret )
 	unsigned char b1, b2, b3, b4;
 
 	i = 0;
-	num = encoded.size();
+	num = (int) encoded.size();
 
 	int k;
 	k = 0;
 
 	while (i < num)
 	{
-		b1 = base64.find(encoded[i]); i++; k++;
-		b2 = base64.find(encoded[i]); i++; k++;
-		b3 = base64.find(encoded[i]); if (encoded[i] == '=') break; i++; k++;
-		b4 = base64.find(encoded[i]); if (encoded[i] == '=') break; i++;
+		b1 = (unsigned char) base64.find(encoded[i]); i++; k++;
+		b2 = (unsigned char) base64.find(encoded[i]); i++; k++;
+		b3 = (unsigned char) base64.find(encoded[i]); if (encoded[i] == '=') break; i++; k++;
+		b4 = (unsigned char) base64.find(encoded[i]); if (encoded[i] == '=') break; i++;
 
 		k = 0;
 

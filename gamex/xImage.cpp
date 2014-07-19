@@ -194,9 +194,8 @@ xImage::clear(void)
    
 
 
-
 int 
-xImage::loadImage(std::string fname)
+xImage::loadImage(std::string fname, void * mem, int memsize)
   {
     unsigned char * temp;
     int width, height, bit;
@@ -207,8 +206,10 @@ xImage::loadImage(std::string fname)
 
     clear();
 
-      temp = stbi_load(fname.c_str(), &width, &height, &bit, 0);
-      //if (temp == 0) { return 0; }
+    if (memsize > 0)
+    {  temp = stbi_load_from_memory((stbi_uc*)mem, memsize,&width, &height, &bit, 0); }
+    else 
+    {  temp = stbi_load(fname.c_str(), &width, &height, &bit, 0); }
 
    
     if (width == 0 || height == 0)
@@ -269,14 +270,15 @@ xImage::extTemp(void)
   }//nexti
 }//temp
 
+
 void 
 xImage::makeOpaqueABGR(void)
+
 {
   int num;    int i;   
   num = mw * mh;
   for (i = 0; i < num; i++)  {  dat[i] |= 0xff000000;  }
 }//makeopaque
-
 
 
 void 
@@ -362,6 +364,10 @@ xImage::endianSwap(void)
     }
 
   }//endian 
+  
+  
+
+
 
 
 
@@ -857,12 +863,12 @@ xImage::resize(xImage * src, int w, int h)
   for (i = 0; i < h; i++)
   {
     yt = i * w; //yt in new image
-    sy = (i*iy);
+    sy = (int) (i*iy);
     //printf("sy %d \n ", sy);
     syt = sy * src->mw;  //yt in old image
     for (k = 0; k < w; k++)
     {
-      sx = k*ix;
+      sx = (int) ( k*ix);
       dat[yt + k] = sdat[syt+sx];
     }//nextk
   }//nexti

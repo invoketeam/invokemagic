@@ -66,16 +66,24 @@ public:
  void loadFile(std::string fname); 
  void readFile(FILE * file);
 
+ void loadMem(void * mem, int i, int memsize);
+ int readMem(void * mem, int i, int memsize);
+
  //warning: a copy is a deepcopy, doesnt have vbo by default (even if the copied has)
  void copyMesh(xMdx3 * mesh); 
 
  void moveMesh(float mx, float my, float mz);
  void scaleMesh(float sx, float sy, float sz);
+ void transMesh(float * mat);
  //todo -- apply matrix to mesh (vertices and/or uv)
 
+ void projectUvOrtho(float * mat, float w, float h, int maxv);
  void planarUvXZ(gamex::cVec3f smin, gamex::cVec3f smax, int maxv, float * mat = 0);
+ //void projectBox(gamex::cVec3f p, float r, int maxv);
 
-
+ void scaleUV(float sx, float sy);
+ void moveUV(float mx, float my);
+ 
 
  void clearVbo(void);
  void makeVbo(void);

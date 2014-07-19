@@ -2811,13 +2811,17 @@ void *tdefl_write_image_to_png_file_in_memory(const void *pImage, int w, int h, 
     static FILE *mz_fopen(const char *pFilename, const char *pMode)
     {
       FILE* pFile = NULL;
-      fopen_s(&pFile, pFilename, pMode);
+      //fopen_s(&pFile, pFilename, pMode);
+       pFile = fopen(pFilename, pMode);
+
       return pFile;
     }
     static FILE *mz_freopen(const char *pPath, const char *pMode, FILE *pStream)
     {
       FILE* pFile = NULL;
-      if (freopen_s(&pFile, pPath, pMode, pStream))
+      //if (freopen_s(&pFile, pPath, pMode, pStream))
+      pFile = freopen(pPath, pMode, pStream);
+      if (pFile)
         return NULL;
       return pFile;
     }
@@ -2841,8 +2845,10 @@ void *tdefl_write_image_to_png_file_in_memory(const void *pImage, int w, int h, 
     #define MZ_FCLOSE fclose
     #define MZ_FREAD fread
     #define MZ_FWRITE fwrite
-    #define MZ_FTELL64 _ftelli64
-    #define MZ_FSEEK64 _fseeki64
+    //#define MZ_FTELL64 _ftelli64
+    //#define MZ_FSEEK64 _fseeki64
+    #define MZ_FTELL64 ftell
+    #define MZ_FSEEK64 fseek
     #define MZ_FILE_STAT_STRUCT _stat
     #define MZ_FILE_STAT _stat
     #define MZ_FFLUSH fflush

@@ -57,6 +57,74 @@ xMdx3::clear(void)
 //todo -- readfile
 
 
+void 
+xMdx3::loadMem(void * mem, int i, int memsize)
+{
+    clear();
+    char * ptr;
+    ptr = (char *) mem;
+  
+    std::string comp = "MDX003_2013";
+    char buf[12];
+    
+    memcpy(buf, ptr+i, 12);
+   if (comp != buf) { printf("xMdx3 -- Error -- invalid format (read in memory) \n");  return; } //todo error invalid format
+
+   readMem(mem, i+12, memsize);
+
+}//loadmem
+
+int 
+xMdx3::readMem(void * mem, int i, int memsize)
+{
+  char * ptr;
+  ptr = (char *) mem;
+
+  //HEADER
+    memcpy(&numFace, ptr+i, 4); i += 4;
+    memcpy(&numVert, ptr+i, 4); i += 4;
+    memcpy(&rad, ptr+i, 4); i += 4;
+    memcpy(&min, ptr+i, 12); i += 12;
+    memcpy(&max, ptr+i, 12); i += 12;
+    memcpy(&off, ptr+i, 12); i += 12;
+ 
+    //important
+      drawFace = numFace;
+
+    //printf("mdx3 loadmem %d %d \n", numFace, numVert);
+
+    //reserved -- 32 bytes
+    i += 32;
+
+  //DATA
+
+    //indices are stored in shorts (2byte)
+    //convert them to int (4byte)
+
+    short * temp;
+    int k;
+    int num;
+      num = numFace * 3;
+      temp = new short[num];
+      //fread(&temp[0], 2, num, file);
+      memcpy(temp, ptr+i, num*2); i+= num*2;
+      vecIndex = new int[num];
+      for (k = 0; k < num; k++)    { vecIndex[k] = (int) temp[k]; }
+    delete [] temp;
+
+    vecVert = new mVert[numVert];
+    //fread(&vecVert[0], sizeof(mVert), numVert, file);
+    //todo -- check sizeof(mVert) == 36
+    //printf("mdx3 mVert size %d [36] \n",sizeof(mVert) );
+    //maybe there is something missing?
+    //like endianness is different? 
+    memcpy(vecVert, ptr+i, 36*numVert); i+=36*numVert;
+
+    //printf("mdx3 readmem %d / %d \n", i, memsize);
+  return i;
+}//readmem
+
+
   
 void 
 xMdx3::readFile(FILE * file)
@@ -113,6 +181,8 @@ xMdx3::loadFile(std::string fname)
     readFile(file);
    
     fclose(file);
+
+
   }//loadfile
 
   
@@ -206,7 +276,44 @@ xMdx3::scaleMesh(float sx, float sy, float sz)
 }//scalemesh
 
 
+void 
+xMdx3::transMesh(float * mat)
+{
+ int i, num;
+ float ax, ay, az;
+ num = numVert;
 
+  for (i = 0; i < num; i++) 
+  { 
+    ax = vecVert[i].pos.x;
+    ay = vecVert[i].pos.y;
+    az = vecVert[i].pos.z;
+    vecVert[i].pos.x = ax * mat[0] + ay * mat[4] + az * mat[8] + mat[12];
+    vecVert[i].pos.y = ax * mat[1] + ay * mat[5] + az * mat[9] + mat[13];
+    vecVert[i].pos.z = ax * mat[2] + ay * mat[6] + az * mat[10] + mat[14];
+  }
+}//transmesh
+
+
+
+void
+xMdx3::scaleUV(float sx, float sy)
+{
+ int i, num;
+ num = numVert;
+  for (i = 0; i < num; i++)
+  { vecVert[i].u *= sx; vecVert[i].v *= sy;  }
+}//scaleuv
+
+void
+xMdx3::moveUV(float mx, float my)
+{
+ int i, num;
+ num = numVert;
+ for (i = 0; i < num; i++)
+ { vecVert[i].u += mx; vecVert[i].v += my;  }
+
+}//scaleuv
 
 
 
@@ -287,6 +394,64 @@ xMdx3::initEmpty(int num)
 }//initempty
 
 
+
+/*
+void 
+xMdx3::projectBox(gamex::cVec3f p, float r, int maxv)
+{
+ int i;
+ gamex::cVec3f m;
+
+  for (i = 0; i < maxv; i++)
+  {
+    
+
+    ax = vecVert[i].pos.x;
+    ay = vecVert[i].pos.y;
+    az = vecVert[i].pos.z;
+
+  }//nexti
+
+}//projectbox
+*/
+
+
+
+void 
+xMdx3::projectUvOrtho(float * mat, float w, float h, int maxv)
+{
+  float ax, ay, az;
+  float u, v;
+  int i;
+  for (i = 0; i < maxv; i++)
+  {
+   ax = vecVert[i].pos.x;
+   ay = vecVert[i].pos.y;
+   az = vecVert[i].pos.z;
+
+   u = ax * mat[0] + ay * mat[4] + az * mat[8] + mat[12];
+   v = ax * mat[1] + ay * mat[5] + az * mat[9] + mat[13];
+   //w = ax * mat[2] + ay * mat[6] + az * mat[10] + mat[14];
+   //transform uv to -1 1  or  0 1 (?)
+   
+   //so far it seems correct .. so what the heck??
+   //printf("u v %0.2f %0.2f \n", u , v);
+   u /= w;   v /= h;
+   //printf("u v trans  %0.2f %0.2f \n", u , v);
+   //modify uv for texture coordinate
+   u *= 0.5f;
+   v *= 0.5f;
+   u += 0.5f;
+   v += 0.5f;
+   //silly me i didnt assign the new uv to the vertex
+   vecVert[i].u = u;
+   vecVert[i].v = v;
+  }//nexti
+}//projectortho
+
+
+
+
 void 
 xMdx3::planarUvXZ(gamex::cVec3f smin, gamex::cVec3f smax, int maxv, float * mat)
 {
@@ -317,7 +482,8 @@ xMdx3::planarUvXZ(gamex::cVec3f smin, gamex::cVec3f smax, int maxv, float * mat)
 
       rx = ax * mat[0] + ay * mat[4] + az * mat[8] + mat[12];
       rz = ax * mat[1] + ay * mat[5] + az * mat[9] + mat[13];
-        
+      //rz = ax * mat[2] + ay * mat[6] + az * mat[10] + mat[14];
+      
       rx += w*0.5f;
       rz += d*0.5f;
     }//endif

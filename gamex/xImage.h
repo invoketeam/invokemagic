@@ -32,7 +32,8 @@ public:
 
    void clear(void);
    void init(int w, int h);
-   int loadImage(std::string  fname);
+   int loadImage(std::string  fname, void * mem=0, int memsize=0);
+   int loadMem(void * mem);
 
    void mirVert(void); 
    void endianSwap(void);
@@ -50,6 +51,7 @@ public:
    void drawImage(xImage * src, int dx, int dy);
 
    void makeOpaqueABGR(void); //set all alpha value to 255 (fix for screenshots)
+
 
 public:
   //template -- does nothing

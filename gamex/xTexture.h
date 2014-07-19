@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <string.h>
+#include <string>
 
 
 class xImage;
@@ -27,6 +27,8 @@ public:
 
 
   void loadTex(std::string fname, bool mip = true, bool mirv = false, bool clamp = false);
+  
+  void loadMem(std::string debname, void * mem, int memsize, bool mip = true, bool mirv = false, bool clamp = false);
 
   void initEmpty(int size);
   
