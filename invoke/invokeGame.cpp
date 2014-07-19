@@ -7,6 +7,8 @@
 
 #include "xInvokeCommon.h"
 
+#include "../gamex/xWin.h"
+
 #include "../gamex/xGLCommon.h"
 #include "../gamex/oglExt.h"
 #include "../gamex/xKey.h"
@@ -14,6 +16,7 @@
 #include "../gamex/xMultiGrid.h"
 #include "../gamex/xDebug.h"
 #include "../gamex/xPartSys.h"
+
 
 
 #include "xUnit.h"
@@ -29,6 +32,7 @@
 #include "unit/xMine.h"
 #include "unit/xTown.h"
 #include "unit/xBuilder.h"
+
 
 
 
@@ -57,6 +61,8 @@ invokeGame::invokeGame(void)
 
   curId = 1; //start at 1 
 
+  gameState = -1;
+
 }//ctor
 
 
@@ -70,9 +76,58 @@ invokeGame::~invokeGame(void)
 
 
 
+
+
+void 
+invokeGame::drawLoading(int stat)
+{
+
+  glDisable(GL_CULL_FACE);
+  glDisable(GL_DEPTH_TEST);
+
+  //black backdrop
+  glColor3f(0,0,0);
+     fillRect(-1.0f, -1.0f, 642.0f, 482.0f);
+
+  unsigned int loadSkin;
+  loadSkin = assetMan->getTexHandle("loading_bg");
+
+  glEnable(GL_TEXTURE_2D);
+ 
+   glColor4f(1,1,1,1);
+    glBindTexture(GL_TEXTURE_2D, loadSkin);
+      fillRect(0.0f, 0.0f, 640.0f, 480.0f);
+
+ glEnable(GL_BLEND);    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBindTexture(GL_TEXTURE_2D, myFont.handle);
+      myFont.printStr(32,16,240-32, "Loading.. ");
+ 
+
+  glDisable(GL_TEXTURE_2D);
+  glDisable(GL_BLEND); 
+ 
+
+  xwin::xwinSwapBuffer(); 
+
+}//drawloading
+
+
+
+
+
+
+
+
 void
 invokeGame::init(void)
 {
+  
+  gameState = 0;  // -1 means not loaded yet  -- state 0 is default
+
+  myFont.loadCharDef("data/atari16.xfnt");
+  myFont.handle = assetMan->getTexHandle("atari16");
+
+  drawLoading(0);
 
 
 //todo -- also change this from settings
@@ -87,8 +142,7 @@ invokeGame::init(void)
   myRender.init(16384);
 
 
-    myFont.loadCharDef("data/atari16.xfnt");
-    myFont.handle = assetMan->getTexHandle("atari16");
+  
 
     myHud.assetMan = assetMan;
     myHud.init();

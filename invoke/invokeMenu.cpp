@@ -42,6 +42,7 @@ invokeMenu::init(void)
   resetWorld(640, 480);
 
 
+  //set asset directories (aka. look for resources here)
   if (assetMan == 0)
   {
     assetMan = new xAssetMan(); 
@@ -75,8 +76,8 @@ invokeMenu::init(void)
     myGui.init();
     myGui.pfont = &myFont;
 
-    testGame.assetMan = assetMan; //important (invokeMenu is the main game class, others share the assets)
-    testGame.init();
+    //testGame.assetMan = assetMan; //important (invokeMenu is the main game class, others share the assets)
+    //testGame.init();
 
     mySprite.assetMan = assetMan;
     mySprite.addSpriteTex("test"); 
@@ -121,9 +122,14 @@ invokeMenu::init(void)
     myGui.cursor.pos.z = 1024;
 
 
-    mySnd.init();
 
-    mySnd.startMusic("data/mus/RTSSSSS.ogg");
+   
+     mySnd.init();
+
+   // mySnd.startMusic("data/mus/RTSSSSS.ogg");
+
+      
+    mState = STATE_STARTUP;
 
 }//init
 
@@ -137,6 +143,11 @@ void
 invokeMenu::update(void)
 {
 
+  //debug -- set starting state
+  if (mState == STATE_STARTUP)
+  {
+    mState = STATE_MAINMENU;
+  }//endif
 
 
 
@@ -148,6 +159,18 @@ invokeMenu::update(void)
   }
   else if (mState == STATE_GAME)
   {
+
+    //first run? -- load up game
+    if (testGame.gameState < 0) 
+    {
+      testGame.assetMan = assetMan;
+      testGame.init();
+
+      mySnd.startMusic("data/mus/RTSSSSS.ogg");
+
+      return;
+    }//endif
+
 
    //this will do for testing at least (final will probably have just some sort of function hiding most of this)
    //note -- this is is problematic as bKeyPress is dependent on gametime (so this will have to change)(exclamation mark)
@@ -196,6 +219,7 @@ invokeMenu::render(void)
 
  if (mState == STATE_GAME)
  {
+   if (testGame.gameState < 0) { return; } //game not loaded yet
    testGame.render();
    return;
  }//endif
@@ -221,10 +245,8 @@ invokeMenu::render(void)
       f->v1 = (1024.0f / 2048.0f);
 
 
-
       myWorld.frameRender(&myFlat);    
 
-     
       myFlat.render(true);
 
 

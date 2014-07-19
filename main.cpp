@@ -35,6 +35,8 @@ xTexture debFontSkin;
 
 
 
+void drawGameLoadScreen(void);
+
 //run afer opengl is loaded (but before game is started)
 void init(void)
 {
@@ -42,6 +44,8 @@ void init(void)
   //todo - store this font and texture inside the exe(?)
   debFont.loadCharDef("data/atari16.xfnt");
   debFontSkin.loadTex("data/atari16.png",true,true,true);
+
+   drawGameLoadScreen();
 
   testGame.init();
 
@@ -111,6 +115,32 @@ void update(void)
 
 
 
+void drawGameLoadScreen(void)
+{
+
+ glViewport(0, 0, xwin::xwinGetCanvasWidth(),  xwin::xwinGetCanvasHeight());
+	glClearColor(0.2f, 0.2f, 0.2f, 1);
+	glClear(GL_COLOR_BUFFER_BIT);	 
+ glMatrixMode(GL_PROJECTION);  	glLoadIdentity();       glOrtho(0,640,480,0,-1,1); 
+	   glMatrixMode(GL_MODELVIEW);	  glLoadIdentity();
+
+
+  glEnable(GL_BLEND);    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_TEXTURE_2D);
+     glColor4f(1,1,1,1);
+     glBindTexture(GL_TEXTURE_2D, debFontSkin.handle);
+
+
+      debFont.printStr(16, 32, 240, "Loading.. ");
+
+  glDisable(GL_BLEND);
+  glDisable(GL_TEXTURE_2D);
+
+
+  xwin::xwinSwapBuffer(); 
+}//drawgameloadscreen
+
+
 
 
 void render(void)
@@ -163,13 +193,14 @@ void render(void)
       debFont.printStr(8, 8, 480-16, "Fps: %0.1f ", curfps);
      // debFont.printStr(8, 8+256, 480-32, "Skipframe: %d   Diffavg: %0.1f    Diff: %d", skipFrame, frate, diff);
   
-
+      glDisable(GL_BLEND);
      glDisable(GL_TEXTURE_2D);
 
 //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-  glFinish();
-  glFlush();
+  //not needed anymore (done by swapbuffer anyway)
+  //  glFinish();
+  //  glFlush();
 
   xwin::xwinSwapBuffer(); 
 }//render
@@ -288,6 +319,8 @@ int main(int argc, char**argv)
 	startTime = 0;
 
   init();
+
+
 
 
   bool bRunGame; bRunGame = true;

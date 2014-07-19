@@ -66,6 +66,7 @@ public:
 
   virtual void init(void);
 
+  virtual void drawLoading(int stat);
 
   virtual void update(void);
 	virtual void render(void);

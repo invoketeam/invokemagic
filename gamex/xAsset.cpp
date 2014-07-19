@@ -202,6 +202,7 @@ xAssetMan::getRtype(std::string ext)
   rtype = -1;
 
    if (ext == "png") { rtype = ASSETGRP_TEXTURE; }
+   else if (ext == "jpg") { rtype = ASSETGRP_TEXTURE; }
    else if (ext == "mdx3") { rtype = ASSETGRP_MESH; }
    else if (ext == "xska") { rtype = ASSETGRP_XBONEANIM; }
    else if (ext == "banm") { rtype = ASSETGRP_XBONEANIM; }
