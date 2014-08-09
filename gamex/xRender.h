@@ -8,6 +8,8 @@
 #include "xMdx3.h"
 
 
+#include "xFrustum.h"
+#include "xCam.h"
 
 
 //entity
@@ -127,8 +129,6 @@ public:
 
 
 
-
-
 class xRender
 {
 public:
@@ -136,6 +136,8 @@ public:
   int numBucket;
 
 public:
+  xFrustum frust;
+
   gamex::cQuat camOri;
   gamex::cVec3f camPos;
   gamex::cMat camMat;
@@ -146,8 +148,10 @@ public:
 
   void clear();
 
-  void setCam(gamex::cVec3f &pos, gamex::cQuat &ori);
+  //void setCam(gamex::cVec3f &pos, gamex::cQuat &ori);
 
+  void setCam(xCam * cam);  
+  void setCam2(gamex::cVec3f pos, gamex::cQuat ori,float fov, float asp, float n, float f );
 
   //maxent is per bucket
   void init(int maxEnt = 16384);

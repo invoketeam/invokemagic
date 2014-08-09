@@ -667,7 +667,7 @@ gamex::cMat view;
 
         myRender.resetFrame();
 
-        myRender.setCam(myCam.pos, myCam.ori); //needed for sorting transparent entities
+        myRender.setCam(&myCam); //needed for sorting transparent entities
   
                //todo -- for actors do a query based on the frustum 
                 //so instead of testing each one against the frustum

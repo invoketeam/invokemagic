@@ -172,6 +172,7 @@ xBucket::render(void)
     int twoSide;
     int texMat;
     int decal;
+    int skinon1, skinon2;
 
 
     //note -- also need to set
@@ -197,6 +198,7 @@ xBucket::render(void)
  
     glActiveTextureARB(GL_TEXTURE0);    glEnable(GL_TEXTURE_2D); glBindTexture(GL_TEXTURE_2D, 0);   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     glActiveTextureARB(GL_TEXTURE1);    glDisable(GL_TEXTURE_2D); glBindTexture(GL_TEXTURE_2D, 0); 
+    skinon1 = 1; skinon2 = 0;
 
     glClientActiveTextureARB(GL_TEXTURE0);  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glClientActiveTextureARB(GL_TEXTURE1);  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -229,8 +231,9 @@ xBucket::render(void)
 
 */
 
+    //reset texture matrix   
     glMatrixMode(GL_TEXTURE); glLoadIdentity();
-  
+
 
 	  glMatrixMode(GL_MODELVIEW);
 	 
@@ -263,7 +266,11 @@ xBucket::render(void)
       {
         
         skin = a->skin;
-        glActiveTextureARB(GL_TEXTURE0);  glBindTexture(GL_TEXTURE_2D, skin);
+        glActiveTextureARB(GL_TEXTURE0);
+        if (skin == 0) 
+        {  if (skinon1) {  glDisable(GL_TEXTURE_2D); skinon1 = 0; } }
+        else 
+        { if (skinon1 == 0) { glEnable(GL_TEXTURE_2D); skinon1 = 1;}  glBindTexture(GL_TEXTURE_2D, skin); }
 
       }//endif
 
@@ -273,8 +280,8 @@ xBucket::render(void)
        
         skin2 = a->skin2;
         glActiveTextureARB(GL_TEXTURE1);
-        if (skin2 == 0) { glDisable(GL_TEXTURE_2D); }
-        else { glEnable(GL_TEXTURE_2D);   glBindTexture(GL_TEXTURE_2D, skin2); } 
+        if (skin2 == 0) { if (skinon2) {  glDisable(GL_TEXTURE_2D); skinon2 = 0;} }
+        else {  if (skinon2 == 0) { glEnable(GL_TEXTURE_2D); skinon2 = 1;}   glBindTexture(GL_TEXTURE_2D, skin2); } 
       }//endif
 
 
@@ -300,13 +307,13 @@ xBucket::render(void)
       //texture matrix
       if (a->useTexMat != texMat || a->useTexMat == 1)
       {
-
+        glActiveTextureARB(GL_TEXTURE0);
         glMatrixMode(GL_TEXTURE);
         texMat = a->useTexMat;
-        if (texMat == 0)   { glLoadIdentity(); }
-         else    { glLoadMatrixf(a->texMat.m); }
+        if (texMat == 0)  { glLoadIdentity(); }
+        else { glLoadMatrixf(a->texMat.m); }
 
-         //restore to modelview matrix mode
+        //restore to modelview matrix mode
          glMatrixMode(GL_MODELVIEW);
 
       }//endif
@@ -330,7 +337,7 @@ xBucket::render(void)
           else { glDisable(GL_ALPHA_TEST); } //turn off alpha test
 
         }
-        else 
+        else
         {
          /// glDepthMask(GL_FALSE);
          //// glEnable(GL_BLEND);
@@ -340,10 +347,10 @@ xBucket::render(void)
           //turn off alpha test
           glDepthMask(GL_FALSE);
           glEnable(GL_BLEND);
-          if (blend == 2) 
-          { glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); } //set blending func to alpha blending
-          else 
-          { glBlendFunc(GL_SRC_ALPHA, GL_ONE); } //set blending to additive
+          if (blend == 2) { glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); } //set blending func to alpha blending
+          else { glBlendFunc(GL_SRC_ALPHA, GL_ONE); } //set blending to additive
+
+
         } 
       }//endif
 
@@ -366,6 +373,7 @@ xBucket::render(void)
       
 
       glPushMatrix();
+
         if (a->useTransMat)
         {
           glMultMatrixf(a->transMat.m);
@@ -445,8 +453,8 @@ xBucket::render(void)
     }//nexti
 
 
-    glMatrixMode(GL_TEXTURE); glLoadIdentity();
-    glMatrixMode(GL_MODELVIEW);
+
+
 
     //reset vertex array/pointer settings to default
     
@@ -476,7 +484,13 @@ xBucket::render(void)
 
     glColor4f(1,1,1,1);
     //printf("Texture switches:  %d  %d \n", stat_t1, stat_t2);   
+
+    //reset texture matrix
+    glMatrixMode(GL_TEXTURE);  glLoadIdentity(); 
+    glMatrixMode(GL_MODELVIEW);
+
   }//render
+
 
 
 
@@ -640,20 +654,31 @@ xRender::clear()
 
 
 void 
-xRender::setCam(gamex::cVec3f &pos, gamex::cQuat &ori)
-  {
-    camPos = pos;
-    camOri = ori;
-/*
-    camOri.setMatrix(camMat.m);
-    camMat.m[12] = pos.x;
-    camMat.m[13] = pos.y;
-    camMat.m[14] = pos.z;
-*/
-    camMat.setView(&pos, &ori);
-    //gamex::setModelView2(camMat, pos, ori); 
+xRender::setCam2(gamex::cVec3f pos, gamex::cQuat ori,float fov, float asp, float n, float f )
+{
+  camPos = pos;
+  camOri = ori;
 
+
+
+  camMat.setView(&pos, &ori);
+  frust.setPerspective(fov, asp, n, f);
+  frust.makeFrustum2(camPos, camOri);
+}//setcam2
+
+
+void 
+xRender::setCam(xCam * cam)
+  {
+    camPos = cam->pos;
+    camOri = cam->ori;
+
+    camMat.setView(&camPos, &camOri);
+
+    frust.setPerspective(cam->fov, cam->aspect, cam->neard, cam->fard);
+    frust.makeFrustum2(cam->pos, cam->ori);
   }//setcam
+
 
 
 
