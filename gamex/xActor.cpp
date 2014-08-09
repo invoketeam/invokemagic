@@ -285,6 +285,8 @@ xActor::remFromParent(void)
  a->remChild(id);
 }//remparent
 
+
+
 void 
 xActor::updateChild(void)
 {
@@ -296,6 +298,21 @@ xActor::updateChild(void)
     if (a == 0) { continue; } //todo -- remove dead children from list(?)
     if (a->dead) { continue; }
     a->update();
+  }//nexti
+}//upchild
+
+
+void 
+xActor::preUpdateChild(void)
+{
+  int i, num; num = (int) vecChild.size();
+  xActor * a;
+  for (i = 0; i < num; i++)
+  {
+    a = game->getActor(vecChild[i]);
+    if (a == 0) { continue; } //todo -- remove dead children from list(?)
+    if (a->dead) { continue; }
+    a->preUpdate();
   }//nexti
 }//upchild
 

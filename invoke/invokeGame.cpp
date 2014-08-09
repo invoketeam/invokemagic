@@ -383,6 +383,7 @@ invokeGame::update(void)
   
   myPart.update();
 
+  myWorld.preUpdate(gameTime);
   myWorld.update();
 
   myHud.viewMin = viewBox.min;

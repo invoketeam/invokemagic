@@ -80,7 +80,10 @@ public:
   virtual void init(void) {}
   virtual void remove(void); //remove from parent and from multigrid
 
-  virtual void update(void) {}
+  virtual void preUpdate(void) {} //called every frame (before all update calls)
+  virtual void think(void) {} //called every second (its based on id which frame)
+
+  virtual void update(void) {} //called every frame
   virtual void frameRender(xFlatRender * render) { }
 
   virtual void render(void) {} //debugrender
@@ -113,6 +116,7 @@ public:
   virtual void remFromParent(void);
 
   //not called by world, need to call them yourself from update 
+  virtual void preUpdateChild(void);
   virtual void updateChild(void);
   virtual void trigChild(int t);
   virtual void trig(int t) {}

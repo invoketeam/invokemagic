@@ -27,6 +27,7 @@ public:
   void addActor(xActor * a);
   xActor * getActor(int id);
  
+  void preUpdate(int gt); 
  
   void render();
   void update();

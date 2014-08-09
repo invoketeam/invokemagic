@@ -95,6 +95,30 @@ xWorld::frameRender(xFlatRender * r)
   
 
   
+void 
+xWorld::preUpdate(int gt) 
+{
+  int i;  int num;  xActor * a;
+  int tk;
+
+  tk = gt % 60;
+
+  num = (int) vecActor.size();
+
+   for (i = 0; i < num; i++)
+    {
+      a = vecActor[i];
+      if (a->dead)   { continue; }
+			if (a->asleep) { continue; }       
+
+      if ((a->id % 60) == tk) { a->think(); }
+
+      if (a->parentid > 0) { continue; } //updated by parent
+
+      a->preUpdate();             
+    }//nexti
+
+}//update
 
 
 
@@ -115,8 +139,12 @@ xWorld::update(void)
         if (a->dead) { bFoundDead = true; continue; }
 				if (a->asleep) { continue; }
 
+        
+
+
         if (a->parentid > 0) { continue; } //updated by parent       
           a->update();
+
       }//nexti
  
    
