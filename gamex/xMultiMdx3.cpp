@@ -66,4 +66,46 @@ xMultiMdx3::loadFile(std::string fname)
     //CLOSE FILE
     fclose(file);
 
+    //its cheap so calculate the min max for the whole multimesh
+     calcMinMax();
+
 }//loadfile
+
+
+
+void 
+xMultiMdx3::calcMinMax(void)
+{
+  int i;
+  int num;
+  xMdx3 * a;
+
+  num = numMesh;
+
+  //dont make it smaller than this
+  //min = -1024.0f;    max = 1024.0f;
+
+  min = -16.0f;  max = 16.0f;
+    
+    for (i = 0; i < num; i++)
+    {
+      a = &(vecMesh[i]);
+
+      min.x = min.x < a->min.x ? min.x : a->min.x;
+      min.y = min.y < a->min.y ? min.y : a->min.y;
+      min.z = min.z < a->min.z ? min.z : a->min.z;
+     
+      max.x = max.x > a->max.x ? max.x : a->max.x;
+      max.y = max.y > a->max.y ? max.y : a->max.y;
+      max.z = max.z > a->max.z ? max.z : a->max.z;
+     
+    }//nexti  
+
+    //add some extra (just in case)
+    min -= 16.0f;    max += 16.0f;
+
+    size = max - min;
+
+    //printf("multimdx min [%0.2f][%0.2f][%0.2f] max [%0.2f][%0.2f][%0.2f] \n ", min.x, min.y, min.z,  max.x, max.y, max.z); 
+
+}//calcminmax

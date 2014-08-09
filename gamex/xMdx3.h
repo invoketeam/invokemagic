@@ -58,6 +58,7 @@ public:
 
 
  void initEmpty(int num); //empty mesh with num faces (3 vert per face)
+ void initEmpty2(int numf, int numv); //doesnt set faces
  void initBox(float scale = 1.0f);
  void initPlaneXZ(float scale = 1.0f, float u0=0.0f, float v0=0.0f, float u1=1.0f, float v1=1.0f);
  void initPlaneXY(float scale = 1.0f, float u0=0.0f, float v0=0.0f, float u1=1.0f, float v1=1.0f);

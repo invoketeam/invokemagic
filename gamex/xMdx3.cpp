@@ -373,7 +373,17 @@ xMdx3::render(void)
 }//render
   
 
+void 
+xMdx3::initEmpty2(int numf, int numv)
+{
+ clear();
 
+  numFace = numf;  drawFace = numf;
+  numVert = numv;
+
+  vecIndex = new int[numFace * 3];
+  vecVert = new mVert[numVert];
+}//initempty2
 
 
 void 
