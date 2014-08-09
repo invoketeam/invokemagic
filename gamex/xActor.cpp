@@ -43,6 +43,7 @@
 
   targid = 0;
   ownerid = 0;
+  parentid = 0;
 
   worka = 0;  workb = 0;  workc = 0;
   workx = 0.0f;  worky = 0.0f;  workz = 0.0f;
@@ -54,8 +55,15 @@
  xActor::~xActor(void)
  {
  
-	takeOutOfGrid();
  }//dtor
+
+
+ void 
+ xActor::remove(void)
+ {
+  if(game != 0)   {    remFromParent();    remAllChild();   }
+	takeOutOfGrid();
+ }//remove
 
 
 void 
@@ -111,7 +119,7 @@ xActor::gotHit(float dmg, int dtype, float hx, float hy, float hz)
 
 //3D overlap test
 bool 
-xActor::overlap(xActor * a)
+xActor::overlapXYZ(xActor * a)
 {
   if (pos.x+xrad <  a->pos.x - a->xrad) { return false; }
   if (pos.x-xrad > a->pos.x + a->xrad) { return false; }
@@ -222,4 +230,89 @@ xActor::checkColXY(xMultiGrid * m)
 	}//nextc
 
  }//checkol
+
+ 
+ 
+ 
+ 
+void 
+xActor::addChild(xActor * a)
+{
+  if (a->parentid == id) { return; } //already child
+  if (a->parentid != 0) { a->remFromParent(); }
+    a->parentid = id;
+      vecChild.push_back(a->id);
+}//addchild
+
+void 
+xActor::remChild(int id)
+{
+  int i, num; num = (int) vecChild.size();
+  xActor * a;
+  for (i = 0; i < num; i++)
+  {
+    if (vecChild[i] == id)
+    {
+      vecChild[i] = vecChild[num-1];
+      vecChild.pop_back();
+      a = game->getActor(id); if (a != 0) { a->parentid = 0; }
+      return;
+    }//endif
+  }//nexti
+}//remchild
+
+void 
+xActor::remAllChild(void)
+{
+  int i, num; num = (int) vecChild.size();
+  xActor * a;
+  for (i = 0; i < num; i++)
+  {
+    a = game->getActor(vecChild[i]);
+    if (a == 0) { continue; }
+    if (a->dead) { continue; }
+    a->parentid = 0;
+  }//nexti
+  vecChild.clear();
+}//remallchild
+
+void 
+xActor::remFromParent(void)
+{
+ xActor * a;
+ a = game->getActor(parentid);
+ if (a == 0) { return; }
+ a->remChild(id);
+}//remparent
+
+void 
+xActor::updateChild(void)
+{
+  int i, num; num = (int) vecChild.size();
+  xActor * a;
+  for (i = 0; i < num; i++)
+  {
+    a = game->getActor(vecChild[i]);
+    if (a == 0) { continue; } //todo -- remove dead children from list(?)
+    if (a->dead) { continue; }
+    a->update();
+  }//nexti
+}//upchild
+
+
+
+void 
+xActor::trigChild(int t)
+{  
+  int i, num; num = (int) vecChild.size();
+  xActor * a;
+  for (i = 0; i < num; i++)
+  {
+    a = game->getActor(vecChild[i]);
+    if (a == 0) { continue; } //todo -- remove dead children from list(?)
+    if (a->dead) { continue; }
+    a->trig(t);
+  }//nexti
+}//trigchild
+
 

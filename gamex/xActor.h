@@ -2,13 +2,15 @@
 
 #include "xMath.h"
 #include <string>
-
+#include <vector>
 
 class xGame;
 class xCell;
 class xMultiGrid;
 class xRender;
 class xFlatRender;
+
+typedef std::vector <int> tdVecChild;
 
 class xActor
 {
@@ -47,6 +49,12 @@ public:
   int targid;
   int ownerid;
 
+
+  int parentid;
+  tdVecChild vecChild; //about 20 bytes empty
+  
+
+
 public:
   bool asleep;
   bool visible;
@@ -70,6 +78,7 @@ public:
   virtual ~xActor(void);
 
   virtual void init(void) {}
+  virtual void remove(void); //remove from parent and from multigrid
 
   virtual void update(void) {}
   virtual void frameRender(xFlatRender * render) { }
@@ -96,9 +105,20 @@ public:
   
   virtual void onKilled(void) {} //called by kill
 
+public:
+//you can only add child after it was added to the game (aka its id was set)
+  virtual void addChild(xActor * a);
+  virtual void remChild(int id);
+  virtual void remAllChild(void);
+  virtual void remFromParent(void);
+
+  //not called by world, need to call them yourself from update 
+  virtual void updateChild(void);
+  virtual void trigChild(int t);
+  virtual void trig(int t) {}
   
 public:
-  virtual bool overlap(xActor * a);
+  virtual bool overlapXYZ(xActor * a);
   virtual bool overlapXY(xActor * a);
   virtual bool overlapXZ(xActor * a);
 

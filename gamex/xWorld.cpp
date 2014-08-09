@@ -6,15 +6,21 @@
 //#include "xRender.h"
 
 
-xWorld::xWorld()
+xWorld::xWorld(void)
 {
 
 }//ctor
 
 
-xWorld::~xWorld()
+xWorld::~xWorld(void)
 {
-  clear();
+  tdVecActor ::iterator it;
+  
+  for (it = vecActor.begin(); it != vecActor.end(); it++)
+  {    delete *it;  }
+  
+  vecActor.clear();
+  mapActor.clear();
 }//dtor
   
   
@@ -35,12 +41,12 @@ xWorld::getActor(int id)
 
   
 void 
-xWorld::clear()
+xWorld::clear(void)
 {
   tdVecActor ::iterator it;
   
   for (it = vecActor.begin(); it != vecActor.end(); it++)
-  {    delete *it;  }
+  {  (*it)->remove();   delete *it;  }
   
   vecActor.clear();
   mapActor.clear();
@@ -48,7 +54,7 @@ xWorld::clear()
 
   
 void 
-xWorld::render()
+xWorld::render(void)
 {
   tdVecActor ::iterator it;
   
@@ -89,25 +95,28 @@ xWorld::frameRender(xFlatRender * r)
   
 
   
+
+
+
 void 
-xWorld::update()
+xWorld::update(void)
 {
-  int i;
-  int num;
-  xActor * a;
+  int i;  int num;  xActor * a;
   bool bFoundDead;
+
   
   bFoundDead = false;
   
-  num = vecActor.size();
+  num = (int) vecActor.size();
 
    for (i = 0; i < num; i++)
       {
         a = vecActor[i];
         if (a->dead) { bFoundDead = true; continue; }
 				if (a->asleep) { continue; }
-               
-        a->update();
+
+        if (a->parentid > 0) { continue; } //updated by parent       
+          a->update();
       }//nexti
  
    
@@ -116,19 +125,21 @@ xWorld::update()
                 //need to be in seperate loops
                 //because actor creation and deletion can clash
                 //resulting in multi update
-                num = vecActor.size();
+                num = (int) vecActor.size();
                 for (i = 0; i < num; i++)
                 {
                     a = vecActor[i];
                     if (a->dead == false) { continue; }
                
+                        a->remove();
+
                         vecActor[i] = vecActor[num - 1];
                         vecActor.pop_back();
                         //mapActor[a->id] = 0; 
                         mapActor.erase(a->id);
                         delete a;
                         //a.remove(); 
-                        num = vecActor.size();
+                        num = (int) vecActor.size();
                         i -= 1;
 
                 }//nexti
@@ -136,7 +147,4 @@ xWorld::update()
  
 
 }//update
-
-
-
 
