@@ -51,15 +51,17 @@ namespace xwin
 
   extern void xwinShowCursor(bool enable);
 
-  extern short getMousex(void); //gets actual window mouse coordinate 
-  extern short getMousey(void);
+  extern int getMousex(void); //gets actual window mouse coordinate 
+  extern int getMousey(void);
 
   extern float getUnivMousex(void); //gets mouse coordinate in percentage between (0.0f - 1.0f)
   extern float getUnivMousey(void);
 
   
   extern void setMouseCursorPos(int x, int y);
-  extern void limitMousePos(int minx, int miny, int maxx, int maxy);
+
+  //used for mouselook (call every frame, get mouse speed in xspeed and yspeed)
+  extern void wrapMousePos(int minx, int miny, int maxx, int maxy, int * xspeed=0, int * yspeed=0);
   
 
 
@@ -68,6 +70,7 @@ namespace xwin
 
   extern int xwinGetWinWidth(void); 
   extern int xwinGetWinHeight(void); 
+
   extern int xwinGetCanvasWidth(void); 
   extern int xwinGetCanvasHeight(void);
 

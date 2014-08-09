@@ -123,11 +123,12 @@ namespace xwin
 
 
 
-	static short mousex = 0;
-	static short mousey = 0;
+	static int mousex = 0;
+	static int mousey = 0;
 
-	short getMousex(void) { return mousex; }
-	short getMousey(void) { return mousey; }
+
+	int getMousex(void) { return mousex; }
+	int getMousey(void) { return mousey; }
 
 	float getUnivMousex(void) {  return  (float)mousex/(float)canvasWidth  ; }
 	float getUnivMousey(void) {  return  (float)mousey/(float)canvasHeight ; }
@@ -139,7 +140,12 @@ namespace xwin
       SetCursorPos(x, y);
   }//setmousepos
 
-  void limitMousePos(int minx, int miny, int maxx, int maxy)
+  static int pmousex = 0;
+  static int pmousey = 0;
+  static int mxv = 0;
+  static int myv = 0;
+
+  void wrapMousePos(int minx, int miny, int maxx, int maxy, int * xspeed, int * yspeed)
   {
      if (xwinIsMini()) { return; }
 
@@ -149,27 +155,33 @@ namespace xwin
     POINT mcoord;
 		GetCursorPos(&mcoord);
 
-  
-    dx = mcoord.x;
-    dy = mcoord.y;
+    
+    dx = mcoord.x;    dy = mcoord.y;
    
      ScreenToClient(gHwnd, &mcoord); //Map to window coordinates
-
-    x = mcoord.x;
-    y = mcoord.y;
-    dx -= x;
-    dy -= y;
     
+    
+    x = mcoord.x;    y = mcoord.y;
+    dx -= x;    dy -= y;
+    
+    mxv = pmousex - x;
+    myv = pmousey - y;
+    if (xspeed > 0) { *xspeed = mxv; }
+    if (yspeed > 0) { *yspeed = myv; }
 
+      bool b;
      //printf(" mousex mousey %d %d \n", mousex, mousey);
+      b = false;
+     if (x < minx) { x += (maxx-minx); b = true;}
+     else if (x > maxx) { x -= (maxx-minx);b = true; }
+     if (y < miny) { y += (maxy-miny); b = true;}
+     else if (y > maxy) { y -= (maxy-miny);  b = true;}
 
-     if (x < minx) { x += (maxx-minx);}
-     else if (x > maxx) { x -= (maxx-minx); }
-     if (y < miny) { y += (maxy-miny);}
-     else if (y > maxy) { y -= (maxy-miny); }
-
-     SetCursorPos(x+dx, y+dy);
+      if (b) {  SetCursorPos(x+dx, y+dy); }
       
+      pmousex = x;
+      pmousey = y;
+
   }//limitmouse
 
 
@@ -222,14 +234,14 @@ namespace xwin
 	{
 		if (kdFunc == 0) {return;}
 
-		kdFunc(wParam);
+		kdFunc((short)wParam);
 	}//kdown
 
 	static void keyUp(WPARAM wParam, LPARAM lParam)
 	{
 		if (kuFunc == 0) {return;}
 
-		kuFunc(wParam);
+		kuFunc((short)wParam);
 	}//kup
 
 
