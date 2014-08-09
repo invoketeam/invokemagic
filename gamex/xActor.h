@@ -10,12 +10,17 @@ class xMultiGrid;
 class xRender;
 class xFlatRender;
 
+class xActorInfo; //not meant to be defined or used by gamex
+
 typedef std::vector <int> tdVecChild;
 
 class xActor
 {
 public:
   xGame * game;
+
+public:
+  xActorInfo * actorInfo;
 
 public:
   xCell * cell;

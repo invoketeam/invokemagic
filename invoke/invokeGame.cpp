@@ -261,6 +261,10 @@ invokeGame::init(void)
 
 
 
+//load actor (unit) definitions from config file  
+  loadActorInfo("nofileyet");
+
+
 //world size
   float wwidth, wheight;
   wwidth = myHeight.mw * myHeight.cw;
@@ -866,6 +870,29 @@ invokeGame::setZoneTypeRect(float wx, float wz, float ww, float wh, int zt)
 {
   myTile.setZoneRectWorld(wx, wz, ww, wh, zt);
 }//setzonetyprect
+
+
+
+
+
+xActorInfo * 
+invokeGame::getActorInfo(std::string wname)
+{
+  return storeActInfo.getData(wname);  
+}//getactinfo
+  
+
+void 
+invokeGame::loadActorInfo(std::string fname)
+{
+  //load actor info from xml config!
+
+
+}//loadactinfo
+
+
+
+
 
 
 

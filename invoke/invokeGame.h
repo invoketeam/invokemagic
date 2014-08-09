@@ -16,6 +16,7 @@
 
 #include "hud/invokeHud.h"
 
+#include "xActorInfo.h"
 
 
 #define NUM_HUDBUTTON 12
@@ -37,6 +38,8 @@ public:
   xBigPartSys myPart;
   
   xStore <xPartSprite> storePartSpr;
+
+  xStore <xActorInfo> storeActInfo;
 
 public:
   xCam myCam;
@@ -101,6 +104,11 @@ public:
   virtual bool canBuildRect(float wx, float wz, float ww, float wh);
   virtual void setZoneType(float wx, float wz, int zt);
   virtual void setZoneTypeRect(float wx, float wz, float ww, float wh, int zt);
+
+public:
+  virtual xActorInfo * getActorInfo(std::string wname);
+  
+  virtual void loadActorInfo(std::string fname);
 
 
 };//invokemenu

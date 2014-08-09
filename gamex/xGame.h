@@ -7,6 +7,8 @@
 
 
 class xActor;
+class xActorInfo;
+
 class xWorld;
 class xMultiGrid;
 class xPathFind;
@@ -21,6 +23,7 @@ class xBigPart;
 class xPartSprite;
 
 class xAssetMan;
+
 
 #define XGAME_MAXKEY 512
 
@@ -105,6 +108,9 @@ public:
   virtual xActor * getNameZone(std::string wname) { return 0;}
   virtual void remNameZone(std::string wname) { }
   virtual void clearNameZone(void) { }
+
+public:
+  virtual xActorInfo * getActorInfo(std::string wname) { return 0; }
 
 
 

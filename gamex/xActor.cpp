@@ -11,6 +11,7 @@
  {
   game = 0;
 
+  actorInfo = 0;
   
   cell = 0;
   next = 0;

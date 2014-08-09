@@ -535,6 +535,10 @@ SOURCE=.\invoke\invokeMenu.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\invoke\xActorInfo.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\invoke\xBuildTest.cpp
 # End Source File
 # Begin Source File
