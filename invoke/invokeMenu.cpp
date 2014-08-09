@@ -126,7 +126,7 @@ invokeMenu::init(void)
    
      mySnd.init();
 
-   // mySnd.startMusic("data/mus/RTSSSSS.ogg");
+     mySnd.startMusic("data/mus/RTSmenu.ogg");
 
       
     mState = STATE_STARTUP;
