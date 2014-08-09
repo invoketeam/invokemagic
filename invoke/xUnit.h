@@ -37,6 +37,8 @@ public:
 
   virtual void init(void);
 
+  virtual void think(void);
+
   virtual void update(void);
 	virtual void render(void);
   virtual void render2(xRender * r);

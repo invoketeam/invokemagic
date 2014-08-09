@@ -146,6 +146,29 @@ xUnit::onKilled(void)
 }//onkilled
 
 
+void
+xUnit::think(void)
+{
+  xActor * a;
+
+    if (targid > 0) 
+     {
+       a = game->getActor(targid); 
+       if (a == 0) { targid = 0; }
+     }
+     else
+     {
+       a = getTarget(game->mgrid, pos.x-1024, pos.z-1024, 2048, 2048);
+
+       if (a != 0) {targid = a->id; }  else { targid = 0; }
+     }//endif
+     
+ //todo -- alert others nearby when found a target(?)
+
+
+}//think
+
+
 
 void 
 xUnit::update(void)
@@ -211,6 +234,7 @@ xUnit::update(void)
     //if targetid doesnt refer to anyone (zero)
     //try to find a nearby target (but not every frame)
       if (targid > 0)  {  a = game->getActor(targid);  if (a == 0) { targid = 0; } }
+      /*
       else
       {
         if (workb < game->gameTime ) { workb = game->gameTime + 10; 
@@ -219,6 +243,7 @@ xUnit::update(void)
         }
         //todo -- alert others nearby when found a target(?)
       } //endif   
+*/
 
     //command to move -- ignore nearby targets (move is same as retreat)
     if (cmd == 1) {  a = 0; targid = 0; workb = game->gameTime + 5;   } 

@@ -91,7 +91,25 @@ xTower::onKilled(void)
 }//onkilled
 
 
+void
+xTower::think(void)
+{
 
+  xActor * a;
+  float range;
+
+   range = 2048;
+
+  if (targid > 0)  {  a = game->getActor(targid);  if (a == 0) { targid = 0; } }
+  else
+  {
+     a = getTarget(game->mgrid, pos.x-range, pos.z-range, range+range, range+range);
+     
+     if (a != 0) {targid = a->id; }  else { targid = 0; }
+
+  } //endif 
+
+}//think
 
 
 
@@ -110,7 +128,7 @@ xTower::update(void)
 
     a = 0;
     if (targid > 0)  {  a = game->getActor(targid);  if (a == 0) { targid = 0; } }
-    else
+  /*  else
     {
       if (workb < game->gameTime ) { workb = game->gameTime + 10; 
         a = getTarget(game->mgrid, pos.x-range, pos.z-range, range+range, range+range);
@@ -119,7 +137,7 @@ xTower::update(void)
       //todo -- alert others nearby when found a target(?)
     } //endif   
 
- 
+  */
     if (a == 0) {   targid = 0; }
 
  

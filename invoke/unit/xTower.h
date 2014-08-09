@@ -20,6 +20,8 @@ public:
   
   virtual void onKilled(void);
   
+  virtual void think(void);
+
   virtual void init(void);
   virtual void update(void);
   virtual void render2(xRender * r);
