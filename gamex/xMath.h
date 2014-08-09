@@ -69,6 +69,13 @@ public:
 	(va_.z * vb_.x) - (va_.x * vb_.z),
 	(va_.x * vb_.y) - (va_.y * vb_.x)); }
 
+  inline void setCross(cVec3f &va_, cVec3f &vb_)
+  {
+    x = (va_.y * vb_.z) - (va_.z * vb_.y);
+    y = (va_.z * vb_.x) - (va_.x * vb_.z);
+    z = (va_.x * vb_.y) - (va_.y * vb_.x);
+  }//setcross
+
 
 	inline cVec3f operator -(void) {	return cVec3f(-x,-y,-z);  }
 
@@ -219,6 +226,21 @@ public:
                    -(1.0f - 2.0f * ( x*x + y*y )) );
             
   }//getfront
+
+  inline cVec3f getSide(void)
+  {
+  return cVec3f( 1.0f - 2.0f * ( y*y + z*z ), 
+                 2.0f * ( x*y + z*w ),
+                 2.0f * ( x*z - y*w ) );
+  }//getside
+
+
+  inline cVec3f getUp(void)
+  {
+   return cVec3f(2.0f * ( x*y - z*w ),
+                 1.0f - 2.0f * ( x*x + z*z ),
+                 2.0f * ( y*z + x*w ) );
+  }//getup
 
 
   inline float getFrontX(void)  { return  -(2.0f * ( x*z + y*w )); }
@@ -386,6 +408,11 @@ public:
 	inline void fromMatrix(float * m)
 	{
 
+  //todo -- this seems to work actually
+  //  http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
+
+
+/*
 		float t = m[0] + m[5] + m[10] + 1.0f;
 		float s;
 
@@ -433,6 +460,7 @@ public:
 			
 			}//endif2
 		}//endif
+*/
 
 
 	}//frommatrix
@@ -759,13 +787,10 @@ public:
 
         
        
-
-
-
 	//safe to use on self i guess //todo: test
 
 	//returns 0 if unsuccesful
-	int getInverted(gamex::cMat &inv)
+	int invert(void)
 	{
 
 	//source
@@ -814,10 +839,7 @@ public:
 
 		det = 1.0f / det;
  
-		for (i = 0; i < 16; i++)
-		{ 
-			inv.m[i] = temp[i] * det; 
-		}//nexti
+		for (i = 0; i < 16; i++)		{ 			m[i] = temp[i] * det; 		}
 
 		return 1;
 	}//invert
